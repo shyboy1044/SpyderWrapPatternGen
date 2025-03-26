@@ -1,0 +1,129 @@
+﻿<Window x:Class="WpfApp1.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:WpfApp1"
+        mc:Ignorable="d"
+        ResizeMode="NoResize"
+        WindowStartupLocation="CenterScreen"
+        Title="MainWindow" Height="870.065" Width="1493.445">
+
+    <Window.Resources>
+
+        <Style TargetType="TextBox" x:Key="NumberInputTextBox">
+            <Setter Property="Height" Value="30" />
+            <Setter Property="Width" Value="120" />
+            <Setter Property="Padding" Value="5" />
+            <Setter Property="TextAlignment" Value="Right" />
+            <EventSetter Event="PreviewTextInput" Handler="NumberOnlyTextBox_PreviewTextInput"/>
+        </Style>
+
+        <Style TargetType="TextBox">
+            <Setter Property="Height" Value="30" />
+            <Setter Property="Width" Value="120" />
+            <Setter Property="Padding" Value="5" />
+        </Style>
+
+        <Style TargetType="Button">
+            <Setter Property="Background" Value="#106EBE" />
+            <Setter Property="Foreground" Value="White" />
+            <Setter Property="BorderBrush" Value="#106EBE" />
+            <Setter Property="Width" Value="142" />
+            <Setter Property="Height" Value="31" />
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#106EEE" />
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+    </Window.Resources>
+    <Grid>
+        <Label Content="Spyder Wrap Pattern Generator" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.76,0.755" Height="45" Width="303" FontSize="20"/>
+        <Button Content="Load Pattern" HorizontalAlignment="Left" Margin="10,87,0,0" VerticalAlignment="Top" x:Name="btnLoad" Click="BtnLoad_Click"/>
+        <Button Content="Save Pattern" HorizontalAlignment="Left" Margin="10,123,0,0" VerticalAlignment="Top" x:Name="btnSave" Click="BtnSave_Click"/>
+        <Button Content="Save As New" HorizontalAlignment="Left" Margin="10,159,0,0" VerticalAlignment="Top" x:Name="btnSaveNew" Click="BtnSaveNew_Click"/>
+        <Label Content="Pattern Name" HorizontalAlignment="Left" Margin="10,219,0,0" VerticalAlignment="Top" Width="142" FontSize="15"/>
+        <TextBox HorizontalAlignment="Left" Margin="157,219,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="156" TextAlignment="Left"/>
+        <Label Content="Gcode Output" HorizontalAlignment="Left" Margin="10,264,0,0" VerticalAlignment="Top" FontSize="15" Width="142"/>
+        <RichTextBox HorizontalAlignment="Left" Height="482" Margin="10,299,0,0" VerticalAlignment="Top" Width="303" Padding="5">
+            <FlowDocument>
+                <Paragraph>
+                    <Run Text="" FontSize="12"/>
+                </Paragraph>
+            </FlowDocument>
+        </RichTextBox>
+        <Label Content="Shell Size Variables" HorizontalAlignment="Left" Margin="354,59,0,0" VerticalAlignment="Top" FontSize="15" Width="172"/>
+        <Label Content="Shell Size" HorizontalAlignment="Left" Margin="350,100,0,0" VerticalAlignment="Top" FontSize="13"/>
+        <TextBox HorizontalAlignment="Left" Margin="353,131,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Style="{StaticResource NumberInputTextBox}"/>
+        <Label Content="Measured size" HorizontalAlignment="Left" Margin="487,100,0,0" VerticalAlignment="Top" FontSize="12" />
+        <TextBox HorizontalAlignment="Left" Margin="490,131,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Style="{StaticResource NumberInputTextBox}"/>
+        <Label Content="Diameter %" HorizontalAlignment="Left" Margin="626,100,0,0" VerticalAlignment="Top" FontSize="12"/>
+        <TextBox HorizontalAlignment="Left" Margin="629,131,0,0" TextWrapping="Wrap" VerticalAlignment="Top" x:Name="DDiameterPcg" Style="{StaticResource NumberInputTextBox}"/>
+        <Label Content="Circ +" HorizontalAlignment="Left" Margin="762,100,0,0" VerticalAlignment="Top" FontSize="12"/>
+        <TextBox HorizontalAlignment="Left" Margin="765,131,0,0" TextWrapping="Wrap" VerticalAlignment="Top" x:Name="CirclePlus" Style="{StaticResource NumberInputTextBox}"/>
+        <Label Content="Shell Description" HorizontalAlignment="Left" Margin="354,219,0,0" VerticalAlignment="Top" Width="131" FontSize="15"/>
+        <TextBox HorizontalAlignment="Left" Margin="490,219,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="800" TextAlignment="Left"/>
+        <Label Content="Wrap Speed Variables" HorizontalAlignment="Left" Margin="354,268,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.473,0.502" Width="172" FontSize="15"/>
+        <Label Content="Wrap Feedrate " HorizontalAlignment="Left" Margin="354,295,0,0" VerticalAlignment="Top" Width="119"/>
+        <TextBox HorizontalAlignment="Left" Margin="354,325,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Style="{StaticResource NumberInputTextBox}"/>
+        <TextBox HorizontalAlignment="Left" Margin="490,325,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Style="{StaticResource NumberInputTextBox}"/>
+        <TextBox HorizontalAlignment="Left" Margin="629,325,0,0" TextWrapping="Wrap" VerticalAlignment="Top" x:Name="OverWrapPcg" Style="{StaticResource NumberInputTextBox}"/>
+        <TextBox HorizontalAlignment="Left" Margin="765,325,0,0" TextWrapping="Wrap" VerticalAlignment="Top" x:Name="TotalLayers" Style="{StaticResource NumberInputTextBox}"/>
+        <Label Content="Burnish Feedrate" HorizontalAlignment="Left" Margin="487,295,0,0" VerticalAlignment="Top" FontSize="12"/>
+        <Label Content="Overwrap %" HorizontalAlignment="Left" Margin="626,295,0,0" VerticalAlignment="Top" FontSize="12"/>
+        <Label Content="Total Layers" HorizontalAlignment="Left" Margin="762,295,0,0" VerticalAlignment="Top" FontSize="12"/>
+        <TextBox HorizontalAlignment="Left" Margin="902,325,0,0" TextWrapping="Wrap" VerticalAlignment="Top" x:Name="WrapPerLayer" Style="{StaticResource NumberInputTextBox}"/>
+        <TextBox HorizontalAlignment="Left" Margin="1038,325,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Style="{StaticResource NumberInputTextBox}"/>
+        <Label Content="Wraps per layer" HorizontalAlignment="Left" Margin="899,295,0,0" VerticalAlignment="Top" FontSize="12"/>
+        <Label Content="Burnish Layers" HorizontalAlignment="Left" Margin="1035,295,0,0" VerticalAlignment="Top" FontSize="12"/>
+        <TextBox HorizontalAlignment="Left" Margin="1314,293,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Style="{StaticResource NumberInputTextBox}"/>
+        <Label Content="Burnish Ramp Steps " HorizontalAlignment="Left" Margin="1175,295,0,0" VerticalAlignment="Top" FontSize="12"/>
+        <Label Content="Machine G-Ccode Variables" HorizontalAlignment="Left" Margin="354,376,0,0" VerticalAlignment="Top" Width="172"/>
+        <Label Content="Startup Gcode " HorizontalAlignment="Left" Margin="353,407,0,0" VerticalAlignment="Top" Width="119"/>
+        <RichTextBox HorizontalAlignment="Left" Height="253" Margin="354,438,0,0" VerticalAlignment="Top" Width="256" Padding="5">
+            <FlowDocument>
+                <Paragraph>
+                    <Run Text=""/>
+                </Paragraph>
+            </FlowDocument>
+        </RichTextBox>
+        <Label Content="End of Main Wrap" HorizontalAlignment="Left" Margin="630,407,0,0" VerticalAlignment="Top" Width="119"/>
+        <Label Content="End of Complete Wrap&#xD;" HorizontalAlignment="Left" Margin="903,407,0,0" VerticalAlignment="Top" Width="182" Height="26"/>
+        <RichTextBox HorizontalAlignment="Left" Height="253" Margin="630,438,0,0" VerticalAlignment="Top" Width="256" Padding="5">
+            <FlowDocument>
+                <Paragraph>
+                    <Run Text=""/>
+                </Paragraph>
+            </FlowDocument>
+        </RichTextBox>
+        <RichTextBox HorizontalAlignment="Left" Height="253" Margin="903,438,0,0" VerticalAlignment="Top" Width="256" Padding="5">
+            <FlowDocument>
+                <Paragraph>
+                    <Run Text=""/>
+                </Paragraph>
+            </FlowDocument>
+        </RichTextBox>
+        <Label Content="Total Estimated Feet" HorizontalAlignment="Left" Margin="353,725,0,0" VerticalAlignment="Top" Width="119"/>
+        <TextBox HorizontalAlignment="Left" Margin="353,751,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Style="{StaticResource NumberInputTextBox}"/>
+        <Label Content="Pump on/off code" HorizontalAlignment="Left" Margin="814,734,0,0" VerticalAlignment="Top" Width="119"/>
+        <TextBox HorizontalAlignment="Left" Margin="814,760,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="70" Style="{StaticResource NumberInputTextBox}"/>
+        <TextBox HorizontalAlignment="Left" Margin="899,760,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="119" Style="{StaticResource NumberInputTextBox}"/>
+        <Label Content="Enable Pump" HorizontalAlignment="Left" Margin="1035,734,0,0" VerticalAlignment="Top" Width="119"/>
+        <TextBox HorizontalAlignment="Left" Margin="1035,760,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Style="{StaticResource NumberInputTextBox}"/>
+        <Label Content="Cycles per shell " HorizontalAlignment="Left" Margin="1175,734,0,0" VerticalAlignment="Top" Width="119"/>
+        <TextBox HorizontalAlignment="Left" Margin="1175,760,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Style="{StaticResource NumberInputTextBox}"/>
+        <Label Content="Duration" HorizontalAlignment="Left" Margin="1314,734,0,0" VerticalAlignment="Top" Width="119"/>
+        <TextBox HorizontalAlignment="Left" Margin="1314,760,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Style="{StaticResource NumberInputTextBox}"/>
+        <Label Content="Total Kick" HorizontalAlignment="Left" Margin="1031,100,0,0" VerticalAlignment="Top" FontSize="12"/>
+        <TextBox HorizontalAlignment="Left" Height="30" Margin="1034,131,0,0" TextWrapping="Wrap" VerticalAlignment="Top" x:Name="TotalKickPcg" Style="{StaticResource NumberInputTextBox}"/>
+        <Label Content="Kick ratio %&#xD;" HorizontalAlignment="Left" Margin="1167,100,0,0" VerticalAlignment="Top" FontSize="12" Width="106" Height="27"/>
+        <TextBox HorizontalAlignment="Left" Height="30" Margin="1170,131,0,0" TextWrapping="Wrap" VerticalAlignment="Top" x:Name="KickRatio" Style="{StaticResource NumberInputTextBox}"/>
+        <TextBox HorizontalAlignment="Left" Margin="1314,259,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Style="{StaticResource NumberInputTextBox}"/>
+        <Label Content="Burnish Start Speed " HorizontalAlignment="Left" Margin="1175,261,0,0" VerticalAlignment="Top" FontSize="12"/>
+        <TextBox HorizontalAlignment="Left" Margin="1315,327,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Style="{StaticResource NumberInputTextBox}"/>
+        <Label Content="Burnish Final Speed" HorizontalAlignment="Left" Margin="1176,329,0,0" VerticalAlignment="Top" FontSize="12"/>
+
+    </Grid>
+</Window>
