@@ -5,125 +5,247 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:WpfApp1"
         mc:Ignorable="d"
-        ResizeMode="NoResize"
         WindowStartupLocation="CenterScreen"
         Title="MainWindow" Height="870.065" Width="1493.445">
-
+   
     <Window.Resources>
 
         <Style TargetType="TextBox" x:Key="NumberInputTextBox">
-            <Setter Property="Height" Value="30" />
-            <Setter Property="Width" Value="120" />
-            <Setter Property="Padding" Value="5" />
-            <Setter Property="TextAlignment" Value="Right" />
+            <Setter Property="Height" Value="30"/>
+            <Setter Property="TextAlignment" Value="Right"/>
+            <Setter Property="Padding" Value="5"/>
             <EventSetter Event="PreviewTextInput" Handler="NumberOnlyTextBox_PreviewTextInput"/>
         </Style>
-
+        
         <Style TargetType="TextBox">
-            <Setter Property="Height" Value="30" />
-            <Setter Property="Width" Value="120" />
-            <Setter Property="Padding" Value="5" />
+            <Setter Property="Height" Value="30"/>
+            <Setter Property="TextAlignment" Value="Right"/>
+            <Setter Property="Padding" Value="5"/>
         </Style>
 
         <Style TargetType="Button">
-            <Setter Property="Background" Value="#106EBE" />
-            <Setter Property="Foreground" Value="White" />
-            <Setter Property="BorderBrush" Value="#106EBE" />
-            <Setter Property="Width" Value="142" />
-            <Setter Property="Height" Value="31" />
+            <Setter Property="Height" Value="30"/>
+            <Setter Property="Background" Value="#106EBE"/>
+            <Setter Property="Foreground" Value="white"/>
             <Style.Triggers>
                 <Trigger Property="IsMouseOver" Value="True">
-                    <Setter Property="Background" Value="#106EEE" />
+                    <Setter Property="Background" Value="White"/>
                 </Trigger>
             </Style.Triggers>
         </Style>
 
+        <Style TargetType="TextBlock" x:Key="SubTitle">
+            <Setter Property="FontSize" Value="15"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+        </Style>
     </Window.Resources>
-    <Grid>
-        <Label Content="Spyder Wrap Pattern Generator" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.76,0.755" Height="45" Width="303" FontSize="20"/>
-        <Button Content="Load Pattern" HorizontalAlignment="Left" Margin="10,87,0,0" VerticalAlignment="Top" x:Name="btnLoad" Click="BtnLoad_Click"/>
-        <Button Content="Save Pattern" HorizontalAlignment="Left" Margin="10,123,0,0" VerticalAlignment="Top" x:Name="btnSave" Click="BtnSave_Click"/>
-        <Button Content="Save As New" HorizontalAlignment="Left" Margin="10,159,0,0" VerticalAlignment="Top" x:Name="btnSaveNew" Click="BtnSaveNew_Click"/>
-        <Label Content="Pattern Name" HorizontalAlignment="Left" Margin="10,219,0,0" VerticalAlignment="Top" Width="142" FontSize="15"/>
-        <TextBox HorizontalAlignment="Left" Margin="157,219,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="156" TextAlignment="Left"/>
-        <Label Content="Gcode Output" HorizontalAlignment="Left" Margin="10,264,0,0" VerticalAlignment="Top" FontSize="15" Width="142"/>
-        <RichTextBox HorizontalAlignment="Left" Height="482" Margin="10,299,0,0" VerticalAlignment="Top" Width="303" Padding="5">
-            <FlowDocument>
-                <Paragraph>
-                    <Run Text="" FontSize="12"/>
-                </Paragraph>
-            </FlowDocument>
-        </RichTextBox>
-        <Label Content="Shell Size Variables" HorizontalAlignment="Left" Margin="354,59,0,0" VerticalAlignment="Top" FontSize="15" Width="172"/>
-        <Label Content="Shell Size" HorizontalAlignment="Left" Margin="350,100,0,0" VerticalAlignment="Top" FontSize="13"/>
-        <TextBox HorizontalAlignment="Left" Margin="353,131,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Style="{StaticResource NumberInputTextBox}"/>
-        <Label Content="Measured size" HorizontalAlignment="Left" Margin="487,100,0,0" VerticalAlignment="Top" FontSize="12" />
-        <TextBox HorizontalAlignment="Left" Margin="490,131,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Style="{StaticResource NumberInputTextBox}"/>
-        <Label Content="Diameter %" HorizontalAlignment="Left" Margin="626,100,0,0" VerticalAlignment="Top" FontSize="12"/>
-        <TextBox HorizontalAlignment="Left" Margin="629,131,0,0" TextWrapping="Wrap" VerticalAlignment="Top" x:Name="DDiameterPcg" Style="{StaticResource NumberInputTextBox}"/>
-        <Label Content="Circ +" HorizontalAlignment="Left" Margin="762,100,0,0" VerticalAlignment="Top" FontSize="12"/>
-        <TextBox HorizontalAlignment="Left" Margin="765,131,0,0" TextWrapping="Wrap" VerticalAlignment="Top" x:Name="CirclePlus" Style="{StaticResource NumberInputTextBox}"/>
-        <Label Content="Shell Description" HorizontalAlignment="Left" Margin="354,219,0,0" VerticalAlignment="Top" Width="131" FontSize="15"/>
-        <TextBox HorizontalAlignment="Left" Margin="490,219,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="800" TextAlignment="Left"/>
-        <Label Content="Wrap Speed Variables" HorizontalAlignment="Left" Margin="354,268,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.473,0.502" Width="172" FontSize="15"/>
-        <Label Content="Wrap Feedrate " HorizontalAlignment="Left" Margin="354,295,0,0" VerticalAlignment="Top" Width="119"/>
-        <TextBox HorizontalAlignment="Left" Margin="354,325,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Style="{StaticResource NumberInputTextBox}"/>
-        <TextBox HorizontalAlignment="Left" Margin="490,325,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Style="{StaticResource NumberInputTextBox}"/>
-        <TextBox HorizontalAlignment="Left" Margin="629,325,0,0" TextWrapping="Wrap" VerticalAlignment="Top" x:Name="OverWrapPcg" Style="{StaticResource NumberInputTextBox}"/>
-        <TextBox HorizontalAlignment="Left" Margin="765,325,0,0" TextWrapping="Wrap" VerticalAlignment="Top" x:Name="TotalLayers" Style="{StaticResource NumberInputTextBox}"/>
-        <Label Content="Burnish Feedrate" HorizontalAlignment="Left" Margin="487,295,0,0" VerticalAlignment="Top" FontSize="12"/>
-        <Label Content="Overwrap %" HorizontalAlignment="Left" Margin="626,295,0,0" VerticalAlignment="Top" FontSize="12"/>
-        <Label Content="Total Layers" HorizontalAlignment="Left" Margin="762,295,0,0" VerticalAlignment="Top" FontSize="12"/>
-        <TextBox HorizontalAlignment="Left" Margin="902,325,0,0" TextWrapping="Wrap" VerticalAlignment="Top" x:Name="WrapPerLayer" Style="{StaticResource NumberInputTextBox}"/>
-        <TextBox HorizontalAlignment="Left" Margin="1038,325,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Style="{StaticResource NumberInputTextBox}"/>
-        <Label Content="Wraps per layer" HorizontalAlignment="Left" Margin="899,295,0,0" VerticalAlignment="Top" FontSize="12"/>
-        <Label Content="Burnish Layers" HorizontalAlignment="Left" Margin="1035,295,0,0" VerticalAlignment="Top" FontSize="12"/>
-        <TextBox HorizontalAlignment="Left" Margin="1314,293,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Style="{StaticResource NumberInputTextBox}"/>
-        <Label Content="Burnish Ramp Steps " HorizontalAlignment="Left" Margin="1175,295,0,0" VerticalAlignment="Top" FontSize="12"/>
-        <Label Content="Machine G-Ccode Variables" HorizontalAlignment="Left" Margin="354,376,0,0" VerticalAlignment="Top" Width="172"/>
-        <Label Content="Startup Gcode " HorizontalAlignment="Left" Margin="353,407,0,0" VerticalAlignment="Top" Width="119"/>
-        <RichTextBox HorizontalAlignment="Left" Height="253" Margin="354,438,0,0" VerticalAlignment="Top" Width="256" Padding="5">
-            <FlowDocument>
-                <Paragraph>
-                    <Run Text=""/>
-                </Paragraph>
-            </FlowDocument>
-        </RichTextBox>
-        <Label Content="End of Main Wrap" HorizontalAlignment="Left" Margin="630,407,0,0" VerticalAlignment="Top" Width="119"/>
-        <Label Content="End of Complete Wrap&#xD;" HorizontalAlignment="Left" Margin="903,407,0,0" VerticalAlignment="Top" Width="182" Height="26"/>
-        <RichTextBox HorizontalAlignment="Left" Height="253" Margin="630,438,0,0" VerticalAlignment="Top" Width="256" Padding="5">
-            <FlowDocument>
-                <Paragraph>
-                    <Run Text=""/>
-                </Paragraph>
-            </FlowDocument>
-        </RichTextBox>
-        <RichTextBox HorizontalAlignment="Left" Height="253" Margin="903,438,0,0" VerticalAlignment="Top" Width="256" Padding="5">
-            <FlowDocument>
-                <Paragraph>
-                    <Run Text=""/>
-                </Paragraph>
-            </FlowDocument>
-        </RichTextBox>
-        <Label Content="Total Estimated Feet" HorizontalAlignment="Left" Margin="353,725,0,0" VerticalAlignment="Top" Width="119"/>
-        <TextBox HorizontalAlignment="Left" Margin="353,751,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Style="{StaticResource NumberInputTextBox}"/>
-        <Label Content="Pump on/off code" HorizontalAlignment="Left" Margin="814,734,0,0" VerticalAlignment="Top" Width="119"/>
-        <TextBox HorizontalAlignment="Left" Margin="814,760,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="70" Style="{StaticResource NumberInputTextBox}"/>
-        <TextBox HorizontalAlignment="Left" Margin="899,760,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="119" Style="{StaticResource NumberInputTextBox}"/>
-        <Label Content="Enable Pump" HorizontalAlignment="Left" Margin="1035,734,0,0" VerticalAlignment="Top" Width="119"/>
-        <TextBox HorizontalAlignment="Left" Margin="1035,760,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Style="{StaticResource NumberInputTextBox}"/>
-        <Label Content="Cycles per shell " HorizontalAlignment="Left" Margin="1175,734,0,0" VerticalAlignment="Top" Width="119"/>
-        <TextBox HorizontalAlignment="Left" Margin="1175,760,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Style="{StaticResource NumberInputTextBox}"/>
-        <Label Content="Duration" HorizontalAlignment="Left" Margin="1314,734,0,0" VerticalAlignment="Top" Width="119"/>
-        <TextBox HorizontalAlignment="Left" Margin="1314,760,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Style="{StaticResource NumberInputTextBox}"/>
-        <Label Content="Total Kick" HorizontalAlignment="Left" Margin="1031,100,0,0" VerticalAlignment="Top" FontSize="12"/>
-        <TextBox HorizontalAlignment="Left" Height="30" Margin="1034,131,0,0" TextWrapping="Wrap" VerticalAlignment="Top" x:Name="TotalKickPcg" Style="{StaticResource NumberInputTextBox}"/>
-        <Label Content="Kick ratio %&#xD;" HorizontalAlignment="Left" Margin="1167,100,0,0" VerticalAlignment="Top" FontSize="12" Width="106" Height="27"/>
-        <TextBox HorizontalAlignment="Left" Height="30" Margin="1170,131,0,0" TextWrapping="Wrap" VerticalAlignment="Top" x:Name="KickRatio" Style="{StaticResource NumberInputTextBox}"/>
-        <TextBox HorizontalAlignment="Left" Margin="1314,259,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Style="{StaticResource NumberInputTextBox}"/>
-        <Label Content="Burnish Start Speed " HorizontalAlignment="Left" Margin="1175,261,0,0" VerticalAlignment="Top" FontSize="12"/>
-        <TextBox HorizontalAlignment="Left" Margin="1315,327,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Style="{StaticResource NumberInputTextBox}"/>
-        <Label Content="Burnish Final Speed" HorizontalAlignment="Left" Margin="1176,329,0,0" VerticalAlignment="Top" FontSize="12"/>
 
+    <Grid Margin="15">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="1*"/>
+            <ColumnDefinition Width="4*"/>
+        </Grid.ColumnDefinitions>
+
+        <!-- Title -->
+        <TextBlock Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" 
+                   Text="Spyder Wrap Pattern Generator" 
+                   FontSize="18" FontWeight="SemiBold" 
+                   Margin="0,0,0,20"/>
+
+        <!-- Left Side Buttons and Pattern Name -->
+        <StackPanel Grid.Row="1" Grid.Column="0" Grid.RowSpan="5">
+            <Button Content="Load Pattern" Margin="0,30,0,10"/>
+            <Button Content="Save Pattern" Margin="0,0,0,10" />
+            <Button Content="Save As New" Margin="0,0,0,20" />
+
+            <TextBlock Text="Pattern Name" Margin="0,0,0,5" Style="{StaticResource SubTitle}"/>
+            <TextBox Margin="0,0,0,20" TextAlignment="Left"/>
+
+            <TextBlock Text="Gcode Output" Margin="0,0,0,5" />
+            <TextBox Height="450" TextWrapping="Wrap" AcceptsReturn="True" TextAlignment="Left"
+                     VerticalScrollBarVisibility="Auto"/>
+        </StackPanel>
+
+        <!-- Shell Size Variables Section -->
+        <StackPanel Grid.Row="1" Grid.Column="1" Margin="50,0,0,0"> 
+            <StackPanel>
+                <TextBlock Text="Shell Size Variables" Margin="0,0,0,10" Style="{StaticResource SubTitle}"/>
+
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+
+                    <TextBlock Grid.Row="0" Grid.Column="0" Text="Shell Size" Margin="0,0,10,5"/>
+                    <TextBox Grid.Row="1" Grid.Column="0" Margin="0,0,10,15" Style="{StaticResource NumberInputTextBox}"/>
+
+                    <TextBlock Grid.Row="0" Grid.Column="1" Text="Measured size" Margin="0,0,10,5"/>
+                    <TextBox Grid.Row="1" Grid.Column="1" Margin="0,0,10,15" Style="{StaticResource NumberInputTextBox}"/>
+
+                    <TextBlock Grid.Row="0" Grid.Column="2" Text="Diameter %" Margin="0,0,10,5"/>
+                    <TextBox Grid.Row="1" Grid.Column="2" Margin="0,0,10,15" Style="{StaticResource NumberInputTextBox}"/>
+
+                    <TextBlock Grid.Row="0" Grid.Column="3" Text="Circ +" Margin="0,0,10,5"/>
+                    <TextBox Grid.Row="1" Grid.Column="3" Margin="0,0,10,15" Style="{StaticResource NumberInputTextBox}"/>
+
+                    <TextBlock Grid.Row="0" Grid.Column="5" Text="Total Kick" Margin="0,0,10,5"/>
+                    <TextBox Grid.Row="1" Grid.Column="5" Margin="0,0,10,15" Style="{StaticResource NumberInputTextBox}"/>
+
+                    <TextBlock Grid.Row="0" Grid.Column="6" Text="Kick ratio %" Margin="0,0,10,5"/>
+                    <TextBox Grid.Row="1" Grid.Column="6" Margin="0,0,10,15" Style="{StaticResource NumberInputTextBox}"/>
+                </Grid>
+            </StackPanel>
+
+            <!-- Shell Description -->
+            <StackPanel Grid.Row="2" Grid.Column="1" Margin="0,63,0,0">
+                <TextBlock Text="Shell Description" Margin="0,0,0,5" Style="{StaticResource SubTitle}"/>
+                <TextBox Margin="0,0,0,15" TextAlignment="Left"/>
+            </StackPanel>
+
+            <!-- Wrap Speed Variables Section -->
+            <StackPanel Margin="0,25,0,0">
+
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+
+                    <TextBlock Text="Wrap Speed Variables" Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="6" Margin="0,0,0,10" Style="{StaticResource SubTitle}"/>
+                    <TextBlock Grid.Row="1" Grid.Column="0" Text="Wrap Feedrate" Margin="0,0,10,5"/>
+                    <TextBox Grid.Row="2" Grid.Column="0" Margin="0,0,10,15" Style="{StaticResource NumberInputTextBox}"/>
+
+                    <TextBlock Grid.Row="1" Grid.Column="1" Text="Burnish Feedrate" Margin="0,0,10,5"/>
+                    <TextBox Grid.Row="2" Grid.Column="1" Margin="0,0,10,15" Style="{StaticResource NumberInputTextBox}"/>
+
+                    <TextBlock Grid.Row="1" Grid.Column="2" Text="Overwrap %" Margin="0,0,10,5"/>
+                    <TextBox Grid.Row="2" Grid.Column="2" Margin="0,0,10,15" Style="{StaticResource NumberInputTextBox}"/>
+
+                    <TextBlock Grid.Row="1" Grid.Column="3" Text="Total Layers" Margin="0,0,10,5"/>
+                    <TextBox Grid.Row="2" Grid.Column="3" Margin="0,0,10,15" Style="{StaticResource NumberInputTextBox}"/>
+
+                    <TextBlock Grid.Row="1" Grid.Column="4" Text="Wraps per layer" Margin="0,0,10,5"/>
+                    <TextBox Grid.Row="2" Grid.Column="4" Margin="0,0,10,15" Style="{StaticResource NumberInputTextBox}"/>
+
+                    <TextBlock Grid.Row="1" Grid.Column="5" Text="Burnish Layers" Margin="0,0,10,5"/>
+                    <TextBox Grid.Row="2" Grid.Column="5" Margin="0,0,10,15" Style="{StaticResource NumberInputTextBox}"/>
+
+                    <TextBlock Grid.Row="0" Grid.Column="6" Text="Burnish Start Speed" Margin="0,0,10,5"/>
+                    <TextBox Grid.Row="0" Grid.Column="7 " Margin="0,0,10,15" Style="{StaticResource NumberInputTextBox}"/>
+
+                    <TextBlock Grid.Row="1" Grid.Column="6" Text="Burnish Ramp Steps" Margin="0,0,10,5"/>
+                    <TextBox Grid.Row="1" Grid.Column="7" Margin="0,0,10,15" Style="{StaticResource NumberInputTextBox}"/>
+
+                    <TextBlock Grid.Row="2" Grid.Column="6" Text="Burnish Final Speed" Margin="0,0,10,5"/>
+                    <TextBox Grid.Row="2" Grid.Column="7" Margin="0,0,10,15" Style="{StaticResource NumberInputTextBox}"/>
+                </Grid>
+            </StackPanel>
+
+            <!-- Machine G-Code Variables Section -->
+            <StackPanel Margin="0,10,0,0">
+                <TextBlock Text="Machine G-Code Variables" Margin="0,0,0,10" Style="{StaticResource SubTitle}"/>
+
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+
+                    <TextBlock Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" Text="Startup Gcode" Margin="0,0,10,5"/>
+                    <TextBox Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Height="200" Margin="0,0,10,15" TextAlignment="Left"
+                             TextWrapping="Wrap" AcceptsReturn="True" VerticalScrollBarVisibility="Auto"/>
+
+                    <TextBlock Grid.Row="0" Grid.Column="2" Grid.ColumnSpan="2" Text="End of Main Wrap" Margin="0,0,10,5"/>
+                    <TextBox Grid.Row="1" Grid.Column="2" Grid.ColumnSpan="2" Height="200" Margin="0,0,10,15" TextAlignment="Left"
+                             TextWrapping="Wrap" AcceptsReturn="True" VerticalScrollBarVisibility="Auto"/>
+
+                    <TextBlock Grid.Row="0" Grid.Column="4" Grid.ColumnSpan="2" Text="End of Complete Wrap" Margin="0,0,10,5"/>
+                    <TextBox Grid.Row="1" Grid.Column="4" Grid.ColumnSpan="2" Height="200" Margin="0,0,10,15" TextAlignment="Left"
+                             TextWrapping="Wrap" AcceptsReturn="True" VerticalScrollBarVisibility="Auto"/>
+                </Grid>
+            </StackPanel>
+
+            <!-- Bottom Section -->
+            <StackPanel Grid.Row="5" Grid.Column="1" Margin="0,10,0,0">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+
+                    <TextBlock Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" Text="Total Estimated Feet" Margin="0,0,10,5"/>
+                    <TextBox Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Margin="0,0,10,15" Style="{StaticResource NumberInputTextBox}"/>
+
+                    <TextBlock Grid.Row="0" Grid.Column="3" Grid.ColumnSpan="2" Text="Pump on/off code" Margin="0,0,10,5"/>
+                    <TextBox Grid.Row="1" Grid.Column="3" Margin="0,0,10,15" Style="{StaticResource NumberInputTextBox}"/>
+                    <TextBox Grid.Row="1" Grid.Column="4" Margin="0,0,10,15" Style="{StaticResource NumberInputTextBox}"/>
+
+                    <TextBlock Grid.Row="0" Grid.Column="5" Text="Enable Pump" Margin="0,0,10,5"/>
+                    <TextBox Grid.Row="1" Grid.Column="5" Margin="0,0,10,15" Style="{StaticResource NumberInputTextBox}"/>
+
+                    <TextBlock Grid.Row="0" Grid.Column="6" Grid.ColumnSpan="2" Text="Cycles per shell" Margin="0,0,10,5"/>
+                    <TextBox Grid.Row="1" Grid.Column="6" Grid.ColumnSpan="2" Margin="0,0,10,15" Style="{StaticResource NumberInputTextBox}"/>
+
+                    <TextBlock Grid.Row="0" Grid.Column="8" Text="Duration" Margin="0,0,10,5"/>
+                    <TextBox Grid.Row="1" Grid.Column="8" Margin="0,0,10,15" Style="{StaticResource NumberInputTextBox}"/>
+                </Grid>
+            </StackPanel>
+        </StackPanel> 
     </Grid>
+
 </Window>
