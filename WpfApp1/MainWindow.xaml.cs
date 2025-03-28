@@ -36,17 +36,52 @@ namespace WpfApp1
 
         private void BtnSave_Click(object sender, RoutedEventArgs e)
         {
-   //         MessageBox.Show($"Save Button Clicked! {Generate_GCode()[2]} dfadfd", "Message Box Title", MessageBoxButton.OK, MessageBoxImage.Information);
+            //         MessageBox.Show($"Save Button Clicked! {Generate_GCode()[2]} dfadfd", "Message Box Title", MessageBoxButton.OK, MessageBoxImage.Information);
+
+
+
+
+
             TxtGcodeOutput.Text = "";
             string[] GCode = Generate_GCode();
+
+
+
+            string[] Pump = new string[GCode.Length];
+            string PumpOnCode = StrPumpOnCode.Text;
+            string PumpOffCode = StrPumpOffCode.Text;
+            int CycPerShell = int.Parse(NumCyclesPerShell.Text);
+            int Duration = int.Parse(NumDuration.Text);
+
+            if (Pump.Length > CycPerShell * Duration)
+            {
+                int StartPos = Pump.Length / CycPerShell;
+                for (int i = 0; i * StartPos < Pump.Length; i++)
+                {
+                    Pump[i * StartPos] = PumpOnCode;
+                    Pump[i * StartPos + Duration - 1] = PumpOffCode;
+                }
+            }
+            else
+            {
+                for (int i = 0; i < Pump.Length; i += Duration)
+                {
+                    Pump[i] = PumpOnCode;
+                    if (i + Duration - 1 >= Pump.Length)
+                        Pump[Pump.Length - 1] = PumpOffCode;
+                    else
+                        Pump[i + Duration - 1] = PumpOffCode;
+                }
+            }
+
             // Add Main part of GCode
             TxtGcodeOutput.Text = "%Startup_GCODE%\n" + TxtStartGcode.Text + "\n";
             for (int i = 0; i < GCode.Length; i ++)
             {
                 if (i == 0)
-                    TxtGcodeOutput.Text = TxtGcodeOutput.Text + GCode[i] + "\t\tF" + NumWrapFeedRate.Text + "\n";
+                    TxtGcodeOutput.Text = TxtGcodeOutput.Text + GCode[i] + "\t\tF" + NumWrapFeedRate.Text + "\t\t" + Pump[i] + "\n";
                 else
-                    TxtGcodeOutput.Text = TxtGcodeOutput.Text + GCode[i] + "\n";
+                    TxtGcodeOutput.Text = TxtGcodeOutput.Text + GCode[i] + "\t\t" + Pump[i] + "\n";
             }
             TxtGcodeOutput.Text = TxtGcodeOutput.Text + "%End_of_main_WrapGCODE%\n" + TxtEndMWrap.Text + "\n";
 
