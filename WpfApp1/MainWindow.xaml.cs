@@ -31,15 +31,31 @@ namespace WpfApp1
 
         private void BtnLoad_Click(object sender, RoutedEventArgs e)
         {
-            MessageBox.Show("This is a message box!", "Message Box Title", MessageBoxButton.OK, MessageBoxImage.Information);
+            CheckInputValidation(NumShellSize); 
         }
 
         private void BtnSave_Click(object sender, RoutedEventArgs e)
         {
-      //      Generate_GCode();
+   //         MessageBox.Show($"Save Button Clicked! {Generate_GCode()[2]} dfadfd", "Message Box Title", MessageBoxButton.OK, MessageBoxImage.Information);
+            TxtGcodeOutput.Text = "";
+            string[] GCode = Generate_GCode();
+            // Add Main part of GCode
+            TxtGcodeOutput.Text = "%Startup_GCODE%\n" + TxtStartGcode.Text + "\n";
+            for (int i = 0; i < GCode.Length; i ++)
+            {
+    //            if (i == 0)
+     //               TxtGcodeOutput.Text = TxtGcodeOutput.Text + GCode[i] + "\t\tF" + NumWrapFeedRate.Text + "\n";
+     //           else
+                    TxtGcodeOutput.Text = TxtGcodeOutput.Text + GCode[i] + "\n";
+            }
+            TxtGcodeOutput.Text = TxtGcodeOutput.Text + "%End_of_main_WrapGCODE%\n" + TxtEndMWrap.Text + "\n";
 
-            MessageBox.Show($"Save Button Clicked! {Generate_GCode()[2]} dfadfd", "Message Box Title", MessageBoxButton.OK, MessageBoxImage.Information);
+            // Add Completed GCode
+            TxtGcodeOutput.Text = TxtGcodeOutput.Text + @"\\Burnish Selection";
 
+            // Here implement completed GCode
+
+            TxtGcodeOutput.Text = TxtGcodeOutput.Text + "\n" + "%End_of_Completed_Wrap%" + "\n" + TxtEndCWrap.Text;
         }
 
         private void BtnSaveNew_Click(object sender, RoutedEventArgs e)
@@ -111,19 +127,25 @@ namespace WpfApp1
 
             int LayerCounter = 0;
             int WrapCounter = 1;
+            int RowCounter = 0;
 
             double WrapXAxisTravel, WrapYAxisTravel, KickXAxisTravel, KickYAxisTravel;
-            string[] mainWrapGCode = new string[TotalLayers * WrapPerLayer * 2];
+            string[] mainWrapGCode = new string[(TotalLayers + 1) * WrapPerLayer * 2];
+           
+            WrapXAxisTravel = XAxisCircle + CirclePlus;
+            WrapYAxisTravel = YAxisCircle + CirclePlus;
 
             while (LayerCounter <= TotalLayers)
             {
                 while (WrapCounter <= WrapPerLayer)
                 {
-                    WrapXAxisTravel = XAxisCircle + CirclePlus;
-                    WrapYAxisTravel = YAxisCircle + CirclePlus;
 
-                    mainWrapGCode[WrapPerLayer * LayerCounter + WrapCounter] = $"X{WrapXAxisTravel:F3}Y{WrapYAxisTravel:F3}";
-                    WrapCounter++;
+                    mainWrapGCode[RowCounter] = $"X{WrapXAxisTravel:F3}Y{WrapYAxisTravel:F3}";
+
+                    double VarA = XAxisCircle + CirclePlus;
+                    double VarB = YAxisCircle + CirclePlus;
+
+                    RowCounter++;
 
                     if (WrapCounter == WrapPerLayer)
                     {
@@ -136,11 +158,15 @@ namespace WpfApp1
                         KickYAxisTravel = WrapYAxisTravel + YOffSet;
                     }
 
-                    mainWrapGCode[WrapPerLayer * LayerCounter + WrapCounter] = $"X{KickXAxisTravel:F3}Y{KickYAxisTravel:F3}";
+                    mainWrapGCode[RowCounter] = $"X{KickXAxisTravel:F3}Y{KickYAxisTravel:F3}";
 
-                    WrapXAxisTravel = KickXAxisTravel + XAxisCircle + CirclePlus;
-                    WrapYAxisTravel = KickYAxisTravel + YAxisCircle + CirclePlus;
+                    VarA += CirclePlus;
+                    VarB += CirclePlus;
 
+                    WrapXAxisTravel = KickXAxisTravel + VarA + CirclePlus;
+                    WrapYAxisTravel = KickYAxisTravel + VarA + CirclePlus;
+
+                    RowCounter++;
                     WrapCounter++;
                 }
                 WrapCounter = 1;
@@ -150,6 +176,35 @@ namespace WpfApp1
             return mainWrapGCode;
         }
         
+        private void CheckInputValidation(TextBox textbox)
+        {
+            if (string.IsNullOrWhiteSpace(textbox.Text))
+            {
+                if (textbox.Parent is Border border)
+                    border.BorderBrush = Brushes.Red;
+            }
+            else
+            {
+                if (textbox.Parent is Border border)
+                    border.BorderBrush = Brushes.Transparent;
+            }
+        }
+
+        private void Pump_Enabled(object sender, RoutedEventArgs e)
+        {
+            StrPumpOnCode.IsEnabled = true;
+            StrPumpOffCode.IsEnabled = true;
+            NumCyclesPerShell.IsEnabled = true;
+            NumDuration.IsEnabled = true;
+        }
+
+        private void Pump_Disabled(object sender, RoutedEventArgs e)
+        {
+            StrPumpOnCode.IsEnabled = false;
+            StrPumpOffCode.IsEnabled = false;
+            NumCyclesPerShell.IsEnabled = false;
+            NumDuration.IsEnabled = false;
+        }
     }
 }
 

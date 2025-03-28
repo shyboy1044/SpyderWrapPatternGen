@@ -7,7 +7,7 @@
         mc:Ignorable="d"
         WindowStartupLocation="CenterScreen"
         Title="MainWindow" Height="870.065" Width="1493.445">
-   
+
     <Window.Resources>
 
         <Style TargetType="TextBox" x:Key="NumberInputTextBox">
@@ -16,7 +16,7 @@
             <Setter Property="Padding" Value="5"/>
             <EventSetter Event="PreviewTextInput" Handler="NumberOnlyTextBox_PreviewTextInput"/>
         </Style>
-        
+
         <Style TargetType="TextBox">
             <Setter Property="Height" Value="30"/>
             <Setter Property="TextAlignment" Value="Right"/>
@@ -71,12 +71,12 @@
             <TextBox x:Name="StrPatternName" Margin="0,0,0,20" TextAlignment="Left"/>
 
             <TextBlock Text="Gcode Output" Margin="0,0,0,5" />
-            <TextBox Height="450" TextWrapping="Wrap" AcceptsReturn="True" TextAlignment="Left"
+            <TextBox x:Name="TxtGcodeOutput" Height="450" TextWrapping="Wrap" AcceptsReturn="True" TextAlignment="Left"
                      VerticalScrollBarVisibility="Auto"/>
         </StackPanel>
 
         <!-- Shell Size Variables Section -->
-        <StackPanel Grid.Row="1" Grid.Column="1" Margin="50,0,0,0"> 
+        <StackPanel Grid.Row="1" Grid.Column="1" Margin="50,0,0,0">
             <StackPanel>
                 <TextBlock Text="Shell Size Variables" Margin="0,0,0,10" Style="{StaticResource SubTitle}"/>
 
@@ -98,7 +98,9 @@
                     </Grid.RowDefinitions>
 
                     <TextBlock Grid.Row="0" Grid.Column="0" Text="Shell Size" Margin="0,0,10,5"/>
-                    <TextBox x:Name="NumShellSize" Grid.Row="1" Grid.Column="0" Margin="0,0,10,15" Style="{StaticResource NumberInputTextBox}"/>
+                    <Border x:Name="SizedBorder" Grid.Row="1" Grid.Column="0" BorderThickness="1" Margin="0,0,10,15">
+                        <TextBox x:Name="NumShellSize" Style="{StaticResource NumberInputTextBox}"/>
+                    </Border>
 
                     <TextBlock Grid.Row="0" Grid.Column="1" Text="Measured size" Margin="0,0,10,5"/>
                     <TextBox x:Name="NumMeasuredSize" Grid.Row="1" Grid.Column="1" Margin="0,0,10,15" Style="{StaticResource NumberInputTextBox}"/>
@@ -196,15 +198,15 @@
                     </Grid.RowDefinitions>
 
                     <TextBlock Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" Text="Startup Gcode" Margin="0,0,10,5"/>
-                    <TextBox Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Height="200" Margin="0,0,10,15" TextAlignment="Left"
+                    <TextBox x:Name="TxtStartGcode" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Height="200" Margin="0,0,10,15" TextAlignment="Left"
                              TextWrapping="Wrap" AcceptsReturn="True" VerticalScrollBarVisibility="Auto"/>
 
                     <TextBlock Grid.Row="0" Grid.Column="2" Grid.ColumnSpan="2" Text="End of Main Wrap" Margin="0,0,10,5"/>
-                    <TextBox Grid.Row="1" Grid.Column="2" Grid.ColumnSpan="2" Height="200" Margin="0,0,10,15" TextAlignment="Left"
+                    <TextBox x:Name="TxtEndMWrap" Grid.Row="1" Grid.Column="2" Grid.ColumnSpan="2" Height="200" Margin="0,0,10,15" TextAlignment="Left"
                              TextWrapping="Wrap" AcceptsReturn="True" VerticalScrollBarVisibility="Auto"/>
 
                     <TextBlock Grid.Row="0" Grid.Column="4" Grid.ColumnSpan="2" Text="End of Complete Wrap" Margin="0,0,10,5"/>
-                    <TextBox Grid.Row="1" Grid.Column="4" Grid.ColumnSpan="2" Height="200" Margin="0,0,10,15" TextAlignment="Left"
+                    <TextBox x:Name="TxtEndCWrap" Grid.Row="1" Grid.Column="4" Grid.ColumnSpan="2" Height="200" Margin="0,0,10,15" TextAlignment="Left"
                              TextWrapping="Wrap" AcceptsReturn="True" VerticalScrollBarVisibility="Auto"/>
                 </Grid>
             </StackPanel>
@@ -231,21 +233,22 @@
                     <TextBlock Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" Text="Total Estimated Feet" Margin="0,0,10,5"/>
                     <TextBox x:Name="NumTotalEstFeet" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Margin="0,0,10,15" Style="{StaticResource NumberInputTextBox}"/>
 
-                    <TextBlock Grid.Row="0" Grid.Column="3" Grid.ColumnSpan="2" Text="Pump on/off code" Margin="0,0,10,5"/>
-                    <TextBox x:Name="StrPumpOnCode" Grid.Row="1" Grid.Column="3" Margin="0,0,10,15" Style="{StaticResource NumberInputTextBox}"/>
-                    <TextBox x:Name="StrPumpOffCode" Grid.Row="1" Grid.Column="4" Margin="0,0,10,15" Style="{StaticResource NumberInputTextBox}"/>
+                    <TextBlock Grid.Row="0" Grid.Column="4" Grid.ColumnSpan="1" Text="Pump on/off code" Margin="0,0,10,5"/>
+                    <TextBox x:Name="StrPumpOnCode" Grid.Row="1" Grid.Column="4" Margin="0,0,10,15"/>
+                    <TextBox x:Name="StrPumpOffCode" Grid.Row="1" Grid.Column="5" Margin="0,0,10,15"/>
 
-                    <TextBlock Grid.Row="0" Grid.Column="5" Text="Enable Pump" Margin="0,0,10,5"/>
-                    <TextBox x:Name="StrEnablePump" Grid.Row="1" Grid.Column="5" Margin="0,0,10,15" Style="{StaticResource NumberInputTextBox}"/>
+   <!--                 <TextBlock Grid.Row="0" Grid.Column="3" Text="Enable Pump" Margin="0,0,10,5"/> -->
 
                     <TextBlock Grid.Row="0" Grid.Column="6" Grid.ColumnSpan="2" Text="Cycles per shell" Margin="0,0,10,5"/>
                     <TextBox x:Name="NumCyclesPerShell" Grid.Row="1" Grid.Column="6" Grid.ColumnSpan="2" Margin="0,0,10,15" Style="{StaticResource NumberInputTextBox}"/>
 
                     <TextBlock Grid.Row="0" Grid.Column="8" Text="Duration" Margin="0,0,10,5"/>
                     <TextBox x:Name="NumDuration" Grid.Row="1" Grid.Column="8" Margin="0,0,10,15" Style="{StaticResource NumberInputTextBox}"/>
+                    <CheckBox Content="EmablePump" Grid.Column="3" HorizontalAlignment="Left" Margin="1,10,0,0" Grid.Row="1" VerticalAlignment="Top" Checked="Pump_Enabled"
+                              Unchecked="Pump_Disabled" x:Name="pumpState" Width="113"/>
                 </Grid>
             </StackPanel>
-        </StackPanel> 
+        </StackPanel>
     </Grid>
 
 </Window>
