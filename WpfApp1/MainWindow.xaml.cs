@@ -43,9 +43,9 @@ namespace WpfApp1
             TxtGcodeOutput.Text = "%Startup_GCODE%\n" + TxtStartGcode.Text + "\n";
             for (int i = 0; i < GCode.Length; i ++)
             {
-    //            if (i == 0)
-     //               TxtGcodeOutput.Text = TxtGcodeOutput.Text + GCode[i] + "\t\tF" + NumWrapFeedRate.Text + "\n";
-     //           else
+                if (i == 0)
+                    TxtGcodeOutput.Text = TxtGcodeOutput.Text + GCode[i] + "\t\tF" + NumWrapFeedRate.Text + "\n";
+                else
                     TxtGcodeOutput.Text = TxtGcodeOutput.Text + GCode[i] + "\n";
             }
             TxtGcodeOutput.Text = TxtGcodeOutput.Text + "%End_of_main_WrapGCODE%\n" + TxtEndMWrap.Text + "\n";
