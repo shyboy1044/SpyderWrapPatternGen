@@ -27,6 +27,10 @@ namespace WpfApp1
         public MainWindow()
         {
             InitializeComponent();
+            StrPumpOffCode.IsEnabled = false;
+            StrPumpOnCode.IsEnabled = false;
+            NumCyclesPerShell.IsEnabled = false;
+            NumDuration.IsEnabled = false;
         }
 
         private void BtnLoad_Click(object sender, RoutedEventArgs e)
@@ -36,52 +40,37 @@ namespace WpfApp1
 
         private void BtnSave_Click(object sender, RoutedEventArgs e)
         {
-            //         MessageBox.Show($"Save Button Clicked! {Generate_GCode()[2]} dfadfd", "Message Box Title", MessageBoxButton.OK, MessageBoxImage.Information);
 
+            if (CheckParameterValidation() == false)
+            {
+                MessageBox.Show("Enter All Parameters", "Info", MessageBoxButton.OK, MessageBoxImage.Information);
+                return;
+            }
 
-
-
+            if (string.IsNullOrWhiteSpace(StrPatternName.Text))
+            {
+                MessageBox.Show("Enter File Name", "Info", MessageBoxButton.OK, MessageBoxImage.Information);
+                return;
+            }
 
             TxtGcodeOutput.Text = "";
             string[] GCode = Generate_GCode();
 
-
-
-            string[] Pump = new string[GCode.Length];
-            string PumpOnCode = StrPumpOnCode.Text;
-            string PumpOffCode = StrPumpOffCode.Text;
-            int CycPerShell = int.Parse(NumCyclesPerShell.Text);
-            int Duration = int.Parse(NumDuration.Text);
-
-            if (Pump.Length > CycPerShell * Duration)
+            if (ValidatePumpCodeParameter() == false)
             {
-                int StartPos = Pump.Length / CycPerShell;
-                for (int i = 0; i * StartPos < Pump.Length; i++)
-                {
-                    Pump[i * StartPos] = PumpOnCode;
-                    Pump[i * StartPos + Duration - 1] = PumpOffCode;
-                }
+                MessageBox.Show("Enter All Pump Parameters", "Info", MessageBoxButton.OK, MessageBoxImage.Information);
+                return;
             }
-            else
-            {
-                for (int i = 0; i < Pump.Length; i += Duration)
-                {
-                    Pump[i] = PumpOnCode;
-                    if (i + Duration - 1 >= Pump.Length)
-                        Pump[Pump.Length - 1] = PumpOffCode;
-                    else
-                        Pump[i + Duration - 1] = PumpOffCode;
-                }
-            }
-
+            string[] pumpCode = GetPumpCode(GCode.Length);
+            
             // Add Main part of GCode
             TxtGcodeOutput.Text = "%Startup_GCODE%\n" + TxtStartGcode.Text + "\n";
             for (int i = 0; i < GCode.Length; i ++)
             {
                 if (i == 0)
-                    TxtGcodeOutput.Text = TxtGcodeOutput.Text + GCode[i] + "\t\tF" + NumWrapFeedRate.Text + "\t\t" + Pump[i] + "\n";
+                    TxtGcodeOutput.Text = TxtGcodeOutput.Text + GCode[i] + "\t\tF" + NumWrapFeedRate.Text + " " + pumpCode[i] + "\n";
                 else
-                    TxtGcodeOutput.Text = TxtGcodeOutput.Text + GCode[i] + "\t\t" + Pump[i] + "\n";
+                    TxtGcodeOutput.Text = TxtGcodeOutput.Text + GCode[i] + "\t\t" + pumpCode[i] + "\n";
             }
             TxtGcodeOutput.Text = TxtGcodeOutput.Text + "%End_of_main_WrapGCODE%\n" + TxtEndMWrap.Text + "\n";
 
@@ -100,7 +89,7 @@ namespace WpfApp1
 
         // Allow numbers and only one demical point
         private void NumberOnlyTextBox_PreviewTextInput(object sender, TextCompositionEventArgs e)
-        {
+            {
             TextBox textBox = sender as TextBox;
             string fullText = textBox.Text.Insert(textBox.SelectionStart, e.Text);
 
@@ -130,7 +119,7 @@ namespace WpfApp1
         private string[] Generate_GCode()
         {
             
-            int DDiameter = int.Parse(NumMeasuredSize.Text);
+            float DDiameter = float.Parse(NumMeasuredSize.Text);
             float DDiameterPcg = float.Parse(NumDiameterPcg.Text)/100;
             float CirclePlus = float.Parse(NumCircPlus.Text);
 
@@ -140,18 +129,7 @@ namespace WpfApp1
             float OverWrapPcg = float.Parse(NumOverWrapPcg.Text)/100;
             int WrapPerLayer = int.Parse(NumWrapsPerLayer.Text);
             int TotalLayers = int.Parse(NumTotalLayers.Text);
-            /*    
-                int DDiameter = 6;
-                float DDiameterPcg = 0.91f;
-                float CirclePlus = 0.03f;
 
-                float TotalKickPcg = 0.12f;
-                float KickRatio = 0.3f;
-
-                float OverWrapPcg = 100;
-                int WrapPerLayer = 5;
-                int TotalLayers = 8;
-              */
               // Ask client About this value!
             float YAxisPcg = 0.98f;
 
@@ -239,6 +217,75 @@ namespace WpfApp1
             StrPumpOffCode.IsEnabled = false;
             NumCyclesPerShell.IsEnabled = false;
             NumDuration.IsEnabled = false;
+        }
+
+        private bool CheckParameterValidation()
+        {
+            if (!string.IsNullOrWhiteSpace(NumMeasuredSize.Text) )
+                if (!string.IsNullOrWhiteSpace(NumDiameterPcg.Text))
+                    if (!string.IsNullOrWhiteSpace(NumCircPlus.Text))
+                        if (!string.IsNullOrWhiteSpace(NumTotalKick.Text))
+                            if (!string.IsNullOrWhiteSpace(NumKickRatioPcg.Text))
+                                if (!string.IsNullOrWhiteSpace(NumWrapFeedRate.Text))
+                                    if (!string.IsNullOrWhiteSpace(NumOverWrapPcg.Text))
+                                        if (!string.IsNullOrWhiteSpace(NumTotalLayers.Text))
+                                            if (!string.IsNullOrWhiteSpace(NumWrapsPerLayer.Text))
+                                                if (!string.IsNullOrWhiteSpace(TxtStartGcode.Text))
+                                                    if (!string.IsNullOrWhiteSpace(TxtEndMWrap.Text))
+                                                        if (!string.IsNullOrWhiteSpace(TxtEndCWrap.Text))
+                                                            return true;
+            return false;
+        }
+
+        private string[] GetPumpCode(int codeLength)
+        {
+            string[] Pump = new string[codeLength];
+            if (pumpState.IsChecked == true)
+            {
+                string PumpOnCode = StrPumpOnCode.Text;
+                string PumpOffCode = StrPumpOffCode.Text;
+                int CycPerShell = int.Parse(NumCyclesPerShell.Text);
+                int Duration = int.Parse(NumDuration.Text);
+
+                if (Pump.Length > CycPerShell * Duration)
+                {
+                    int StartPos = Pump.Length / CycPerShell;
+                    for (int i = 0; i * StartPos < Pump.Length; i++)
+                    {
+                        Pump[i * StartPos] = PumpOnCode;
+                        Pump[i * StartPos + Duration - 1] = PumpOffCode;
+                    }
+                }
+                else
+                {
+                    for (int i = 0; i < Pump.Length; i += Duration)
+                    {
+                        Pump[i] = PumpOnCode;
+                        if (i + Duration - 1 >= Pump.Length)
+                            Pump[Pump.Length - 1] = PumpOffCode;
+                        else
+                            Pump[i + Duration - 1] = PumpOffCode;
+                    }
+                }
+            }
+            return Pump;
+        }
+
+        private bool ValidatePumpCodeParameter()
+        {
+            if (pumpState.IsChecked == true)    
+            {
+                string PumpOnCode = StrPumpOnCode.Text;
+                string PumpOffCode = StrPumpOffCode.Text;
+                string CycPerShell = NumCyclesPerShell.Text;
+                string Duration = NumDuration.Text;
+                if ((!string.IsNullOrWhiteSpace(PumpOnCode) && !string.IsNullOrWhiteSpace(PumpOffCode)
+                    && !string.IsNullOrWhiteSpace(CycPerShell) && !string.IsNullOrWhiteSpace(Duration)) == true)
+                    return true;
+                else
+                    return false;
+            }
+            return true;
         }
     }
 }
