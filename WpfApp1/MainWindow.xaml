@@ -7,7 +7,7 @@
         mc:Ignorable="d"
         WindowStartupLocation="CenterScreen"
         Title="MainWindow" Height="870.065" Width="1493.445">
-   
+
     <Window.Resources>
 
         <Style TargetType="TextBox" x:Key="NumberInputTextBox">
@@ -16,7 +16,7 @@
             <Setter Property="Padding" Value="5"/>
             <EventSetter Event="PreviewTextInput" Handler="NumberOnlyTextBox_PreviewTextInput"/>
         </Style>
-        
+
         <Style TargetType="TextBox">
             <Setter Property="Height" Value="30"/>
             <Setter Property="TextAlignment" Value="Right"/>
@@ -63,20 +63,20 @@
 
         <!-- Left Side Buttons and Pattern Name -->
         <StackPanel Grid.Row="1" Grid.Column="0" Grid.RowSpan="5">
-            <Button Content="Load Pattern" Margin="0,30,0,10"/>
-            <Button Content="Save Pattern" Margin="0,0,0,10" />
-            <Button Content="Save As New" Margin="0,0,0,20" />
+            <Button Content="Load Pattern" Margin="0,30,0,10" Click="BtnLoad_Click"/>
+            <Button Content="Save Pattern" Margin="0,0,0,10" Click="BtnSave_Click"/>
+            <Button Content="Save As New" Margin="0,0,0,20" Click="BtnSaveNew_Click"/>
 
             <TextBlock Text="Pattern Name" Margin="0,0,0,5" Style="{StaticResource SubTitle}"/>
-            <TextBox Margin="0,0,0,20" TextAlignment="Left"/>
+            <TextBox x:Name="StrPatternName" Margin="0,0,0,20" TextAlignment="Left"/>
 
             <TextBlock Text="Gcode Output" Margin="0,0,0,5" />
-            <TextBox Height="450" TextWrapping="Wrap" AcceptsReturn="True" TextAlignment="Left"
+            <TextBox x:Name="TxtGcodeOutput" Height="450" TextWrapping="Wrap" AcceptsReturn="True" TextAlignment="Left"
                      VerticalScrollBarVisibility="Auto"/>
         </StackPanel>
 
         <!-- Shell Size Variables Section -->
-        <StackPanel Grid.Row="1" Grid.Column="1" Margin="50,0,0,0"> 
+        <StackPanel Grid.Row="1" Grid.Column="1" Margin="50,0,0,0">
             <StackPanel>
                 <TextBlock Text="Shell Size Variables" Margin="0,0,0,10" Style="{StaticResource SubTitle}"/>
 
@@ -98,29 +98,31 @@
                     </Grid.RowDefinitions>
 
                     <TextBlock Grid.Row="0" Grid.Column="0" Text="Shell Size" Margin="0,0,10,5"/>
-                    <TextBox Grid.Row="1" Grid.Column="0" Margin="0,0,10,15" Style="{StaticResource NumberInputTextBox}"/>
+                    <Border x:Name="SizedBorder" Grid.Row="1" Grid.Column="0" BorderThickness="1" Margin="0,0,10,15">
+                        <TextBox x:Name="NumShellSize" Style="{StaticResource NumberInputTextBox}"/>
+                    </Border>
 
                     <TextBlock Grid.Row="0" Grid.Column="1" Text="Measured size" Margin="0,0,10,5"/>
-                    <TextBox Grid.Row="1" Grid.Column="1" Margin="0,0,10,15" Style="{StaticResource NumberInputTextBox}"/>
+                    <TextBox x:Name="NumMeasuredSize" Grid.Row="1" Grid.Column="1" Margin="0,0,10,15" Style="{StaticResource NumberInputTextBox}"/>
 
                     <TextBlock Grid.Row="0" Grid.Column="2" Text="Diameter %" Margin="0,0,10,5"/>
-                    <TextBox Grid.Row="1" Grid.Column="2" Margin="0,0,10,15" Style="{StaticResource NumberInputTextBox}"/>
+                    <TextBox x:Name="NumDiameterPcg" Grid.Row="1" Grid.Column="2" Margin="0,0,10,15" Style="{StaticResource NumberInputTextBox}"/>
 
                     <TextBlock Grid.Row="0" Grid.Column="3" Text="Circ +" Margin="0,0,10,5"/>
-                    <TextBox Grid.Row="1" Grid.Column="3" Margin="0,0,10,15" Style="{StaticResource NumberInputTextBox}"/>
+                    <TextBox x:Name="NumCircPlus" Grid.Row="1" Grid.Column="3" Margin="0,0,10,15" Style="{StaticResource NumberInputTextBox}"/>
 
                     <TextBlock Grid.Row="0" Grid.Column="5" Text="Total Kick" Margin="0,0,10,5"/>
-                    <TextBox Grid.Row="1" Grid.Column="5" Margin="0,0,10,15" Style="{StaticResource NumberInputTextBox}"/>
+                    <TextBox x:Name="NumTotalKick" Grid.Row="1" Grid.Column="5" Margin="0,0,10,15" Style="{StaticResource NumberInputTextBox}"/>
 
                     <TextBlock Grid.Row="0" Grid.Column="6" Text="Kick ratio %" Margin="0,0,10,5"/>
-                    <TextBox Grid.Row="1" Grid.Column="6" Margin="0,0,10,15" Style="{StaticResource NumberInputTextBox}"/>
+                    <TextBox x:Name="NumKickRatioPcg" Grid.Row="1" Grid.Column="6" Margin="0,0,10,15" Style="{StaticResource NumberInputTextBox}"/>
                 </Grid>
             </StackPanel>
 
             <!-- Shell Description -->
             <StackPanel Grid.Row="2" Grid.Column="1" Margin="0,63,0,0">
                 <TextBlock Text="Shell Description" Margin="0,0,0,5" Style="{StaticResource SubTitle}"/>
-                <TextBox Margin="0,0,0,15" TextAlignment="Left"/>
+                <TextBox x:Name="StrShellDescription" Margin="0,0,0,16" TextAlignment="Left"/>
             </StackPanel>
 
             <!-- Wrap Speed Variables Section -->
@@ -146,31 +148,26 @@
 
                     <TextBlock Text="Wrap Speed Variables" Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="6" Margin="0,0,0,10" Style="{StaticResource SubTitle}"/>
                     <TextBlock Grid.Row="1" Grid.Column="0" Text="Wrap Feedrate" Margin="0,0,10,5"/>
-                    <TextBox Grid.Row="2" Grid.Column="0" Margin="0,0,10,15" Style="{StaticResource NumberInputTextBox}"/>
+                    <TextBox x:Name="NumWrapFeedRate" Grid.Row="2" Grid.Column="0" Margin="0,0,10,15" Style="{StaticResource NumberInputTextBox}"/>
 
-                    <TextBlock Grid.Row="1" Grid.Column="1" Text="Burnish Feedrate" Margin="0,0,10,5"/>
-                    <TextBox Grid.Row="2" Grid.Column="1" Margin="0,0,10,15" Style="{StaticResource NumberInputTextBox}"/>
 
-                    <TextBlock Grid.Row="1" Grid.Column="2" Text="Overwrap %" Margin="0,0,10,5"/>
-                    <TextBox Grid.Row="2" Grid.Column="2" Margin="0,0,10,15" Style="{StaticResource NumberInputTextBox}"/>
+                    <TextBlock Grid.Row="1" Grid.Column="1" Text="Overwrap %" Margin="0,0,10,5"/>
+                    <TextBox x:Name="NumOverWrapPcg" Grid.Row="2" Grid.Column="1" Margin="0,0,10,15" Style="{StaticResource NumberInputTextBox}"/>
 
-                    <TextBlock Grid.Row="1" Grid.Column="3" Text="Total Layers" Margin="0,0,10,5"/>
-                    <TextBox Grid.Row="2" Grid.Column="3" Margin="0,0,10,15" Style="{StaticResource NumberInputTextBox}"/>
+                    <TextBlock Grid.Row="1" Grid.Column="2" Text="Total Layers" Margin="0,0,10,5"/>
+                    <TextBox x:Name="NumTotalLayers" Grid.Row="2" Grid.Column="2" Margin="0,0,10,15" Style="{StaticResource NumberInputTextBox}"/>
 
-                    <TextBlock Grid.Row="1" Grid.Column="4" Text="Wraps per layer" Margin="0,0,10,5"/>
-                    <TextBox Grid.Row="2" Grid.Column="4" Margin="0,0,10,15" Style="{StaticResource NumberInputTextBox}"/>
+                    <TextBlock Grid.Row="1" Grid.Column="3" Text="Wraps per layer" Margin="0,0,10,5"/>
+                    <TextBox x:Name="NumWrapsPerLayer" Grid.Row="2" Grid.Column="3" Margin="0,0,10,15" Style="{StaticResource NumberInputTextBox}"/>
 
-                    <TextBlock Grid.Row="1" Grid.Column="5" Text="Burnish Layers" Margin="0,0,10,5"/>
-                    <TextBox Grid.Row="2" Grid.Column="5" Margin="0,0,10,15" Style="{StaticResource NumberInputTextBox}"/>
-
-                    <TextBlock Grid.Row="0" Grid.Column="6" Text="Burnish Start Speed" Margin="0,0,10,5"/>
-                    <TextBox Grid.Row="0" Grid.Column="7 " Margin="0,0,10,15" Style="{StaticResource NumberInputTextBox}"/>
+                    <TextBlock Grid.Row="1" Grid.Column="5" Text="Burnish Start Speed" Margin="0,0,10,5"/>
+                    <TextBox x:Name="NumBurStartSpeed" Grid.Row="2" Grid.Column="5 " Margin="0,0,10,15" Style="{StaticResource NumberInputTextBox}"/>
 
                     <TextBlock Grid.Row="1" Grid.Column="6" Text="Burnish Ramp Steps" Margin="0,0,10,5"/>
-                    <TextBox Grid.Row="1" Grid.Column="7" Margin="0,0,10,15" Style="{StaticResource NumberInputTextBox}"/>
+                    <TextBox x:Name="NumBurRampSteps" Grid.Row="2" Grid.Column="6" Margin="0,0,10,15" Style="{StaticResource NumberInputTextBox}"/>
 
-                    <TextBlock Grid.Row="2" Grid.Column="6" Text="Burnish Final Speed" Margin="0,0,10,5"/>
-                    <TextBox Grid.Row="2" Grid.Column="7" Margin="0,0,10,15" Style="{StaticResource NumberInputTextBox}"/>
+                    <TextBlock Grid.Row="1" Grid.Column="7" Text="Burnish Final Speed" Margin="0,0,10,5"/>
+                    <TextBox x:Name="NumBurFinalSpeed" Grid.Row="2" Grid.Column="7" Margin="0,0,10,15" Style="{StaticResource NumberInputTextBox}"/>
                 </Grid>
             </StackPanel>
 
@@ -196,15 +193,15 @@
                     </Grid.RowDefinitions>
 
                     <TextBlock Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" Text="Startup Gcode" Margin="0,0,10,5"/>
-                    <TextBox Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Height="200" Margin="0,0,10,15" TextAlignment="Left"
+                    <TextBox x:Name="TxtStartGcode" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Height="200" Margin="0,0,10,15" TextAlignment="Left"
                              TextWrapping="Wrap" AcceptsReturn="True" VerticalScrollBarVisibility="Auto"/>
 
                     <TextBlock Grid.Row="0" Grid.Column="2" Grid.ColumnSpan="2" Text="End of Main Wrap" Margin="0,0,10,5"/>
-                    <TextBox Grid.Row="1" Grid.Column="2" Grid.ColumnSpan="2" Height="200" Margin="0,0,10,15" TextAlignment="Left"
+                    <TextBox x:Name="TxtEndMWrap" Grid.Row="1" Grid.Column="2" Grid.ColumnSpan="2" Height="200" Margin="0,0,10,15" TextAlignment="Left"
                              TextWrapping="Wrap" AcceptsReturn="True" VerticalScrollBarVisibility="Auto"/>
 
                     <TextBlock Grid.Row="0" Grid.Column="4" Grid.ColumnSpan="2" Text="End of Complete Wrap" Margin="0,0,10,5"/>
-                    <TextBox Grid.Row="1" Grid.Column="4" Grid.ColumnSpan="2" Height="200" Margin="0,0,10,15" TextAlignment="Left"
+                    <TextBox x:Name="TxtEndCWrap" Grid.Row="1" Grid.Column="4" Grid.ColumnSpan="2" Height="200" Margin="0,0,10,15" TextAlignment="Left"
                              TextWrapping="Wrap" AcceptsReturn="True" VerticalScrollBarVisibility="Auto"/>
                 </Grid>
             </StackPanel>
@@ -229,23 +226,23 @@
                     </Grid.RowDefinitions>
 
                     <TextBlock Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" Text="Total Estimated Feet" Margin="0,0,10,5"/>
-                    <TextBox Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Margin="0,0,10,15" Style="{StaticResource NumberInputTextBox}"/>
+                    <TextBox x:Name="NumTotalEstFeet" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Margin="0,0,10,15" Style="{StaticResource NumberInputTextBox}"/>
 
-                    <TextBlock Grid.Row="0" Grid.Column="3" Grid.ColumnSpan="2" Text="Pump on/off code" Margin="0,0,10,5"/>
-                    <TextBox Grid.Row="1" Grid.Column="3" Margin="0,0,10,15" Style="{StaticResource NumberInputTextBox}"/>
-                    <TextBox Grid.Row="1" Grid.Column="4" Margin="0,0,10,15" Style="{StaticResource NumberInputTextBox}"/>
+                    <TextBlock Grid.Row="0" Grid.Column="4" Grid.ColumnSpan="1" Text="Pump on/off code" Margin="0,0,10,5"/>
+                    <TextBox x:Name="StrPumpOnCode" Grid.Row="1" Grid.Column="4" Margin="0,0,10,15"/>
+                    <TextBox x:Name="StrPumpOffCode" Grid.Row="1" Grid.Column="5" Margin="0,0,10,15"/>
 
-                    <TextBlock Grid.Row="0" Grid.Column="5" Text="Enable Pump" Margin="0,0,10,5"/>
-                    <TextBox Grid.Row="1" Grid.Column="5" Margin="0,0,10,15" Style="{StaticResource NumberInputTextBox}"/>
-
+   <!--                 <TextBlock Grid.Row="0" Grid.Column="3" Text="Enable Pump" Margin="0,0,10,5"/> -->
                     <TextBlock Grid.Row="0" Grid.Column="6" Grid.ColumnSpan="2" Text="Cycles per shell" Margin="0,0,10,5"/>
-                    <TextBox Grid.Row="1" Grid.Column="6" Grid.ColumnSpan="2" Margin="0,0,10,15" Style="{StaticResource NumberInputTextBox}"/>
+                    <TextBox x:Name="NumCyclesPerShell" Grid.Row="1" Grid.Column="6" Grid.ColumnSpan="2" Margin="0,0,10,15" Style="{StaticResource NumberInputTextBox}"/>
 
                     <TextBlock Grid.Row="0" Grid.Column="8" Text="Duration" Margin="0,0,10,5"/>
-                    <TextBox Grid.Row="1" Grid.Column="8" Margin="0,0,10,15" Style="{StaticResource NumberInputTextBox}"/>
+                    <TextBox x:Name="NumDuration" Grid.Row="1" Grid.Column="8" Margin="0,0,10,15" Style="{StaticResource NumberInputTextBox}"/>
+                    <CheckBox Content="EnablePump" Grid.Column="3" HorizontalAlignment="Left" Margin="1,10,0,0" Grid.Row="1" VerticalAlignment="Top" Checked="Pump_Enabled"
+                              Unchecked="Pump_Disabled" x:Name="pumpState" Width="110"/>
                 </Grid>
             </StackPanel>
-        </StackPanel> 
+        </StackPanel>
     </Grid>
 
 </Window>
