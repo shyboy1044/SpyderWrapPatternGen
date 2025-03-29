@@ -54,7 +54,8 @@ namespace WpfApp1
             }
 
             TxtGcodeOutput.Text = "";
-            string[] GCode = Generate_GCode();
+
+            string[] GCode = Generate_GCode(out double EstTapeFeet);
 
             if (ValidatePumpCodeParameter() == false)
             {
@@ -80,6 +81,8 @@ namespace WpfApp1
             // Here implement completed GCode
 
             TxtGcodeOutput.Text = TxtGcodeOutput.Text + "\n" + "%End_of_Completed_Wrap%" + "\n" + TxtEndCWrap.Text;
+
+            NumTotalEstFeet.Text = Math.Round(EstTapeFeet, 2).ToString();
         }
 
         private void BtnSaveNew_Click(object sender, RoutedEventArgs e)
@@ -116,7 +119,7 @@ namespace WpfApp1
             }
         }
         
-        private string[] Generate_GCode()
+        private string[] Generate_GCode(out double EstTapeFeet)
         {
             
             float DDiameter = float.Parse(NumMeasuredSize.Text);
@@ -148,11 +151,13 @@ namespace WpfApp1
             WrapXAxisTravel = XAxisCircle + CirclePlus;
             WrapYAxisTravel = YAxisCircle + CirclePlus;
 
+            EstTapeFeet = 0;
             while (LayerCounter <= TotalLayers)
             {
                 while (WrapCounter <= WrapPerLayer)
                 {
 
+                    EstTapeFeet = ((WrapXAxisTravel + WrapYAxisTravel) / 2) / 12; 
                     mainWrapGCode[RowCounter] = $"X{WrapXAxisTravel:F3}Y{WrapYAxisTravel:F3}";
 
                     double VarA = XAxisCircle + CirclePlus;
@@ -164,11 +169,15 @@ namespace WpfApp1
                     {
                         KickXAxisTravel = WrapXAxisTravel + XOffSet + (DDiameter * OverWrapPcg);
                         KickYAxisTravel = WrapYAxisTravel + YOffSet + (DDiameter * OverWrapPcg);
+
+                        EstTapeFeet = ((KickXAxisTravel + KickYAxisTravel) / 2) / 12;
                     }
                     else
                     {
                         KickXAxisTravel = WrapXAxisTravel + XOffSet;
                         KickYAxisTravel = WrapYAxisTravel + YOffSet;
+
+                        EstTapeFeet = ((KickXAxisTravel + KickYAxisTravel) / 2) / 12;
                     }
 
                     mainWrapGCode[RowCounter] = $"X{KickXAxisTravel:F3}Y{KickYAxisTravel:F3}";
@@ -178,6 +187,9 @@ namespace WpfApp1
 
                     WrapXAxisTravel = KickXAxisTravel + VarA + CirclePlus;
                     WrapYAxisTravel = KickYAxisTravel + VarA + CirclePlus;
+                    
+           //         if ((LayerCounter < TotalLayers) && (WrapCounter < WrapPerLayer))
+            //            EstTapeFeet = ((WrapXAxisTravel + WrapYAxisTravel) / 2) / 12;
 
                     RowCounter++;
                     WrapCounter++;
