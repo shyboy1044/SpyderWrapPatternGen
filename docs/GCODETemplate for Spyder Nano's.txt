@@ -1,0 +1,72 @@
+; This is the template used for the three different sections of a typical shell wrapping file without the coordinates.  Start, Burnish and Finish
+
+
+;Startup Commands
+M24
+M190 S-30.0000
+M109 S-30.000000
+G20        ;Inch values
+G90        ;absolute positioning
+M31
+M117 Loading #FILENAME
+G4 S1 ;Pause for button release
+M117 3" Shell - Start?
+G92 X0 Y0
+M227 P2 S0 ;pause, wait for start button
+M117 Move Spring Lock
+M300 S300 P300
+G4 P500
+M300 S400 P300
+G4 P500
+M300 S500 P1000
+G4 P1500
+M227 P2 S0 ;pause, wait for start button
+M75
+M117 Wrapping #FILENAME
+#WRAP
+;
+; Wrapping GCODES inserted here
+;
+;G1 X41.568Y32.756
+;
+
+;  Burnishing command section to reset the machine and pause for tape cutting
+
+M400
+G92 X0 Y0
+M300 S300 P300
+G4 P500
+M300 S400 P300
+G4 P500
+M300 S500 P1000
+G4 P1500
+M300 S500 P1500
+M117 Paused, Tear Tape
+M227 P2 S0
+M76
+M117 Burnishing 
+M75
+#BURNISH
+;
+; Burnishing movement GCODES
+; inserted here
+;
+;G1 X0.0Y0.0F900
+;
+
+; finish command section.  Buzzes the speaker and reloads the file.
+
+
+M400
+M300 S300 P300
+G4 P500
+M300 S400 P300
+G4 P500
+M300 S500 P1000
+G4 P1500
+M117 Complete- Rewind?
+M227 P2 S0
+M23 /#FILENAME
+M24
+
+
