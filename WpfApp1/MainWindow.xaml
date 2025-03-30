@@ -226,7 +226,7 @@
                     </Grid.RowDefinitions>
 
                     <TextBlock Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" Text="Total Estimated Feet" Margin="0,0,10,5"/>
-                    <TextBox x:Name="NumTotalEstFeet" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Margin="0,0,10,15" Style="{StaticResource NumberInputTextBox}"/>
+                    <TextBox x:Name="NumTotalEstFeet" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Margin="0,0,10,15" Style="{StaticResource NumberInputTextBox}" IsEnabled="False"/>
 
                     <TextBlock Grid.Row="0" Grid.Column="4" Grid.ColumnSpan="1" Text="Pump on/off code" Margin="0,0,10,5"/>
                     <TextBox x:Name="StrPumpOnCode" Grid.Row="1" Grid.Column="4" Margin="0,0,10,15"/>
