@@ -14,6 +14,10 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Text.RegularExpressions;
 using System.Diagnostics;
+using System.IO;
+using Microsoft.Win32;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace WpfApp1
 {
@@ -24,6 +28,7 @@ namespace WpfApp1
 
     public partial class MainWindow : Window
     {
+        string openedFilePath = string.Empty;
         public MainWindow()
         {
             InitializeComponent();
@@ -35,12 +40,46 @@ namespace WpfApp1
 
         private void BtnLoad_Click(object sender, RoutedEventArgs e)
         {
-            CheckInputValidation(NumShellSize); 
+            OpenFileDialog openFileDialog = new OpenFileDialog
+            {
+                Filter = "MUM files (*.mum)|*.mum|All files (*.*)|*.*",
+                DefaultExt = ".mum",
+                Title = "Select a MUM File"
+            };
+
+            if (openFileDialog.ShowDialog() == true)
+            {
+
+                try
+                {
+                    // Check if file exists (additional safety check)
+                    if (!File.Exists(openFileDialog.FileName))
+                    {
+                        MessageBox.Show("The selected file does not exist.");
+                        return;
+                    }
+                    // Read data from file
+                    string filePath = openFileDialog.FileName;
+                    string fileContent = File.ReadAllText(filePath);
+                    dynamic mumContent = JsonConvert.DeserializeObject(fileContent);
+
+                    // Fill Form using Data
+                    PopulateFormFromJson(mumContent);
+                    openedFilePath = filePath;
+
+                    TxtGcodeOutput.Text = string.Empty;
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Error reading file: {ex.Message}", "This is Error");
+                    return;
+                }
+            }
+            return;
         }
 
         private void BtnSave_Click(object sender, RoutedEventArgs e)
         {
-
             if (CheckParameterValidation() == false)
             {
                 MessageBox.Show("Enter All Parameters", "Info", MessageBoxButton.OK, MessageBoxImage.Information);
@@ -83,11 +122,50 @@ namespace WpfApp1
             TxtGcodeOutput.Text = TxtGcodeOutput.Text + "\n" + "%End_of_Completed_Wrap%" + "\n" + TxtEndCWrap.Text;
 
             NumTotalEstFeet.Text = Math.Round(EstTapeFeet, 2).ToString();
+
+            if (openedFilePath.Length == 0)
+            {
+                SaveAsNewFile();
+            }
+            else
+            {
+                string savingData = CollectFormData();
+                File.WriteAllText(openedFilePath, savingData);
+            }
         }
 
         private void BtnSaveNew_Click(object sender, RoutedEventArgs e)
         {
-            MessageBox.Show("This is a message box!", "Message Box Title", MessageBoxButton.OK, MessageBoxImage.Information);
+            if (CheckParameterValidation() == false)
+            {
+                MessageBox.Show("Enter All Parameters", "Info", MessageBoxButton.OK, MessageBoxImage.Information);
+                return;
+            }
+
+            if (string.IsNullOrWhiteSpace(StrPatternName.Text))
+            {
+                MessageBox.Show("Enter File Name", "Info", MessageBoxButton.OK, MessageBoxImage.Information);
+                return;
+            }
+            SaveAsNewFile();
+        }
+
+        private void SaveAsNewFile()
+        {
+            string savingData = CollectFormData();
+
+            SaveFileDialog saveFileDialog = new SaveFileDialog
+            {
+                Filter = "MUM files (*.mum)|*.mum|All files (*.*)|*.*",
+                DefaultExt = "mum",
+                FileName = $"{StrPatternName.Text}.mum"
+            };
+
+            if (saveFileDialog.ShowDialog() == true)
+            {
+                File.WriteAllText(saveFileDialog.FileName, savingData);
+                openedFilePath = saveFileDialog.FileName;
+            }
         }
 
         // Allow numbers and only one demical point
@@ -299,6 +377,76 @@ namespace WpfApp1
             }
             return true;
         }
+
+        private string CollectFormData()
+        {
+            var data = new
+            {
+                Pattern_Name = StrPatternName.Text,
+                Shell_Description = StrShellDescription.Text,
+                Shell_Size = NumShellSize.Text,
+                Measured_Size = NumMeasuredSize.Text,
+                Diameter_Percentage = NumDiameterPcg.Text,
+                Circ_Plus = NumCircPlus.Text,
+                Total_Kick = NumTotalKick.Text,
+                Kick_Ratio = NumKickRatioPcg.Text,
+
+                Wrap_Feedrate = NumWrapFeedRate.Text,
+                Overwrap_Percentage = NumOverWrapPcg.Text,
+                Total_Layers = NumTotalLayers.Text,
+                Wraps_Per_Layer = NumWrapsPerLayer.Text,
+
+                Burnish_Start_Speed = NumBurStartSpeed.Text,
+                Burnish_Ramp_Steps = NumBurRampSteps.Text,
+                Burnish_Final_Steps = NumBurFinalSpeed.Text,
+
+                Startup_Gcode = TxtStartGcode.Text,
+                End_Of_Main_Wrap = TxtEndMWrap.Text,
+                End_Of_Complete_Wrap = TxtEndCWrap.Text,
+
+                Total_Estimated_Feet = NumTotalEstFeet.Text,
+
+                Pump_Enable = pumpState.IsChecked,
+                Pump_On_Code = StrPumpOnCode.Text,
+                Pump_Off_Code = StrPumpOffCode.Text,
+                Pump_Cycles = NumCyclesPerShell.Text,
+                Pump_Duration = NumDuration.Text
+            };
+
+            // Convert to String
+            string formData = JsonConvert.SerializeObject(data, Formatting.Indented);
+
+            return formData;
+        }
+        
+        private void PopulateFormFromJson(dynamic mumContent)
+        {
+            StrPatternName.Text = mumContent.Pattern_Name;
+            StrShellDescription.Text = mumContent.Shell_Description;
+            NumShellSize.Text = mumContent.Shell_Size;
+            NumMeasuredSize.Text = mumContent.Measured_Size;
+            NumDiameterPcg.Text = mumContent.Diameter_Percentage;
+            NumCircPlus.Text = mumContent.Circ_Plus;
+            NumTotalKick.Text = mumContent.Total_Kick;
+            NumKickRatioPcg.Text = mumContent.Kick_Ratio;
+            NumWrapFeedRate.Text = mumContent.Wrap_Feedrate;
+            NumOverWrapPcg.Text = mumContent.Overwrap_Percentage;
+            NumTotalLayers.Text = mumContent.Total_Layers;
+            NumWrapsPerLayer.Text = mumContent.Wraps_Per_Layer;
+            NumBurStartSpeed.Text = mumContent.Burnish_Start_Speed;
+            NumBurRampSteps.Text = mumContent.Burnish_Ramp_Steps;
+            NumBurFinalSpeed.Text = mumContent.Burnish_Final_Steps;
+            TxtStartGcode.Text = mumContent.Startup_Gcode;
+            TxtEndMWrap.Text = mumContent.End_Of_Main_Wrap;
+            TxtEndCWrap.Text = mumContent.End_Of_Complete_Wrap;
+            NumTotalEstFeet.Text = mumContent.Total_Estimated_Feet;
+            pumpState.IsChecked = mumContent.Pump_Enable;
+            StrPumpOnCode.Text = mumContent.Pump_On_Code;
+            StrPumpOffCode.Text = mumContent.Pump_Off_Code;
+            NumCyclesPerShell.Text = mumContent.Pump_Cycles;
+            NumDuration.Text = mumContent.Pump_Duration;
+        }
+        
     }
 }
 
