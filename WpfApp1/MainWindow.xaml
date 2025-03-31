@@ -5,9 +5,10 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:WpfApp1"
         mc:Ignorable="d"
-        WindowStartupLocation="CenterScreen"        
-        Title="Spyder Pattern Generator"         
-        Height="870.065" 
+        WindowStartupLocation="CenterScreen"   
+        Title="Spyder Pattern Generator"    
+        ResizeMode="CanMinimize"
+        Height="759.065" 
         Width="1493.445">
 
     <Window.Resources>
@@ -90,7 +91,7 @@
 
         <!-- Left Side Buttons and Pattern Name -->
         <StackPanel Grid.Row="1" Grid.Column="0" Grid.RowSpan="5">
-            <Button Content="Load Pattern" Margin="0,30,0,10" Click="BtnLoad_Click"/>
+            <Button Content="Load Pattern" Margin="0,5,0,10" Click="BtnLoad_Click"/>
             <Button Content="Save Pattern" Margin="0,0,0,10" Click="BtnSave_Click"/>
             <Button Content="Save As New" Margin="0,0,0,10" Click="BtnSaveNew_Click"/>
             <Button Content="Generate GCode" Margin="0,0,0,10" Click="BtnGenGCode_Click"/>
@@ -100,7 +101,7 @@
             <TextBox x:Name="StrPatternName" Margin="0,0,0,20" TextAlignment="Left"/>
 
             <TextBlock Text="Gcode Output" Margin="0,0,0,5" />
-            <TextBox x:Name="TxtGcodeOutput" Height="450" TextWrapping="Wrap" AcceptsReturn="True" TextAlignment="Left"
+            <TextBox x:Name="TxtGcodeOutput" Height="328" TextWrapping="Wrap" AcceptsReturn="True" TextAlignment="Left"
                      VerticalScrollBarVisibility="Auto"/>
         </StackPanel>
 
@@ -149,13 +150,13 @@
             </StackPanel>
 
             <!-- Shell Description -->
-            <StackPanel Grid.Row="2" Grid.Column="1" Margin="0,63,0,0">
+            <StackPanel Grid.Row="2" Grid.Column="1" Margin="0,0,0,0">
                 <TextBlock Text="Shell Description" Margin="0,0,0,5" Style="{StaticResource SubTitle}"/>
-                <TextBox x:Name="StrShellDescription" Margin="0,0,0,16" TextAlignment="Left"/>
+                <TextBox x:Name="StrShellDescription" Margin="0,0,10,16" TextAlignment="Left"/>
             </StackPanel>
 
             <!-- Wrap Speed Variables Section -->
-            <StackPanel Margin="0,25,0,0">
+            <StackPanel Margin="0,20,0,0">
 
                 <Grid>
                     <Grid.ColumnDefinitions>
@@ -236,7 +237,7 @@
             </StackPanel>
 
             <!-- Bottom Section -->
-            <StackPanel Grid.Row="5" Grid.Column="1" Margin="0,10,0,0">
+            <StackPanel Grid.Row="5" Grid.Column="1" Margin="0,25,0,0">
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"/>
