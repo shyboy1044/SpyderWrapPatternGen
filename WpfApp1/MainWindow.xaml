@@ -5,8 +5,10 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:WpfApp1"
         mc:Ignorable="d"
-        WindowStartupLocation="CenterScreen"
-        Title="MainWindow" Height="870.065" Width="1493.445">
+        WindowStartupLocation="CenterScreen"        
+        Title="Spyder Pattern Generator"         
+        Height="870.065" 
+        Width="1493.445">
 
     <Window.Resources>
 
@@ -65,7 +67,9 @@
         <StackPanel Grid.Row="1" Grid.Column="0" Grid.RowSpan="5">
             <Button Content="Load Pattern" Margin="0,30,0,10" Click="BtnLoad_Click"/>
             <Button Content="Save Pattern" Margin="0,0,0,10" Click="BtnSave_Click"/>
-            <Button Content="Save As New" Margin="0,0,0,20" Click="BtnSaveNew_Click"/>
+            <Button Content="Save As New" Margin="0,0,0,10" Click="BtnSaveNew_Click"/>
+            <Button Content="Generate GCode" Margin="0,0,0,10" Click="BtnGenGCode_Click"/>
+            <Button Content="Export GCode As File" Margin="0,0,0,20" Click="BtnExportGCode_Click"/>
 
             <TextBlock Text="Pattern Name" Margin="0,0,0,5" Style="{StaticResource SubTitle}"/>
             <TextBox x:Name="StrPatternName" Margin="0,0,0,20" TextAlignment="Left"/>

@@ -18,6 +18,7 @@ using System.IO;
 using Microsoft.Win32;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using Path = System.IO.Path;
 
 namespace WpfApp1
 {
@@ -32,6 +33,7 @@ namespace WpfApp1
         public MainWindow()
         {
             InitializeComponent();
+           
             StrPumpOffCode.IsEnabled = false;
             StrPumpOnCode.IsEnabled = false;
             NumCyclesPerShell.IsEnabled = false;
@@ -66,8 +68,11 @@ namespace WpfApp1
                     // Fill Form using Data
                     PopulateFormFromJson(mumContent);
                     openedFilePath = filePath;
-
+                    
                     TxtGcodeOutput.Text = string.Empty;
+
+                    // Set window title as opened file name
+                    SetWindowsTitle(openedFilePath);
                 }
                 catch (Exception ex)
                 {
@@ -92,36 +97,7 @@ namespace WpfApp1
                 return;
             }
 
-            TxtGcodeOutput.Text = "";
-
-            string[] GCode = Generate_GCode(out double EstTapeFeet);
-
-            if (ValidatePumpCodeParameter() == false)
-            {
-                MessageBox.Show("Enter All Pump Parameters", "Info", MessageBoxButton.OK, MessageBoxImage.Information);
-                return;
-            }
-            string[] pumpCode = GetPumpCode(GCode.Length);
-            
-            // Add Main part of GCode
-            TxtGcodeOutput.Text = "%Startup_GCODE%\n" + TxtStartGcode.Text + "\n";
-            for (int i = 0; i < GCode.Length; i ++)
-            {
-                if (i == 0)
-                    TxtGcodeOutput.Text = TxtGcodeOutput.Text + GCode[i] + "\t\tF" + NumWrapFeedRate.Text + " " + pumpCode[i] + "\n";
-                else
-                    TxtGcodeOutput.Text = TxtGcodeOutput.Text + GCode[i] + "\t\t" + pumpCode[i] + "\n";
-            }
-            TxtGcodeOutput.Text = TxtGcodeOutput.Text + "%End_of_main_WrapGCODE%\n" + TxtEndMWrap.Text + "\n";
-
-            // Add Completed GCode
-            TxtGcodeOutput.Text = TxtGcodeOutput.Text + @"\\Burnish Selection";
-
-            // Here implement completed GCode
-
-            TxtGcodeOutput.Text = TxtGcodeOutput.Text + "\n" + "%End_of_Completed_Wrap%" + "\n" + TxtEndCWrap.Text;
-
-            NumTotalEstFeet.Text = Math.Round(EstTapeFeet, 2).ToString();
+        //    GenerateGCode();
 
             if (openedFilePath.Length == 0)
             {
@@ -164,6 +140,82 @@ namespace WpfApp1
             if (saveFileDialog.ShowDialog() == true)
             {
                 File.WriteAllText(saveFileDialog.FileName, savingData);
+                openedFilePath = saveFileDialog.FileName;
+
+                SetWindowsTitle(openedFilePath);
+            }
+        }
+
+        private void SetWindowsTitle(string filePath)
+        {
+            string fileName = Path.GetFileName(filePath);
+            this.Title = fileName + " - Spyder Pattern Generator";
+        }
+        private void BtnGenGCode_Click(object sender, RoutedEventArgs e)
+        {
+            if (CheckParameterValidation() == false)
+            {
+                MessageBox.Show("Enter All Parameters", "Info", MessageBoxButton.OK, MessageBoxImage.Information);
+                return;
+            }
+
+            if (string.IsNullOrWhiteSpace(StrPatternName.Text))
+            {
+                MessageBox.Show("Enter File Name", "Info", MessageBoxButton.OK, MessageBoxImage.Information);
+                return;
+            }
+
+            TxtGcodeOutput.Text = "";
+
+            string[] GCode = Generate_GCode(out double EstTapeFeet);
+
+            if (ValidatePumpCodeParameter() == false)
+            {
+                MessageBox.Show("Enter All Pump Parameters", "Info", MessageBoxButton.OK, MessageBoxImage.Information);
+                return;
+            }
+            string[] pumpCode = GetPumpCode(GCode.Length);
+
+            // Add Main part of GCode
+            TxtGcodeOutput.Text = "%Startup_GCODE%\n" + TxtStartGcode.Text + "\n";
+            for (int i = 0; i < GCode.Length; i++)
+            {
+                if (i == 0)
+                    TxtGcodeOutput.Text = TxtGcodeOutput.Text + GCode[i] + "\t\tF" + NumWrapFeedRate.Text + " " + pumpCode[i] + "\n";
+                else
+                    TxtGcodeOutput.Text = TxtGcodeOutput.Text + GCode[i] + "\t\t" + pumpCode[i] + "\n";
+            }
+            TxtGcodeOutput.Text = TxtGcodeOutput.Text + "%End_of_main_WrapGCODE%\n" + TxtEndMWrap.Text + "\n";
+
+            // Add Completed GCode
+            TxtGcodeOutput.Text = TxtGcodeOutput.Text + @"\\Burnish Selection";
+
+            // Here implement completed GCode
+
+            TxtGcodeOutput.Text = TxtGcodeOutput.Text + "\n" + "%End_of_Completed_Wrap%" + "\n" + TxtEndCWrap.Text;
+
+            NumTotalEstFeet.Text = Math.Round(EstTapeFeet, 2).ToString();
+
+        }
+
+        private void BtnExportGCode_Click(object sender, RoutedEventArgs e)
+        {
+            if (string.IsNullOrWhiteSpace(TxtGcodeOutput.Text))
+            {
+                MessageBox.Show("Generate GCode First");
+                return;
+            }
+
+            SaveFileDialog saveFileDialog = new SaveFileDialog
+            {
+                Filter = "txt files (*.txt)|*.txt|All files (*.*)|*.*",
+                DefaultExt = "txt",
+                FileName = "New Gcode.txt"
+            };
+
+            if (saveFileDialog.ShowDialog() == true)
+            {
+                File.WriteAllText(saveFileDialog.FileName, TxtGcodeOutput.Text);
                 openedFilePath = saveFileDialog.FileName;
             }
         }
