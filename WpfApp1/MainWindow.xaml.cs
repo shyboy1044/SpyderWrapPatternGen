@@ -212,7 +212,7 @@ namespace WpfApp1
             }
             // Here implement completed GCode
 
-            TxtGcodeOutput.Text = TxtGcodeOutput.Text + "\n" + "%End_of_Completed_Wrap%" + "\n" + TxtEndCWrap.Text;
+            TxtGcodeOutput.Text = TxtGcodeOutput.Text + "%End_of_Completed_Wrap%" + "\n" + TxtEndCWrap.Text;
 
             NumTotalEstFeet.Text = Math.Round(EstTapeFeet, 2).ToString();
 
