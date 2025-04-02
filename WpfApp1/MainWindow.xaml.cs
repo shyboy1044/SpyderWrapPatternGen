@@ -230,7 +230,7 @@ namespace WpfApp1
             {
                 Filter = "txt files (*.txt)|*.txt|All files (*.*)|*.*",
                 DefaultExt = "txt",
-                FileName = "New Gcode.txt"
+                FileName = $"{StrPatternName.Text}.txt"
             };
 
             if (saveFileDialog.ShowDialog() == true)
