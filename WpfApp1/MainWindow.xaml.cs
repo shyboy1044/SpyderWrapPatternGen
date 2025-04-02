@@ -42,45 +42,53 @@ namespace WpfApp1
 
         private void BtnLoad_Click(object sender, RoutedEventArgs e)
         {
-            OpenFileDialog openFileDialog = new OpenFileDialog
-            {
-                Filter = "MUM files (*.mum)|*.mum|All files (*.*)|*.*",
-                DefaultExt = ".mum",
-                Title = "Select a MUM File"
-            };
-
-            if (openFileDialog.ShowDialog() == true)
+            try
             {
 
-                try
+                OpenFileDialog openFileDialog = new OpenFileDialog
                 {
-                    // Check if file exists (additional safety check)
-                    if (!File.Exists(openFileDialog.FileName))
+                    Filter = "MUM files (*.mum)|*.mum|All files (*.*)|*.*",
+                    DefaultExt = ".mum",
+                    Title = "Select a MUM File"
+                };
+
+                if (openFileDialog.ShowDialog() == true)
+                {
+
+                    try
                     {
-                        MessageBox.Show("The selected file does not exist.");
+                        // Check if file exists (additional safety check)
+                        if (!File.Exists(openFileDialog.FileName))
+                        {
+                            MessageBox.Show("The selected file does not exist.");
+                            return;
+                        }
+                        // Read data from file
+                        string filePath = openFileDialog.FileName;
+                        string fileContent = File.ReadAllText(filePath);
+                        dynamic mumContent = JsonConvert.DeserializeObject(fileContent);
+
+                        // Fill Form using Data
+                        PopulateFormFromJson(mumContent);
+                        openedFilePath = filePath;
+
+                        TxtGcodeOutput.Text = string.Empty;
+
+                        // Set window title as opened file name
+                        SetWindowsTitle(openedFilePath);
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show($"Error reading file: {ex.Message}", "This is Error");
                         return;
                     }
-                    // Read data from file
-                    string filePath = openFileDialog.FileName;
-                    string fileContent = File.ReadAllText(filePath);
-                    dynamic mumContent = JsonConvert.DeserializeObject(fileContent);
-
-                    // Fill Form using Data
-                    PopulateFormFromJson(mumContent);
-                    openedFilePath = filePath;
-                    
-                    TxtGcodeOutput.Text = string.Empty;
-
-                    // Set window title as opened file name
-                    SetWindowsTitle(openedFilePath);
                 }
-                catch (Exception ex)
-                {
-                    MessageBox.Show($"Error reading file: {ex.Message}", "This is Error");
-                    return;
-                }
+                return;
             }
-            return;
+            catch(Exception ex)
+            {
+                MessageBox.Show($"{ex}");
+            }
         }
 
         private void BtnSave_Click(object sender, RoutedEventArgs e)
@@ -188,8 +196,20 @@ namespace WpfApp1
             TxtGcodeOutput.Text = TxtGcodeOutput.Text + "%End_of_main_WrapGCODE%\n" + TxtEndMWrap.Text + "\n";
 
             // Add Completed GCode
-            TxtGcodeOutput.Text = TxtGcodeOutput.Text + @"\\Burnish Selection";
+            TxtGcodeOutput.Text = TxtGcodeOutput.Text + @"\\Burnish Selection" + "\n";
 
+            int startSpeed = int.Parse(NumBurStartSpeed.Text);
+            int finalSpeed = int.Parse(NumBurFinalSpeed.Text);
+            int rampStep = int.Parse(NumBurRampSteps.Text);
+            int[] burnishSpeed = GenerateBurnishSpeed(startSpeed, finalSpeed, rampStep);
+
+            for (int i = 0; i < GCode.Length; i++)
+            {
+                if (IsEven(i) && (i < burnishSpeed.Length * 2))
+                    TxtGcodeOutput.Text = TxtGcodeOutput.Text + GCode[i] + "\tF" + burnishSpeed[i / 2] + "\n";
+                else
+                    TxtGcodeOutput.Text = TxtGcodeOutput.Text + GCode[i] + "\n";
+            }
             // Here implement completed GCode
 
             TxtGcodeOutput.Text = TxtGcodeOutput.Text + "\n" + "%End_of_Completed_Wrap%" + "\n" + TxtEndCWrap.Text;
@@ -498,7 +518,51 @@ namespace WpfApp1
             NumCyclesPerShell.Text = mumContent.Pump_Cycles;
             NumDuration.Text = mumContent.Pump_Duration;
         }
-        
+
+        private static int RoundToNearest25(double inputValue)
+        {
+            int value = (int)Math.Round(inputValue);
+            int remainder = value % 25;
+
+            if (remainder == 0)
+            {
+                // Already a multiple of 25
+                return value;
+            }
+            else if (remainder < 13)
+            {
+                // Round down
+                return value - remainder;
+            }
+            else
+            {
+                // Round up
+                return value + (25 - remainder);
+            }
+        }
+
+        private int[] GenerateBurnishSpeed(int startSpeed, int finalSpeed, int rampSteps)
+        {
+            double dblRampSpeed = (finalSpeed - startSpeed) / (rampSteps - 1);
+            int rampSpeed = RoundToNearest25(dblRampSpeed);
+            int[] burnishSpeed = new int[rampSteps];
+            for(int i = 0; i < rampSteps; i++)
+            {
+                if (i == rampSteps - 1)
+                    burnishSpeed[i] = finalSpeed;
+                else
+                    burnishSpeed[i] = startSpeed + i * rampSpeed;
+            }
+            return burnishSpeed;
+        }
+
+        private bool IsEven(int number)
+        {
+            if (number % 2 == 0)
+                return true;
+            return false;
+        }
+
     }
 }
 
