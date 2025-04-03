@@ -317,7 +317,7 @@ namespace WpfApp1
             int TotalLayers = int.Parse(NumTotalLayers.Text);
 
               // Ask client About this value!
-            float YAxisPcg = 0.98f;
+            float YAxisPcg = float.Parse(NumYAixsPcg.Text) / 100;
 
             double XOffSet = DDiameter * 3.1415 * DDiameterPcg * TotalKickPcg;
             double XAxisCircle = (DDiameter * 3.1415 * DDiameterPcg) - XOffSet;
