@@ -446,7 +446,7 @@ namespace WpfApp1
                 if (Pump.Length > CycPerShell * Duration)
                 {
                     int StartPos = Pump.Length / CycPerShell;
-                    for (int i = 0; i * StartPos < Pump.Length; i++)
+                    for (int i = 0; i * StartPos + Duration - 1 < Pump.Length; i++)
                     {
                         Pump[i * StartPos] = PumpOnCode;
                         Pump[i * StartPos + Duration - 1] = PumpOffCode;
