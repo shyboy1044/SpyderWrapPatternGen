@@ -87,34 +87,41 @@ namespace WpfApp1
             }
             catch(Exception ex)
             {
-                MessageBox.Show($"{ex}");
+                MessageBox.Show($"{ex.Message}");
             }
         }
 
         private void BtnSave_Click(object sender, RoutedEventArgs e)
         {
-            if (CheckParameterValidation() == false)
+            try
             {
-                MessageBox.Show("Enter All Parameters", "Info", MessageBoxButton.OK, MessageBoxImage.Information);
-                return;
-            }
+                if (CheckParameterValidation() == false)
+                {
+                    MessageBox.Show("Enter All Parameters", "Info", MessageBoxButton.OK, MessageBoxImage.Information);
+                    return;
+                }
 
-            if (string.IsNullOrWhiteSpace(StrPatternName.Text))
-            {
-                MessageBox.Show("Enter File Name", "Info", MessageBoxButton.OK, MessageBoxImage.Information);
-                return;
-            }
+                if (string.IsNullOrWhiteSpace(StrPatternName.Text))
+                {
+                    MessageBox.Show("Enter File Name", "Info", MessageBoxButton.OK, MessageBoxImage.Information);
+                    return;
+                }
 
-        //    GenerateGCode();
+                //    GenerateGCode();
 
-            if (openedFilePath.Length == 0)
-            {
-                SaveAsNewFile();
+                if (openedFilePath.Length == 0)
+                {
+                    SaveAsNewFile();
+                }
+                else
+                {
+                    string savingData = CollectFormData();
+                    File.WriteAllText(openedFilePath, savingData);
+                }
             }
-            else
+            catch(Exception ex)
             {
-                string savingData = CollectFormData();
-                File.WriteAllText(openedFilePath, savingData);
+                MessageBox.Show($"{ex.Message}");
             }
         }
 
@@ -136,21 +143,28 @@ namespace WpfApp1
 
         private void SaveAsNewFile()
         {
-            string savingData = CollectFormData();
-
-            SaveFileDialog saveFileDialog = new SaveFileDialog
+            try
             {
-                Filter = "MUM files (*.mum)|*.mum|All files (*.*)|*.*",
-                DefaultExt = "mum",
-                FileName = $"{StrPatternName.Text}.mum"
-            };
+                string savingData = CollectFormData();
 
-            if (saveFileDialog.ShowDialog() == true)
+                SaveFileDialog saveFileDialog = new SaveFileDialog
+                {
+                    Filter = "MUM files (*.mum)|*.mum|All files (*.*)|*.*",
+                    DefaultExt = "mum",
+                    FileName = $"{StrPatternName.Text}.mum"
+                };
+
+                if (saveFileDialog.ShowDialog() == true)
+                {
+                    File.WriteAllText(saveFileDialog.FileName, savingData);
+                    openedFilePath = saveFileDialog.FileName;
+
+                    SetWindowsTitle(openedFilePath);
+                }
+            }
+            catch(Exception ex)
             {
-                File.WriteAllText(saveFileDialog.FileName, savingData);
-                openedFilePath = saveFileDialog.FileName;
-
-                SetWindowsTitle(openedFilePath);
+                MessageBox.Show($"{ex.Message}");
             }
         }
 
@@ -161,82 +175,101 @@ namespace WpfApp1
         }
         private void BtnGenGCode_Click(object sender, RoutedEventArgs e)
         {
-            if (CheckParameterValidation() == false)
+            try
             {
-                MessageBox.Show("Enter All Parameters", "Info", MessageBoxButton.OK, MessageBoxImage.Information);
-                return;
-            }
+                if (NumCyclesPerShell.Text == "0")
+                {
+                    MessageBox.Show("Cycles per shell must be greater than zero to proceed");
+                    return;
+                }
+                if (CheckParameterValidation() == false)
+                {
+                    MessageBox.Show("Enter All Parameters", "Info", MessageBoxButton.OK, MessageBoxImage.Information);
+                    return;
+                }
 
-            if (string.IsNullOrWhiteSpace(StrPatternName.Text))
+                if (string.IsNullOrWhiteSpace(StrPatternName.Text))
+                {
+                    MessageBox.Show("Enter File Name", "Info", MessageBoxButton.OK, MessageBoxImage.Information);
+                    return;
+                }
+
+                TxtGcodeOutput.Text = "";
+
+                string[] GCode = Generate_GCode(out double EstTapeFeet);
+
+                if (ValidatePumpCodeParameter() == false)
+                {
+                    MessageBox.Show("Enter All Pump Parameters", "Info", MessageBoxButton.OK, MessageBoxImage.Information);
+                    return;
+                }
+                string[] pumpCode = GetPumpCode(GCode.Length);
+
+                // Add Main part of GCode
+                TxtGcodeOutput.Text = "%Startup_GCODE%\n" + TxtStartGcode.Text + "\n";
+                for (int i = 0; i < GCode.Length; i++)
+                {
+                    if (i == 0)
+                        TxtGcodeOutput.Text = TxtGcodeOutput.Text + GCode[i] + "\t\tF" + NumWrapFeedRate.Text + " " + pumpCode[i] + "\n";
+                    else
+                        TxtGcodeOutput.Text = TxtGcodeOutput.Text + GCode[i] + "\t\t" + pumpCode[i] + "\n";
+                }
+                TxtGcodeOutput.Text = TxtGcodeOutput.Text + "%End_of_main_WrapGCODE%\n" + TxtEndMWrap.Text + "\n";
+
+                // Add Completed GCode
+                TxtGcodeOutput.Text = TxtGcodeOutput.Text + @"\\Burnish Selection" + "\n";
+
+                int startSpeed = int.Parse(NumBurStartSpeed.Text);
+                int finalSpeed = int.Parse(NumBurFinalSpeed.Text);
+                int rampStep = int.Parse(NumBurRampSteps.Text);
+                int[] burnishSpeed = GenerateBurnishSpeed(startSpeed, finalSpeed, rampStep);
+
+                for (int i = 0; i < GCode.Length; i++)
+                {
+                    if (IsEven(i) && (i < burnishSpeed.Length * 2))
+                        TxtGcodeOutput.Text = TxtGcodeOutput.Text + GCode[i] + "\tF" + burnishSpeed[i / 2] + "\n";
+                    else
+                        TxtGcodeOutput.Text = TxtGcodeOutput.Text + GCode[i] + "\n";
+                }
+                // Here implement completed GCode
+
+                TxtGcodeOutput.Text = TxtGcodeOutput.Text + "%End_of_Completed_Wrap%" + "\n" + TxtEndCWrap.Text;
+
+                NumTotalEstFeet.Text = Math.Round(EstTapeFeet, 2).ToString();
+
+            }
+            catch(Exception ex)
             {
-                MessageBox.Show("Enter File Name", "Info", MessageBoxButton.OK, MessageBoxImage.Information);
-                return;
+                MessageBox.Show($"{ex.Message}");
             }
-
-            TxtGcodeOutput.Text = "";
-
-            string[] GCode = Generate_GCode(out double EstTapeFeet);
-
-            if (ValidatePumpCodeParameter() == false)
-            {
-                MessageBox.Show("Enter All Pump Parameters", "Info", MessageBoxButton.OK, MessageBoxImage.Information);
-                return;
-            }
-            string[] pumpCode = GetPumpCode(GCode.Length);
-
-            // Add Main part of GCode
-            TxtGcodeOutput.Text = "%Startup_GCODE%\n" + TxtStartGcode.Text + "\n";
-            for (int i = 0; i < GCode.Length; i++)
-            {
-                if (i == 0)
-                    TxtGcodeOutput.Text = TxtGcodeOutput.Text + GCode[i] + "\t\tF" + NumWrapFeedRate.Text + " " + pumpCode[i] + "\n";
-                else
-                    TxtGcodeOutput.Text = TxtGcodeOutput.Text + GCode[i] + "\t\t" + pumpCode[i] + "\n";
-            }
-            TxtGcodeOutput.Text = TxtGcodeOutput.Text + "%End_of_main_WrapGCODE%\n" + TxtEndMWrap.Text + "\n";
-
-            // Add Completed GCode
-            TxtGcodeOutput.Text = TxtGcodeOutput.Text + @"\\Burnish Selection" + "\n";
-
-            int startSpeed = int.Parse(NumBurStartSpeed.Text);
-            int finalSpeed = int.Parse(NumBurFinalSpeed.Text);
-            int rampStep = int.Parse(NumBurRampSteps.Text);
-            int[] burnishSpeed = GenerateBurnishSpeed(startSpeed, finalSpeed, rampStep);
-
-            for (int i = 0; i < GCode.Length; i++)
-            {
-                if (IsEven(i) && (i < burnishSpeed.Length * 2))
-                    TxtGcodeOutput.Text = TxtGcodeOutput.Text + GCode[i] + "\tF" + burnishSpeed[i / 2] + "\n";
-                else
-                    TxtGcodeOutput.Text = TxtGcodeOutput.Text + GCode[i] + "\n";
-            }
-            // Here implement completed GCode
-
-            TxtGcodeOutput.Text = TxtGcodeOutput.Text + "%End_of_Completed_Wrap%" + "\n" + TxtEndCWrap.Text;
-
-            NumTotalEstFeet.Text = Math.Round(EstTapeFeet, 2).ToString();
-
         }
 
         private void BtnExportGCode_Click(object sender, RoutedEventArgs e)
         {
-            if (string.IsNullOrWhiteSpace(TxtGcodeOutput.Text))
+            try
             {
-                MessageBox.Show("Generate GCode First");
-                return;
+                if (string.IsNullOrWhiteSpace(TxtGcodeOutput.Text))
+                {
+                    MessageBox.Show("Generate GCode First");
+                    return;
+                }
+
+                SaveFileDialog saveFileDialog = new SaveFileDialog
+                {
+                    Filter = "txt files (*.txt)|*.txt|All files (*.*)|*.*",
+                    DefaultExt = "txt",
+                    FileName = $"{StrPatternName.Text}.txt"
+                };
+
+                if (saveFileDialog.ShowDialog() == true)
+                {
+                    File.WriteAllText(saveFileDialog.FileName, TxtGcodeOutput.Text);
+                    openedFilePath = saveFileDialog.FileName;
+                }
             }
-
-            SaveFileDialog saveFileDialog = new SaveFileDialog
+            catch(Exception ex)
             {
-                Filter = "txt files (*.txt)|*.txt|All files (*.*)|*.*",
-                DefaultExt = "txt",
-                FileName = $"{StrPatternName.Text}.txt"
-            };
-
-            if (saveFileDialog.ShowDialog() == true)
-            {
-                File.WriteAllText(saveFileDialog.FileName, TxtGcodeOutput.Text);
-                openedFilePath = saveFileDialog.FileName;
+                MessageBox.Show($"{ex.Message}");
             }
         }
 
@@ -395,7 +428,8 @@ namespace WpfApp1
                                                 if (!string.IsNullOrWhiteSpace(TxtStartGcode.Text))
                                                     if (!string.IsNullOrWhiteSpace(TxtEndMWrap.Text))
                                                         if (!string.IsNullOrWhiteSpace(TxtEndCWrap.Text))
-                                                            return true;
+                                                            if (!string.IsNullOrWhiteSpace(NumShellSize.Text))
+                                                                return true;
             return false;
         }
 
@@ -467,7 +501,7 @@ namespace WpfApp1
                 Overwrap_Percentage = NumOverWrapPcg.Text,
                 Total_Layers = NumTotalLayers.Text,
                 Wraps_Per_Layer = NumWrapsPerLayer.Text,
-
+               
                 Burnish_Start_Speed = NumBurStartSpeed.Text,
                 Burnish_Ramp_Steps = NumBurRampSteps.Text,
                 Burnish_Final_Steps = NumBurFinalSpeed.Text,
@@ -543,17 +577,38 @@ namespace WpfApp1
 
         private int[] GenerateBurnishSpeed(int startSpeed, int finalSpeed, int rampSteps)
         {
-            double dblRampSpeed = (finalSpeed - startSpeed) / (rampSteps - 1);
-            int rampSpeed = RoundToNearest25(dblRampSpeed);
-            int[] burnishSpeed = new int[rampSteps];
-            for(int i = 0; i < rampSteps; i++)
+            try
             {
-                if (i == rampSteps - 1)
-                    burnishSpeed[i] = finalSpeed;
-                else
-                    burnishSpeed[i] = startSpeed + i * rampSpeed;
+                double dblRampSpeed = (finalSpeed - startSpeed) / (rampSteps - 1);
+                int rampSpeed = RoundToNearest25(dblRampSpeed);
+                int[] burnishSpeed = new int[rampSteps];
+
+                burnishSpeed[0] = startSpeed;
+                for (int i = 1; i < rampSteps; i++)
+                {
+                    if (i == 1)
+                    {
+                        if (finalSpeed - startSpeed >= 25)
+                            burnishSpeed[1] = RoundToNearest25(burnishSpeed[0] + 13 + rampSpeed);
+                        else
+                            burnishSpeed[1] = startSpeed;
+                    }
+                    else if (i != 1)
+                    {
+                        burnishSpeed[i] = burnishSpeed[i - 1] + rampSpeed;
+                        if (burnishSpeed[i] > finalSpeed)
+                            burnishSpeed[i] = finalSpeed;
+                    }
+
+                    if (i == rampSteps - 1)
+                        burnishSpeed[i] = finalSpeed;
+                }
+                return burnishSpeed;
             }
-            return burnishSpeed;
+            catch
+            {
+                return new int[] { startSpeed, finalSpeed };
+            }
         }
 
         private bool IsEven(int number)
