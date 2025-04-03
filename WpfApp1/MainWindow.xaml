@@ -6,9 +6,9 @@
         xmlns:local="clr-namespace:WpfApp1"
         mc:Ignorable="d"
         WindowStartupLocation="CenterScreen" 
-        Icon="Asset/favicon.ico"
+        Icon="Asset/gmark.ico"
         Title="Spyder Pattern Generator"    
-        ResizeMode="CanMinimize"
+        ResizeMode="NoResize"
         Height="759.065" 
         Width="1493.445">
 

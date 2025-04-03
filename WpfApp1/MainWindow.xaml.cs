@@ -33,7 +33,7 @@ namespace WpfApp1
         public MainWindow()
         {
             InitializeComponent();
-           
+
             StrPumpOffCode.IsEnabled = false;
             StrPumpOnCode.IsEnabled = false;
             NumCyclesPerShell.IsEnabled = false;

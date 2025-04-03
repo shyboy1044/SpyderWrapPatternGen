@@ -35,7 +35,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup>
-    <ApplicationIcon>Asset\favicon.ico</ApplicationIcon>
+    <ApplicationIcon>gmark.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Newtonsoft.Json, Version=6.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
@@ -102,10 +102,10 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Asset\favicon.ico" />
+    <Resource Include="Asset\gmark.ico" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Asset\mark.png" />
+    <Resource Include="gmark.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
