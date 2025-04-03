@@ -33,7 +33,7 @@ namespace WpfApp1
         public MainWindow()
         {
             InitializeComponent();
-           
+
             StrPumpOffCode.IsEnabled = false;
             StrPumpOnCode.IsEnabled = false;
             NumCyclesPerShell.IsEnabled = false;
@@ -317,7 +317,7 @@ namespace WpfApp1
             int TotalLayers = int.Parse(NumTotalLayers.Text);
 
               // Ask client About this value!
-            float YAxisPcg = 0.98f;
+            float YAxisPcg = float.Parse(NumYAixsPcg.Text) / 100;
 
             double XOffSet = DDiameter * 3.1415 * DDiameterPcg * TotalKickPcg;
             double XAxisCircle = (DDiameter * 3.1415 * DDiameterPcg) - XOffSet;
@@ -446,7 +446,7 @@ namespace WpfApp1
                 if (Pump.Length > CycPerShell * Duration)
                 {
                     int StartPos = Pump.Length / CycPerShell;
-                    for (int i = 0; i * StartPos < Pump.Length; i++)
+                    for (int i = 0; i * StartPos + Duration - 1 < Pump.Length; i++)
                     {
                         Pump[i * StartPos] = PumpOnCode;
                         Pump[i * StartPos + Duration - 1] = PumpOffCode;

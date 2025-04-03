@@ -6,9 +6,9 @@
         xmlns:local="clr-namespace:WpfApp1"
         mc:Ignorable="d"
         WindowStartupLocation="CenterScreen" 
-        Icon="Asset/favicon.ico"
+        Icon="Asset/gmark.ico"
         Title="Spyder Pattern Generator"    
-        ResizeMode="CanMinimize"
+        ResizeMode="NoResize"
         Height="759.065" 
         Width="1493.445">
 
@@ -141,6 +141,9 @@
 
                     <TextBlock Grid.Row="0" Grid.Column="3" Text="Circ +" Margin="0,0,10,5"/>
                     <TextBox x:Name="NumCircPlus" Grid.Row="1" Grid.Column="3" Margin="0,0,10,15" Style="{StaticResource NumberInputTextBox}"/>
+
+                    <TextBlock Grid.Row="0" Grid.Column="4" Text="YAxis %" Margin="0,0,10,5"/>
+                    <TextBox x:Name="NumYAixsPcg" Grid.Row="1" Grid.Column="4" Margin="0,0,10,15" Style="{StaticResource NumberInputTextBox}"/>
 
                     <TextBlock Grid.Row="0" Grid.Column="5" Text="Total Kick" Margin="0,0,10,5"/>
                     <TextBox x:Name="NumTotalKick" Grid.Row="1" Grid.Column="5" Margin="0,0,10,15" Style="{StaticResource NumberInputTextBox}"/>
