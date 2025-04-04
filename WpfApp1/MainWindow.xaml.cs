@@ -19,6 +19,7 @@ using Microsoft.Win32;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Path = System.IO.Path;
+using System.Windows.Interop;
 
 namespace WpfApp1
 {
@@ -429,7 +430,8 @@ namespace WpfApp1
                                                     if (!string.IsNullOrWhiteSpace(TxtEndMWrap.Text))
                                                         if (!string.IsNullOrWhiteSpace(TxtEndCWrap.Text))
                                                             if (!string.IsNullOrWhiteSpace(NumShellSize.Text))
-                                                                return true;
+                                                                if (!string.IsNullOrWhiteSpace(NumYAixsPcg.Text))
+                                                                    return true;
             return false;
         }
 
@@ -494,6 +496,7 @@ namespace WpfApp1
                 Measured_Size = NumMeasuredSize.Text,
                 Diameter_Percentage = NumDiameterPcg.Text,
                 Circ_Plus = NumCircPlus.Text,
+                YAixs_Percentage = NumYAixsPcg.Text,
                 Total_Kick = NumTotalKick.Text,
                 Kick_Ratio = NumKickRatioPcg.Text,
 
@@ -533,6 +536,7 @@ namespace WpfApp1
             NumMeasuredSize.Text = mumContent.Measured_Size;
             NumDiameterPcg.Text = mumContent.Diameter_Percentage;
             NumCircPlus.Text = mumContent.Circ_Plus;
+            NumYAixsPcg.Text = mumContent.YAixs_Percentage;
             NumTotalKick.Text = mumContent.Total_Kick;
             NumKickRatioPcg.Text = mumContent.Kick_Ratio;
             NumWrapFeedRate.Text = mumContent.Wrap_Feedrate;
@@ -551,6 +555,7 @@ namespace WpfApp1
             StrPumpOffCode.Text = mumContent.Pump_Off_Code;
             NumCyclesPerShell.Text = mumContent.Pump_Cycles;
             NumDuration.Text = mumContent.Pump_Duration;
+
         }
 
         private static int RoundToNearest25(double inputValue)
@@ -617,7 +622,7 @@ namespace WpfApp1
                 return true;
             return false;
         }
-
+        
     }
 }
 
