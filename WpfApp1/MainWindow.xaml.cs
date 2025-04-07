@@ -246,18 +246,29 @@ namespace WpfApp1
                 // Add Completed GCode
                 TxtGcodeOutput.Text = TxtGcodeOutput.Text + @"\\Burnish Selection" + "\n";
 
-                int startSpeed = int.Parse(NumBurStartSpeed.Text);
-                int finalSpeed = int.Parse(NumBurFinalSpeed.Text);
-                int rampStep = int.Parse(NumBurRampSteps.Text);
-                int[] burnishSpeed = GenerateBurnishSpeed(startSpeed, finalSpeed, rampStep);
-
-                for (int i = 0; i < GCode.Length; i++)
+                if (string.IsNullOrWhiteSpace(NumBurStartSpeed.Text) || string.IsNullOrWhiteSpace(NumBurFinalSpeed.Text) || string.IsNullOrWhiteSpace(NumBurRampSteps.Text))
                 {
-                    if (IsEven(i) && (i < burnishSpeed.Length * 2))
-                        TxtGcodeOutput.Text = TxtGcodeOutput.Text + GCode[i] + "  F" + burnishSpeed[i / 2] + "\n";
-                    else
+                    for (int i = 0; i < GCode.Length; i++)
+                    {
                         TxtGcodeOutput.Text = TxtGcodeOutput.Text + GCode[i] + "\n";
+                    }
                 }
+                else
+                {
+                    int startSpeed = int.Parse(NumBurStartSpeed.Text);
+                    int finalSpeed = int.Parse(NumBurFinalSpeed.Text);
+                    int rampStep = int.Parse(NumBurRampSteps.Text);
+                    int[] burnishSpeed = GenerateBurnishSpeed(startSpeed, finalSpeed, rampStep);
+
+                    for (int i = 0; i < GCode.Length; i++)
+                    {
+                        if (IsEven(i) && (i < burnishSpeed.Length * 2))
+                            TxtGcodeOutput.Text = TxtGcodeOutput.Text + GCode[i] + "  F" + burnishSpeed[i / 2] + "\n";
+                        else
+                            TxtGcodeOutput.Text = TxtGcodeOutput.Text + GCode[i] + "\n";
+                    }
+                }
+
                 // Here implement completed GCode
 
                 TxtGcodeOutput.Text = TxtGcodeOutput.Text + "%End_of_Completed_Wrap%" + "\n" + TxtEndCWrap.Text;
