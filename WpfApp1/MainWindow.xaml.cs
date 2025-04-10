@@ -268,12 +268,7 @@ namespace WpfApp1
                             TxtGcodeOutput.Text = TxtGcodeOutput.Text + GCode[i] + "\n";
                     }
                 }
-
-                if (StrReloadCmd.Text == "Reload Command")
-                {
-                    TxtGcodeOutput.Text = TxtGcodeOutput.Text + $"M23 /{Path.GetFileName(openedFilePath)} \nM24\n";
-                }
-
+                
                 // Here implement completed GCode
 
                 TxtGcodeOutput.Text = TxtGcodeOutput.Text + "%End_of_Completed_Wrap%" + "\n" + TxtEndCWrap.Text;
@@ -324,6 +319,14 @@ namespace WpfApp1
 
             // Regex: Allow numbers and single demical point
             e.Handled = !Regex.IsMatch(fullText, @"^(\d+\.?\d*)?$");
+        }
+
+        // Allow integers and not demical and string
+        private void IntegerOnlyTextBox_PreviewTextInput(object sender, TextCompositionEventArgs e)
+        {
+            TextBox textBox = sender as TextBox;
+            string fullText = textBox.Text.Insert(textBox.SelectionStart, e.Text);
+            e.Handled = !Regex.IsMatch(fullText, @"^[0-9]+$");
         }
 
         // Prevent pasting invalid value
