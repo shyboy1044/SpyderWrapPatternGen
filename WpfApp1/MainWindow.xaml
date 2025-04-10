@@ -196,16 +196,19 @@
                     <TextBlock Grid.Row="1" Grid.Column="3" Text="per layer" Margin="0,0,10,5"/>
                     <TextBox x:Name="NumWrapsPerLayer" Grid.Row="2" Grid.Column="3" Margin="0,0,10,0" Style="{StaticResource NumberInputTextBox}"/>
 
-                    <TextBlock Text="Burnish Speed Variables" Grid.Column="5" Grid.Row="0" Grid.ColumnSpan="5" Margin="0,0,0,10" Style="{StaticResource SubTitle}"/>
+                    <TextBlock Text="Burnish Speed Variables" Grid.Column="4" Grid.Row="0" Grid.ColumnSpan="5" Margin="0,0,0,10" Style="{StaticResource SubTitle}"/>
+
+                    <TextBlock Grid.Row="1" Grid.Column="4" Text="Burnish %"/>
+                    <TextBox x:Name="NumBurLayerPcg" Grid.Row="2" Grid.Column="4" Margin="0,0,10,0" Style="{StaticResource NumberInputTextBox}"/>
 
                     <TextBlock Grid.Row="1" Grid.Column="5" Text="Start Speed" Margin="0,0,10,5"/>
-                    <TextBox x:Name="NumBurStartSpeed" Grid.Row="2" Grid.Column="5 " Margin="0,0,10,0" Style="{StaticResource NumberInputTextBox}"/>
+                    <TextBox x:Name="NumBurStartSpeed" Grid.Row="2" Grid.Column="5 " Margin="0,0,10,0" Style="{StaticResource IntegerInputTextBox}"/>
 
                     <TextBlock Grid.Row="1" Grid.Column="6" Text="Ramp Steps" Margin="0,0,10,5"/>
-                    <TextBox x:Name="NumBurRampSteps" Grid.Row="2" Grid.Column="6" Margin="0,0,10,0" Style="{StaticResource NumberInputTextBox}"/>
+                    <TextBox x:Name="NumBurRampSteps" Grid.Row="2" Grid.Column="6" Margin="0,0,10,0" Style="{StaticResource IntegerInputTextBox}"/>
 
                     <TextBlock Grid.Row="1" Grid.Column="7" Text="Final Speed" Margin="0,0,10,5"/>
-                    <TextBox x:Name="NumBurFinalSpeed" Grid.Row="2" Grid.Column="7" Margin="0,0,10,0" Style="{StaticResource NumberInputTextBox}"/>
+                    <TextBox x:Name="NumBurFinalSpeed" Grid.Row="2" Grid.Column="7" Margin="0,0,10,0" Style="{StaticResource IntegerInputTextBox}"/>
                 </Grid>
             </StackPanel>
 
@@ -270,10 +273,10 @@
 
                     <!--                 <TextBlock Grid.Row="0" Grid.Column="3" Text="Enable Pump" Margin="0,0,10,5"/> -->
                     <TextBlock Grid.Row="0" Grid.Column="5" Grid.ColumnSpan="2" Text="Cycles per shell" Margin="0,0,10,5"/>
-                    <TextBox x:Name="NumCyclesPerShell" Grid.Row="1" Grid.Column="5" Grid.ColumnSpan="2" Margin="0,0,10,0" Style="{StaticResource NumberInputTextBox}"/>
+                    <TextBox x:Name="NumCyclesPerShell" Grid.Row="1" Grid.Column="5" Grid.ColumnSpan="2" Margin="0,0,10,0" Style="{StaticResource IntegerInputTextBox}"/>
 
                     <TextBlock Grid.Row="0" Grid.Column="7" Text="Duration" Margin="0,0,10,5"/>
-                    <TextBox x:Name="NumDuration" Grid.Row="1" Grid.Column="7" Margin="0,0,10,0" Style="{StaticResource NumberInputTextBox}"/>
+                    <TextBox x:Name="NumDuration" Grid.Row="1" Grid.Column="7" Margin="0,0,10,0" Style="{StaticResource IntegerInputTextBox}"/>
                     <CheckBox Content="Use" Grid.Column="2" Grid.Row="1" Checked="Pump_Enabled" VerticalAlignment="Center" 
                               Unchecked="Pump_Disabled" x:Name="pumpState" Width="40" />
                 </Grid>

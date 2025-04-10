@@ -255,12 +255,13 @@ namespace WpfApp1
                 }
                 else
                 {
+                    float burLayerPcg = float.Parse(NumBurLayerPcg.Text) / 100;
                     int startSpeed = int.Parse(NumBurStartSpeed.Text);
                     int finalSpeed = int.Parse(NumBurFinalSpeed.Text);
                     int rampStep = int.Parse(NumBurRampSteps.Text);
                     int[] burnishSpeed = GenerateBurnishSpeed(startSpeed, finalSpeed, rampStep);
 
-                    for (int i = 0; i < GCode.Length; i++)
+                    for (int i = 0; i < Math.Floor(GCode.Length * burLayerPcg); i++)
                     {
                         if (IsEven(i) && (i < burnishSpeed.Length * 2))
                             TxtGcodeOutput.Text = TxtGcodeOutput.Text + GCode[i] + "  F" + burnishSpeed[i / 2] + "\n";
@@ -476,7 +477,8 @@ namespace WpfApp1
                                                         if (!string.IsNullOrWhiteSpace(TxtEndCWrap.Text))
                                                             if (!string.IsNullOrWhiteSpace(NumShellSize.Text))
                                                                 if (!string.IsNullOrWhiteSpace(NumYAixsPcg.Text))
-                                                                    return true;
+                                                                    if (!string.IsNullOrWhiteSpace(NumBurLayerPcg.Text))
+                                                                        return true;
             return false;
         }
 
@@ -549,7 +551,8 @@ namespace WpfApp1
                 Overwrap_Percentage = NumOverWrapPcg.Text,
                 Total_Layers = NumTotalLayers.Text,
                 Wraps_Per_Layer = NumWrapsPerLayer.Text,
-               
+
+                Burnish_Layer_Percentage = NumBurLayerPcg.Text,
                 Burnish_Start_Speed = NumBurStartSpeed.Text,
                 Burnish_Ramp_Steps = NumBurRampSteps.Text,
                 Burnish_Final_Steps = NumBurFinalSpeed.Text,
@@ -588,6 +591,7 @@ namespace WpfApp1
             NumOverWrapPcg.Text = mumContent.Overwrap_Percentage;
             NumTotalLayers.Text = mumContent.Total_Layers;
             NumWrapsPerLayer.Text = mumContent.Wraps_Per_Layer;
+            NumBurLayerPcg.Text = mumContent.Burnish_Layer_Percentage;
             NumBurStartSpeed.Text = mumContent.Burnish_Start_Speed;
             NumBurRampSteps.Text = mumContent.Burnish_Ramp_Steps;
             NumBurFinalSpeed.Text = mumContent.Burnish_Final_Steps;
