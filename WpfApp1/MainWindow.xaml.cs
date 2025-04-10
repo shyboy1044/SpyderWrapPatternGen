@@ -34,11 +34,37 @@ namespace WpfApp1
         public MainWindow()
         {
             InitializeComponent();
+            Loaded += MainWindow_Loaded;
 
             StrPumpOffCode.IsEnabled = false;
             StrPumpOnCode.IsEnabled = false;
             NumCyclesPerShell.IsEnabled = false;
             NumDuration.IsEnabled = false;
+        }
+
+        private void MainWindow_Loaded(Object sender, RoutedEventArgs e)
+        {
+            // Get the screen size
+            double screenWidth = SystemParameters.PrimaryScreenWidth;
+            double screenHeight = SystemParameters.PrimaryScreenHeight;
+
+            if ((screenWidth < 1000) || (screenHeight < 700))
+            {
+                this.Width = 800;
+                this.Height = 570;
+            }
+            else
+            {
+                this.Width = 1024;
+                this.Height = 700;
+            }
+
+            // Get the screen working area
+            var workingArea = SystemParameters.WorkArea;
+
+            // Calculate center position
+            this.Left = (workingArea.Width - this.ActualWidth) / 2 + workingArea.Left;
+            this.Top = (workingArea.Height - this.ActualHeight) / 2 + workingArea.Top;
         }
 
         private void BtnLoad_Click(object sender, RoutedEventArgs e)
@@ -211,27 +237,43 @@ namespace WpfApp1
                 for (int i = 0; i < GCode.Length; i++)
                 {
                     if (i == 0)
-                        TxtGcodeOutput.Text = TxtGcodeOutput.Text + GCode[i] + "\t\tF" + NumWrapFeedRate.Text + " " + pumpCode[i] + "\n";
+                        TxtGcodeOutput.Text = TxtGcodeOutput.Text + GCode[i] + "  F" + NumWrapFeedRate.Text + " " + pumpCode[i] + "\n";
                     else
-                        TxtGcodeOutput.Text = TxtGcodeOutput.Text + GCode[i] + "\t\t" + pumpCode[i] + "\n";
+                        TxtGcodeOutput.Text = TxtGcodeOutput.Text + GCode[i] + "  " + pumpCode[i] + "\n";
                 }
                 TxtGcodeOutput.Text = TxtGcodeOutput.Text + "%End_of_main_WrapGCODE%\n" + TxtEndMWrap.Text + "\n";
 
                 // Add Completed GCode
                 TxtGcodeOutput.Text = TxtGcodeOutput.Text + @"\\Burnish Selection" + "\n";
 
-                int startSpeed = int.Parse(NumBurStartSpeed.Text);
-                int finalSpeed = int.Parse(NumBurFinalSpeed.Text);
-                int rampStep = int.Parse(NumBurRampSteps.Text);
-                int[] burnishSpeed = GenerateBurnishSpeed(startSpeed, finalSpeed, rampStep);
-
-                for (int i = 0; i < GCode.Length; i++)
+                if (string.IsNullOrWhiteSpace(NumBurStartSpeed.Text) || string.IsNullOrWhiteSpace(NumBurFinalSpeed.Text) || string.IsNullOrWhiteSpace(NumBurRampSteps.Text))
                 {
-                    if (IsEven(i) && (i < burnishSpeed.Length * 2))
-                        TxtGcodeOutput.Text = TxtGcodeOutput.Text + GCode[i] + "\tF" + burnishSpeed[i / 2] + "\n";
-                    else
+                    for (int i = 0; i < GCode.Length; i++)
+                    {
                         TxtGcodeOutput.Text = TxtGcodeOutput.Text + GCode[i] + "\n";
+                    }
                 }
+                else
+                {
+                    int startSpeed = int.Parse(NumBurStartSpeed.Text);
+                    int finalSpeed = int.Parse(NumBurFinalSpeed.Text);
+                    int rampStep = int.Parse(NumBurRampSteps.Text);
+                    int[] burnishSpeed = GenerateBurnishSpeed(startSpeed, finalSpeed, rampStep);
+
+                    for (int i = 0; i < GCode.Length; i++)
+                    {
+                        if (IsEven(i) && (i < burnishSpeed.Length * 2))
+                            TxtGcodeOutput.Text = TxtGcodeOutput.Text + GCode[i] + "  F" + burnishSpeed[i / 2] + "\n";
+                        else
+                            TxtGcodeOutput.Text = TxtGcodeOutput.Text + GCode[i] + "\n";
+                    }
+                }
+
+                if (StrReloadCmd.Text == "Reload Command")
+                {
+                    TxtGcodeOutput.Text = TxtGcodeOutput.Text + $"M23 /{Path.GetFileName(openedFilePath)} \nM24\n";
+                }
+
                 // Here implement completed GCode
 
                 TxtGcodeOutput.Text = TxtGcodeOutput.Text + "%End_of_Completed_Wrap%" + "\n" + TxtEndCWrap.Text;
@@ -622,7 +664,25 @@ namespace WpfApp1
                 return true;
             return false;
         }
-        
+
+        private void MainWindow_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            if (e.NewSize.Height <= 550)
+                return;
+            // Get the new height of the window
+            double newWindowHeight = e.NewSize.Height;
+
+            // Calculate the new height for the TextBox 
+            double textBoxHeight = newWindowHeight - 437;
+            double GcodeBoxHight = newWindowHeight - 520;
+
+            // Apply the new height to the TextBox
+            TxtGcodeOutput.Height = textBoxHeight;
+            TxtStartGcode.Height = GcodeBoxHight;
+            TxtEndCWrap.Height = GcodeBoxHight;
+            TxtEndMWrap.Height = GcodeBoxHight;
+        }
+
     }
 }
 
