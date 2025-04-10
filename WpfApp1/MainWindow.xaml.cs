@@ -269,6 +269,11 @@ namespace WpfApp1
                     }
                 }
 
+                if (StrReloadCmd.Text == "Reload Command")
+                {
+                    TxtGcodeOutput.Text = TxtGcodeOutput.Text + $"M23 /{Path.GetFileName(openedFilePath)} \nM24\n";
+                }
+
                 // Here implement completed GCode
 
                 TxtGcodeOutput.Text = TxtGcodeOutput.Text + "%End_of_Completed_Wrap%" + "\n" + TxtEndCWrap.Text;
