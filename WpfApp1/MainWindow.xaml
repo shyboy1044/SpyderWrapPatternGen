@@ -233,6 +233,10 @@
                     <TextBlock Grid.Row="0" Grid.Column="4" Grid.ColumnSpan="2" Text="End of Complete Wrap" Margin="0,0,10,5"/>
                     <TextBox x:Name="TxtEndCWrap" Grid.Row="1" Grid.Column="4" Grid.ColumnSpan="2" Height="60" Margin="0,0,10,15" TextAlignment="Left"
                              TextWrapping="Wrap" AcceptsReturn="True" VerticalScrollBarVisibility="Auto" VerticalAlignment="Top" MinHeight="60"/>
+
+                    <TextBlock Grid.Row="0" Grid.Column="6" TextAlignment="Left" Grid.ColumnSpan="2" Text="Reload Command"/>
+                    <TextBox x:Name="StrReloadCmd" Grid.Row="1" Grid.Column="6" Grid.ColumnSpan="2" Height="30" Margin="0,0,10,15" TextAlignment="Left"
+                              AcceptsReturn="True" VerticalScrollBarVisibility="Auto" VerticalAlignment="Top" MinHeight="30"/>
                 </Grid>
             </StackPanel>
 
