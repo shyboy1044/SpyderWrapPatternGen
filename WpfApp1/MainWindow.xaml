@@ -103,11 +103,11 @@
             <Button Content="Export GCode As File" Margin="0,0,0,20" Click="BtnExportGCode_Click"/>
 
             <TextBlock Text="Pattern Name" Margin="0,0,0,5" Style="{StaticResource SubTitle}"/>
-            <TextBox x:Name="StrPatternName" Margin="0,0,0,20" TextAlignment="Left"/>
+            <TextBox x:Name="StrPatternName" Margin="0,0,0,13" TextAlignment="Left"/>
 
-            <TextBlock Text="Gcode Output" Margin="0,0,0,5" />
+            <TextBlock Text="Gcode Output" Margin="0,0,0,5" Style="{StaticResource SubTitle}"/>
             <TextBox x:Name="TxtGcodeOutput" Height="60" TextWrapping="Wrap" AcceptsReturn="True" TextAlignment="Left"
-                     VerticalScrollBarVisibility="Auto" MinHeight="143"/>
+                     VerticalScrollBarVisibility="Auto" MinHeight="147"/>
         </StackPanel>
 
         <!-- Shell Size Variables Section -->
@@ -157,13 +157,13 @@
             </StackPanel>
 
             <!-- Shell Description -->
-            <StackPanel Grid.Row="2" Grid.Column="1" Margin="0,7,0,7">
+            <StackPanel Grid.Row="2" Grid.Column="1" Margin="0,11,0,7">
                 <TextBlock Text="Shell Description" Margin="0,0,0,5" Style="{StaticResource SubTitle}"/>
                 <TextBox x:Name="StrShellDescription" Margin="0,0,12,0" TextAlignment="Left"/>
             </StackPanel>
 
             <!-- Wrap Speed Variables Section -->
-            <StackPanel Margin="0,7,0,7">
+            <StackPanel Margin="0,25,0,7">
 
                 <Grid>
                     <Grid.ColumnDefinitions>
@@ -196,7 +196,7 @@
                     <TextBlock Grid.Row="1" Grid.Column="3" Text="per layer" Margin="0,0,10,5"/>
                     <TextBox x:Name="NumWrapsPerLayer" Grid.Row="2" Grid.Column="3" Margin="0,0,10,0" Style="{StaticResource NumberInputTextBox}"/>
 
-                    <TextBlock Text="Burnish Speed Variables" Grid.Column="4" Grid.Row="0" Grid.ColumnSpan="5" Margin="0,0,0,10" Style="{StaticResource SubTitle}"/>
+                    <TextBlock Text="Burnish Variables" Grid.Column="4" Grid.Row="0" Grid.ColumnSpan="5" Margin="0,0,0,10" Style="{StaticResource SubTitle}"/>
 
                     <TextBlock Grid.Row="1" Grid.Column="4" Text="Burnish %"/>
                     <TextBox x:Name="NumBurLayerPcg" Grid.Row="2" Grid.Column="4" Margin="0,0,10,0" Style="{StaticResource NumberInputTextBox}"/>
@@ -213,8 +213,8 @@
             </StackPanel>
 
             <!-- Machine G-Code Variables Section -->
-            <StackPanel Margin="0,7,0,7">
-                <TextBlock Text="Machine G-Code Variables" Margin="0,0,0,10" Style="{StaticResource SubTitle}"/>
+            <StackPanel Margin="0,7,0,0">
+                <TextBlock Text="Machine G-Code Variables" Margin="0,0,0,3" Style="{StaticResource SubTitle}"/>
 
                 <Grid>
                     <Grid.ColumnDefinitions>
@@ -232,7 +232,7 @@
                         <RowDefinition Height="Auto"/>
                     </Grid.RowDefinitions>
 
-                    <TextBlock Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" Text="Startup Gcode" Margin="0,0,10,5"/>
+                    <TextBlock Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" Text="Startup GCode" Margin="0,0,10,5"/>
                     <TextBox x:Name="TxtStartGcode" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Height="60" Margin="0,0,10,15" TextAlignment="Left"
                              TextWrapping="Wrap" AcceptsReturn="True" VerticalScrollBarVisibility="Auto" VerticalAlignment="Top" MinHeight="60"/>
 
@@ -243,11 +243,16 @@
                     <TextBlock Grid.Row="0" Grid.Column="4" Grid.ColumnSpan="2" Text="End of Complete Wrap" Margin="0,0,10,5"/>
                     <TextBox x:Name="TxtEndCWrap" Grid.Row="1" Grid.Column="4" Grid.ColumnSpan="2" Height="60" Margin="0,0,10,15" TextAlignment="Left"
                              TextWrapping="Wrap" AcceptsReturn="True" VerticalScrollBarVisibility="Auto" VerticalAlignment="Top" MinHeight="60"/>
+
+       <!--             <TextBlock Grid.Row="0" Grid.Column="6" Grid.ColumnSpan="2" Text="Reload Command" Margin="0,0,10,5"/>
+                    <TextBox x:Name="TxtReloadCommand" Grid.Row="1" Grid.Column="6" Grid.ColumnSpan="2" Height="60" Margin="0,0,10,15" TextAlignment="Left"
+                             TextWrapping="Wrap" AcceptsReturn="True" VerticalScrollBarVisibility="Auto" VerticalAlignment="Top" MinHeight="60"/>
+-->
                 </Grid>
             </StackPanel>
 
             <!-- Bottom Section -->
-            <StackPanel Grid.Row="5" Grid.Column="1" Margin="0,7,0,0">
+            <StackPanel Grid.Row="5" Grid.Column="1" Margin="0,0,0,0">
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"/>
