@@ -1,25 +1,14 @@
-﻿using System;
+﻿using Microsoft.Win32;
+using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.IO;
+using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-using System.Text.RegularExpressions;
-using System.Diagnostics;
-using System.IO;
-using Microsoft.Win32;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using Path = System.IO.Path;
-using System.Windows.Interop;
 
 namespace WpfApp1
 {
@@ -124,13 +113,26 @@ namespace WpfApp1
             {
                 if (CheckParameterValidation() == false)
                 {
-                    MessageBox.Show("Enter All Parameters", "Info", MessageBoxButton.OK, MessageBoxImage.Information);
+                    MessageBox.Show("Please ensure all required parameters are entered before generating.", "Info", MessageBoxButton.OK, MessageBoxImage.Information);
                     return;
                 }
 
                 if (string.IsNullOrWhiteSpace(StrPatternName.Text))
                 {
-                    MessageBox.Show("Enter File Name", "Info", MessageBoxButton.OK, MessageBoxImage.Information);
+                    MessageBox.Show("Please enter a valid Pattern Name before saving the file.", "Info", MessageBoxButton.OK, MessageBoxImage.Information);
+                    return;
+                }
+
+                if (IsIncludeExtension(StrPatternName.Text) == "non")
+                {
+                    MessageBox.Show(
+                    "The Pattern Name must end with one of the following valid extensions: " +
+                    "\".tap\", \".gco\", or \".gcode\".\n\n" +
+                    "Please update the Pattern Name and try again.",
+                    "Invalid Pattern Name",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Warning
+                    );
                     return;
                 }
 
@@ -156,15 +158,29 @@ namespace WpfApp1
         {
             if (CheckParameterValidation() == false)
             {
-                MessageBox.Show("Enter All Parameters", "Info", MessageBoxButton.OK, MessageBoxImage.Information);
+                MessageBox.Show("Please ensure all required parameters are entered before generating.", "Info", MessageBoxButton.OK, MessageBoxImage.Information);
                 return;
             }
 
             if (string.IsNullOrWhiteSpace(StrPatternName.Text))
             {
-                MessageBox.Show("Enter File Name", "Info", MessageBoxButton.OK, MessageBoxImage.Information);
+                MessageBox.Show("Please enter a valid Pattern Name before saving the file.", "Info", MessageBoxButton.OK, MessageBoxImage.Information);
                 return;
             }
+
+            if (IsIncludeExtension(StrPatternName.Text) == "non")
+            {
+                MessageBox.Show(
+                "The Pattern Name must end with one of the following valid extensions: " +
+                "\".tap\", \".gco\", or \".gcode\".\n\n" +
+                "Please update the Pattern Name and try again.",
+                "Invalid Pattern Name",
+                MessageBoxButton.OK,
+                MessageBoxImage.Warning
+                );
+                return;
+            }
+
             SaveAsNewFile();
         }
 
@@ -178,7 +194,7 @@ namespace WpfApp1
                 {
                     Filter = "MUM files (*.mum)|*.mum|All files (*.*)|*.*",
                     DefaultExt = "mum",
-                    FileName = $"{StrPatternName.Text}.mum"
+                    FileName = $"{GetFileNameWithoutExtension(StrPatternName.Text)}.mum"
                 };
 
                 if (saveFileDialog.ShowDialog() == true)
@@ -206,18 +222,31 @@ namespace WpfApp1
             {
                 if (NumCyclesPerShell.Text == "0")
                 {
-                    MessageBox.Show("Cycles per shell must be greater than zero to proceed");
+                    MessageBox.Show("Cycles per shell must be greater than zero to proceed", "Info", MessageBoxButton.OK, MessageBoxImage.Information);
                     return;
                 }
                 if (CheckParameterValidation() == false)
                 {
-                    MessageBox.Show("Enter All Parameters", "Info", MessageBoxButton.OK, MessageBoxImage.Information);
+                    MessageBox.Show("Please ensure all required parameters are entered before generating.", "Info", MessageBoxButton.OK, MessageBoxImage.Information);
                     return;
                 }
 
                 if (string.IsNullOrWhiteSpace(StrPatternName.Text))
                 {
-                    MessageBox.Show("Enter File Name", "Info", MessageBoxButton.OK, MessageBoxImage.Information);
+                    MessageBox.Show("Please enter a valid Pattern Name before saving the file.", "Info", MessageBoxButton.OK, MessageBoxImage.Information);
+                    return;
+                }
+
+                if (IsIncludeExtension(StrPatternName.Text) == "non")
+                {
+                    MessageBox.Show(
+                    "The Pattern Name must end with one of the following valid extensions: " +
+                    "\".tap\", \".gco\", or \".gcode\".\n\n" +
+                    "Please update the Pattern Name and try again.",
+                    "Invalid Pattern Name",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Warning
+                    );
                     return;
                 }
 
@@ -227,13 +256,14 @@ namespace WpfApp1
 
                 if (ValidatePumpCodeParameter() == false)
                 {
-                    MessageBox.Show("Enter All Pump Parameters", "Info", MessageBoxButton.OK, MessageBoxImage.Information);
+                    MessageBox.Show("Please ensure all Pump Parameters are entered before proceeding.", "Info", MessageBoxButton.OK, MessageBoxImage.Information);
                     return;
                 }
                 string[] pumpCode = GetPumpCode(GCode.Length);
 
                 // Add Main part of GCode
-                TxtGcodeOutput.Text = "%Startup_GCODE%\n" + TxtStartGcode.Text + "\n";
+ //               TxtGcodeOutput.Text = "%Startup_GCODE%\n" + TxtStartGcode.Text + "\n";
+                TxtGcodeOutput.Text = "%Startup_GCode%\n";
                 for (int i = 0; i < GCode.Length; i++)
                 {
                     if (i == 0)
@@ -241,14 +271,16 @@ namespace WpfApp1
                     else
                         TxtGcodeOutput.Text = TxtGcodeOutput.Text + GCode[i] + "  " + pumpCode[i] + "\n";
                 }
-                TxtGcodeOutput.Text = TxtGcodeOutput.Text + "%End_of_main_WrapGCODE%\n" + TxtEndMWrap.Text + "\n";
+  //              TxtGcodeOutput.Text = TxtGcodeOutput.Text + "%End_of_main_WrapGCODE%\n" + TxtEndMWrap.Text + "\n";
+                TxtGcodeOutput.Text = TxtGcodeOutput.Text + "%End_of_Main_Wrap%\n";
 
                 // Add Completed GCode
                 TxtGcodeOutput.Text = TxtGcodeOutput.Text + @"\\Burnish Selection" + "\n";
 
                 if (string.IsNullOrWhiteSpace(NumBurStartSpeed.Text) || string.IsNullOrWhiteSpace(NumBurFinalSpeed.Text) || string.IsNullOrWhiteSpace(NumBurRampSteps.Text))
                 {
-                    for (int i = 0; i < GCode.Length; i++)
+                    float burLayerPcg = float.Parse(NumBurLayerPcg.Text) / 100;
+                    for (int i = 0; i < Math.Floor(GCode.Length * burLayerPcg); i++)
                     {
                         TxtGcodeOutput.Text = TxtGcodeOutput.Text + GCode[i] + "\n";
                     }
@@ -269,10 +301,11 @@ namespace WpfApp1
                             TxtGcodeOutput.Text = TxtGcodeOutput.Text + GCode[i] + "\n";
                     }
                 }
-                
+
                 // Here implement completed GCode
 
-                TxtGcodeOutput.Text = TxtGcodeOutput.Text + "%End_of_Completed_Wrap%" + "\n" + TxtEndCWrap.Text;
+                //               TxtGcodeOutput.Text = TxtGcodeOutput.Text + "%End_of_Completed_Wrap%" + "\n" + TxtEndCWrap.Text;
+                TxtGcodeOutput.Text = TxtGcodeOutput.Text + "%End_of_Complete_Wrap%" + "\n";
 
                 NumTotalEstFeet.Text = Math.Round(EstTapeFeet, 2).ToString();
 
@@ -283,26 +316,69 @@ namespace WpfApp1
             }
         }
 
+        private string IsIncludeExtension(string filename)
+        {
+            if (filename.EndsWith(".tap"))
+                return "tap";
+            else if (filename.EndsWith(".gco"))
+                return "gco";
+            else if (filename.EndsWith(".gcode"))
+                return "gcode";
+            return "non";
+        }
+
+        private string GetFileNameWithoutExtension(string fullFilename)
+        {
+            if (fullFilename.EndsWith(".tap"))
+                return fullFilename.Replace(".tap", "");
+            else if (fullFilename.EndsWith(".gco"))
+                return fullFilename.Replace(".gco", "");
+            else if (fullFilename.EndsWith(".gcode"))
+                return fullFilename.Replace(".gcode", "");
+            return fullFilename;
+        }
+
         private void BtnExportGCode_Click(object sender, RoutedEventArgs e)
         {
             try
             {
                 if (string.IsNullOrWhiteSpace(TxtGcodeOutput.Text))
                 {
-                    MessageBox.Show("Generate GCode First");
+                    MessageBox.Show(
+                     "Please generate the GCode before proceeding.", // Message text
+                    "GCode Not Generated",                          // Caption (title of the message box)
+                    MessageBoxButton.OK,                           // Button(s) to display
+                    MessageBoxImage.Information                    // Icon to display
+                    );
+                    return;
+                }
+
+                if (IsIncludeExtension(StrPatternName.Text) == "non")
+                {
+                    MessageBox.Show(
+                    "The Pattern Name must end with one of the following valid extensions: " +
+                    "\".tap\", \".gco\", or \".gcode\".\n\n" +
+                    "Please update the Pattern Name and try again.",
+                    "Invalid Pattern Name",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Information
+                    );
                     return;
                 }
 
                 SaveFileDialog saveFileDialog = new SaveFileDialog
                 {
-                    Filter = "txt files (*.txt)|*.txt|All files (*.*)|*.*",
-                    DefaultExt = "txt",
-                    FileName = $"{StrPatternName.Text}.txt"
+                    Filter = "gcode files (*.gcode)|*.gcode|gco files (*.gco)|*.gco|tap files (*.tap)|*.tap|All files (*.*)|*.*",
+                    //         DefaultExt = (IsIncludeExtension(StrPatternName.Text) == "non") ? "gco" : IsIncludeExtension(StrPatternName.Text),
+                    DefaultExt = "gco",
+                    FileName = (IsIncludeExtension(StrPatternName.Text) == "non") ? $"{StrPatternName.Text}.gco" : StrPatternName.Text
                 };
 
                 if (saveFileDialog.ShowDialog() == true)
                 {
-                    File.WriteAllText(saveFileDialog.FileName, TxtGcodeOutput.Text);
+                    string replacedOutput = ReplaceVariables(TxtGcodeOutput.Text);
+                    string finalOutput = ReplaceVariables(replacedOutput);
+                    File.WriteAllText(saveFileDialog.FileName, finalOutput);
                     openedFilePath = saveFileDialog.FileName;
                 }
             }
@@ -680,7 +756,7 @@ namespace WpfApp1
             double newWindowHeight = e.NewSize.Height;
 
             // Calculate the new height for the TextBox 
-            double textBoxHeight = newWindowHeight - 437;
+            double textBoxHeight = newWindowHeight - 435;
             double GcodeBoxHight = newWindowHeight - 520;
 
             // Apply the new height to the TextBox
@@ -688,8 +764,37 @@ namespace WpfApp1
             TxtStartGcode.Height = GcodeBoxHight;
             TxtEndCWrap.Height = GcodeBoxHight;
             TxtEndMWrap.Height = GcodeBoxHight;
+  //          TxtReloadCommand.Height = GcodeBoxHight;
         }
 
+        private string ReplaceVariables(string template)
+        {
+            // Find all %Variable% patterns
+            Regex regex = new Regex(@"%([^\s%]+)%");
+
+            // Replace each match with its corresponding value
+            return regex.Replace(template, match =>
+            {
+                string variableName = match.Groups[1].Value;
+
+                Dictionary<string, string> variables = new Dictionary<string, string>();
+
+                variables["Startup_GCode"] = TxtStartGcode.Text;
+                //     variables["Pattern_Name"] = (Path.GetFileName(openedFilePath).Length == 0) ? StrPatternName.Text : Path.GetFileName(openedFilePath);
+                variables["Pattern_Name"] = (Path.GetFileName(openedFilePath).Length == 0) ? StrPatternName.Text : Path.GetFileName(openedFilePath);
+                variables["End_of_Main_Wrap"] = TxtEndMWrap.Text;
+                variables["End_of_Complete_Wrap"] = TxtEndCWrap.Text;
+
+                // Check if the variable exists in our dictionary   
+                if (variables.TryGetValue(variableName, out string value))
+                {
+                    return value;
+                }
+
+                // If variable doesn't exist, leave it as is (or you could return an empty string)
+                return match.Value;
+            });
+        }
     }
 }
 
