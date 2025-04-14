@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:WpfApp1"
         mc:Ignorable="d"
         Icon="Asset/gmark.ico"
-        Title="Spyder Pattern Generator"    
+        Title="Spyder Pattern Generator v1.2.1"    
         Height="570"
         MinHeight="570"
         Width="800"
@@ -143,7 +143,7 @@
                     <TextBox x:Name="NumDiameterPcg" Grid.Row="1" Grid.Column="2" Margin="0,0,10,0" Style="{StaticResource NumberInputTextBox}"/>
 
                     <TextBlock Grid.Row="0" Grid.Column="3" Text="Circ +" Margin="0,0,10,5"/>
-                    <TextBox x:Name="NumCircPlus" Grid.Row="1" Grid.Column="3" Margin="0,0,10,0" Style="{StaticResource IntegerInputTextBox}"/>
+                    <TextBox x:Name="NumCircPlus" Grid.Row="1" Grid.Column="3" Margin="0,0,10,0" Style="{StaticResource NumberInputTextBox}"/>
 
                     <TextBlock Grid.Row="0" Grid.Column="4" Text="YAxis %" Margin="0,0,10,5"/>
                     <TextBox x:Name="NumYAixsPcg" Grid.Row="1" Grid.Column="4" Margin="0,0,10,0" Style="{StaticResource NumberInputTextBox}"/>
@@ -202,13 +202,13 @@
                     <TextBox x:Name="NumBurLayerPcg" Grid.Row="2" Grid.Column="4" Margin="0,0,10,0" Style="{StaticResource NumberInputTextBox}"/>
 
                     <TextBlock Grid.Row="1" Grid.Column="5" Text="Start Speed" Margin="0,0,10,5"/>
-                    <TextBox x:Name="NumBurStartSpeed" Grid.Row="2" Grid.Column="5 " Margin="0,0,10,0" Style="{StaticResource IntegerInputTextBox}"/>
+                    <TextBox x:Name="NumBurStartSpeed" Grid.Row="2" Grid.Column="5 " Margin="0,0,10,0" Style="{StaticResource NumberInputTextBox}"/>
 
                     <TextBlock Grid.Row="1" Grid.Column="6" Text="Ramp Steps" Margin="0,0,10,5"/>
                     <TextBox x:Name="NumBurRampSteps" Grid.Row="2" Grid.Column="6" Margin="0,0,10,0" Style="{StaticResource IntegerInputTextBox}"/>
 
                     <TextBlock Grid.Row="1" Grid.Column="7" Text="Final Speed" Margin="0,0,10,5"/>
-                    <TextBox x:Name="NumBurFinalSpeed" Grid.Row="2" Grid.Column="7" Margin="0,0,10,0" Style="{StaticResource IntegerInputTextBox}"/>
+                    <TextBox x:Name="NumBurFinalSpeed" Grid.Row="2" Grid.Column="7" Margin="0,0,10,0" Style="{StaticResource NumberInputTextBox}"/>
                 </Grid>
             </StackPanel>
 

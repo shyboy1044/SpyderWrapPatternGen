@@ -8,6 +8,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
+using System.Text;
 using Path = System.IO.Path;
 
 namespace WpfApp1
@@ -214,7 +215,7 @@ namespace WpfApp1
         private void SetWindowsTitle(string filePath)
         {
             string fileName = Path.GetFileName(filePath);
-            this.Title = fileName + " - Spyder Pattern Generator";
+            this.Title = fileName + " - Spyder Pattern Generator v1.2.1";
         }
         private void BtnGenGCode_Click(object sender, RoutedEventArgs e)
         {
@@ -249,7 +250,7 @@ namespace WpfApp1
                     );
                     return;
                 }
-
+                /*
                 TxtGcodeOutput.Text = "";
 
                 string[] GCode = Generate_GCode(out double EstTapeFeet);
@@ -262,8 +263,8 @@ namespace WpfApp1
                 string[] pumpCode = GetPumpCode(GCode.Length);
 
                 // Add Main part of GCode
- //               TxtGcodeOutput.Text = "%Startup_GCODE%\n" + TxtStartGcode.Text + "\n";
-                TxtGcodeOutput.Text = "%Startup_GCode%\n";
+                TxtGcodeOutput.Text = "%Startup_GCode%\n" + ReplaceVariables(TxtStartGcode.Text) + "\n";
+  //              TxtGcodeOutput.Text = "%Startup_GCode%\n";
                 for (int i = 0; i < GCode.Length; i++)
                 {
                     if (i == 0)
@@ -271,8 +272,8 @@ namespace WpfApp1
                     else
                         TxtGcodeOutput.Text = TxtGcodeOutput.Text + GCode[i] + "  " + pumpCode[i] + "\n";
                 }
-  //              TxtGcodeOutput.Text = TxtGcodeOutput.Text + "%End_of_main_WrapGCODE%\n" + TxtEndMWrap.Text + "\n";
-                TxtGcodeOutput.Text = TxtGcodeOutput.Text + "%End_of_Main_Wrap%\n";
+                TxtGcodeOutput.Text = TxtGcodeOutput.Text + "%End_of_Main_Wrap%\n" + ReplaceVariables(TxtEndMWrap.Text) + "\n";
+       //         TxtGcodeOutput.Text = TxtGcodeOutput.Text + "%End_of_Main_Wrap%\n";
 
                 // Add Completed GCode
                 TxtGcodeOutput.Text = TxtGcodeOutput.Text + @"\\Burnish Selection" + "\n";
@@ -304,10 +305,99 @@ namespace WpfApp1
 
                 // Here implement completed GCode
 
-                //               TxtGcodeOutput.Text = TxtGcodeOutput.Text + "%End_of_Completed_Wrap%" + "\n" + TxtEndCWrap.Text;
-                TxtGcodeOutput.Text = TxtGcodeOutput.Text + "%End_of_Complete_Wrap%" + "\n";
+                        TxtGcodeOutput.Text = TxtGcodeOutput.Text + "%End_of_Completed_Wrap%" + "\n" + ReplaceVariables(TxtEndCWrap.Text);
+        //        TxtGcodeOutput.Text = TxtGcodeOutput.Text + "%End_of_Complete_Wrap%" + "\n";
 
                 NumTotalEstFeet.Text = Math.Round(EstTapeFeet, 2).ToString();
+                */
+
+
+                TxtGcodeOutput.Text = "";
+                string[] GCode = Generate_GCode(out double EstTapeFeet);
+                if (!ValidatePumpCodeParameter())
+                {
+                    MessageBox.Show("Please ensure all Pump Parameters are entered before proceeding.", "Info", MessageBoxButton.OK, MessageBoxImage.Information);
+                    return;
+                }
+                string[] pumpCode = GetPumpCode(GCode.Length);
+
+                // Use StringBuilder instead of string concatenation for better performance
+                StringBuilder gcodeBuilder = new StringBuilder();
+
+                // Add Startup GCode
+                gcodeBuilder.AppendLine("%Startup_GCode%");
+                gcodeBuilder.AppendLine(ReplaceVariables(TxtStartGcode.Text));
+
+                // Add Main part of GCode
+                string feedRate = "F" + NumWrapFeedRate.Text;
+                for (int i = 0; i < GCode.Length; i++)
+                {
+                    gcodeBuilder.Append(GCode[i]);
+
+                    // Only add feed rate to first line
+                    if (i == 0)
+                        gcodeBuilder.Append("  ").Append(feedRate).Append(" ");
+                    else
+                        gcodeBuilder.Append("  ");
+
+                    gcodeBuilder.AppendLine(pumpCode[i]);
+                }
+
+                // Add End of Main Wrap
+                gcodeBuilder.AppendLine("%End_of_Main_Wrap%");
+                gcodeBuilder.AppendLine(ReplaceVariables(TxtEndMWrap.Text));
+
+                // Add Burnish Selection
+                gcodeBuilder.AppendLine(@"\\Burnish Selection");
+
+                // Calculate burnish layer percentage once
+                float burLayerPcg = float.Parse(NumBurLayerPcg.Text) / 100;
+                int burnishLayerCount = (int)Math.Floor(GCode.Length * burLayerPcg);
+
+                bool hasBurnishParams = !string.IsNullOrWhiteSpace(NumBurStartSpeed.Text) &&
+                                        !string.IsNullOrWhiteSpace(NumBurFinalSpeed.Text) &&
+                                        !string.IsNullOrWhiteSpace(NumBurRampSteps.Text);
+
+                if (!hasBurnishParams)
+                {
+                    // Simple burnish without speed ramping
+                    for (int i = 0; i < burnishLayerCount; i++)
+                    {
+                        gcodeBuilder.AppendLine(GCode[i]);
+                    }
+                }
+                else
+                {
+                    // Burnish with speed ramping
+                    int startSpeed = int.Parse(NumBurStartSpeed.Text);
+                    int finalSpeed = int.Parse(NumBurFinalSpeed.Text);
+                    int rampStep = int.Parse(NumBurRampSteps.Text);
+                    int[] burnishSpeed = GenerateBurnishSpeed(startSpeed, finalSpeed, rampStep);
+
+                    for (int i = 0; i < burnishLayerCount; i++)
+                    {
+                        if (IsEven(i) && (i < burnishSpeed.Length * 2))
+                        {
+                            gcodeBuilder.Append(GCode[i]).Append("  F").AppendLine(burnishSpeed[i / 2].ToString());
+                        }
+                        else
+                        {
+                            gcodeBuilder.AppendLine(GCode[i]);
+                        }
+                    }
+                }
+
+                // Add End of Completed Wrap
+                gcodeBuilder.AppendLine("%End_of_Completed_Wrap%");
+                gcodeBuilder.Append(ReplaceVariables(TxtEndCWrap.Text));
+
+                // Set the final output text at once
+                TxtGcodeOutput.Text = gcodeBuilder.ToString();
+
+                // Update estimated feet display
+                NumTotalEstFeet.Text = Math.Round(EstTapeFeet, 2).ToString();
+
+
 
             }
             catch(Exception ex)
@@ -376,9 +466,7 @@ namespace WpfApp1
 
                 if (saveFileDialog.ShowDialog() == true)
                 {
-                    string replacedOutput = ReplaceVariables(TxtGcodeOutput.Text);
-                    string finalOutput = ReplaceVariables(replacedOutput);
-                    File.WriteAllText(saveFileDialog.FileName, finalOutput);
+                    File.WriteAllText(saveFileDialog.FileName, TxtGcodeOutput.Text);
                     openedFilePath = saveFileDialog.FileName;
                 }
             }
@@ -442,7 +530,7 @@ namespace WpfApp1
               // Ask client About this value!
             float YAxisPcg = float.Parse(NumYAixsPcg.Text) / 100;
 
-            double XOffSet = DDiameter * 3.1415 * DDiameterPcg * TotalKickPcg;
+            double XOffSet = DDiameter * Math.PI * DDiameterPcg * TotalKickPcg;
             double XAxisCircle = (DDiameter * 3.1415 * DDiameterPcg) - XOffSet;
             double YAxisCircle = XAxisCircle * YAxisPcg;
             double YOffSet = XOffSet * KickRatio;
