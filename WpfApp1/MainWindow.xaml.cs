@@ -311,7 +311,7 @@ namespace WpfApp1
                 NumTotalEstFeet.Text = Math.Round(EstTapeFeet, 2).ToString();
                 */
 
-
+                
                 TxtGcodeOutput.Text = "";
                 string[] GCode = Generate_GCode(out double EstTapeFeet);
                 if (!ValidatePumpCodeParameter())
@@ -396,7 +396,7 @@ namespace WpfApp1
 
                 // Update estimated feet display
                 NumTotalEstFeet.Text = Math.Round(EstTapeFeet, 2).ToString();
-
+                
 
 
             }
@@ -527,8 +527,9 @@ namespace WpfApp1
             int WrapPerLayer = int.Parse(NumWrapsPerLayer.Text);
             int TotalLayers = int.Parse(NumTotalLayers.Text);
 
-              // Ask client About this value!
-            float YAxisPcg = float.Parse(NumYAixsPcg.Text) / 100;
+            // Ask client About this value!
+            float YAxisPcg = float.Parse(NumYAixsPcg.Text);
+     //       float YAxisPcg = float.Parse(NumYAixsPcg.Text) / 100;
 
             double XOffSet = DDiameter * Math.PI * DDiameterPcg * TotalKickPcg;
             double XAxisCircle = (DDiameter * 3.1415 * DDiameterPcg) - XOffSet;
@@ -868,10 +869,25 @@ namespace WpfApp1
                 Dictionary<string, string> variables = new Dictionary<string, string>();
 
                 variables["Startup_GCode"] = TxtStartGcode.Text;
-                //     variables["Pattern_Name"] = (Path.GetFileName(openedFilePath).Length == 0) ? StrPatternName.Text : Path.GetFileName(openedFilePath);
+                variables["startup_gcode"] = TxtStartGcode.Text;
+                variables["Startup_Gcode"] = TxtStartGcode.Text;
+                variables["Startup_GCODE"] = TxtStartGcode.Text;
+                variables["Startup_gcode"] = TxtStartGcode.Text;
+                variables["startup_GCode"] = TxtStartGcode.Text;
+                variables["startup_Gcode"] = TxtStartGcode.Text;
+
                 variables["Pattern_Name"] = (Path.GetFileName(openedFilePath).Length == 0) ? StrPatternName.Text : Path.GetFileName(openedFilePath);
+                variables["pattern_name"] = (Path.GetFileName(openedFilePath).Length == 0) ? StrPatternName.Text : Path.GetFileName(openedFilePath);
+                variables["Pattern_name"] = (Path.GetFileName(openedFilePath).Length == 0) ? StrPatternName.Text : Path.GetFileName(openedFilePath);
+                variables["pattern_Name"] = (Path.GetFileName(openedFilePath).Length == 0) ? StrPatternName.Text : Path.GetFileName(openedFilePath);
+
                 variables["End_of_Main_Wrap"] = TxtEndMWrap.Text;
+                variables["end_of_main_wrap"] = TxtEndMWrap.Text;
+                variables["End_Of_Main_Wrap"] = TxtEndMWrap.Text;
+
                 variables["End_of_Complete_Wrap"] = TxtEndCWrap.Text;
+                variables["End_Of_Complete_Wrap"] = TxtEndCWrap.Text;
+                variables["end_of_complete_wrap"] = TxtEndCWrap.Text;
 
                 // Check if the variable exists in our dictionary   
                 if (variables.TryGetValue(variableName, out string value))
