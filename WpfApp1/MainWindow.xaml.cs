@@ -21,6 +21,7 @@ namespace WpfApp1
     public partial class MainWindow : Window
     {
         string openedFilePath = string.Empty;
+        private Window gCodeEditorWindow;
         public MainWindow()
         {
             InitializeComponent();
@@ -30,6 +31,15 @@ namespace WpfApp1
             StrPumpOnCode.IsEnabled = false;
             NumCyclesPerShell.IsEnabled = false;
             NumDuration.IsEnabled = false;
+
+
+
+
+            // Initialize GCode output preview with Empty string
+            TxtGcodeOutput.Text = "";
+
+            // Set initial state for collapse toggle
+            CollapseGCodeToggle.IsChecked = false;
         }
 
         private void MainWindow_Loaded(Object sender, RoutedEventArgs e)
@@ -46,7 +56,7 @@ namespace WpfApp1
             else
             {
                 this.Width = 1024;
-                this.Height = 700;
+                this.Height = 690;
             }
 
             // Get the screen working area
@@ -325,7 +335,6 @@ namespace WpfApp1
                 StringBuilder gcodeBuilder = new StringBuilder();
 
                 // Add Startup GCode
-                gcodeBuilder.AppendLine("%Startup_GCode%");
                 gcodeBuilder.AppendLine(ReplaceVariables(TxtStartGcode.Text));
 
                 // Add Main part of GCode
@@ -344,7 +353,6 @@ namespace WpfApp1
                 }
 
                 // Add End of Main Wrap
-                gcodeBuilder.AppendLine("%End_of_Main_Wrap%");
                 gcodeBuilder.AppendLine(ReplaceVariables(TxtEndMWrap.Text));
 
                 // Add Burnish Selection
@@ -388,14 +396,13 @@ namespace WpfApp1
                 }
 
                 // Add End of Completed Wrap
-                gcodeBuilder.AppendLine("%End_of_Completed_Wrap%");
                 gcodeBuilder.Append(ReplaceVariables(TxtEndCWrap.Text));
 
                 // Set the final output text at once
                 TxtGcodeOutput.Text = gcodeBuilder.ToString();
 
                 // Update estimated feet display
-                NumTotalEstFeet.Text = Math.Round(EstTapeFeet, 2).ToString();
+                NumTotalEstFeet.Content = Math.Round(EstTapeFeet, 2).ToString();
                 
 
 
@@ -440,6 +447,9 @@ namespace WpfApp1
                     MessageBoxButton.OK,                           // Button(s) to display
                     MessageBoxImage.Information                    // Icon to display
                     );
+
+
+//                    ShowModernMessageBox("Information", "This is a modern message box!");
                     return;
                 }
 
@@ -726,7 +736,7 @@ namespace WpfApp1
                 End_Of_Main_Wrap = TxtEndMWrap.Text,
                 End_Of_Complete_Wrap = TxtEndCWrap.Text,
 
-                Total_Estimated_Feet = NumTotalEstFeet.Text,
+                Total_Estimated_Feet = NumTotalEstFeet.Content,
 
                 Pump_Enable = pumpState.IsChecked,
                 Pump_On_Code = StrPumpOnCode.Text,
@@ -763,7 +773,7 @@ namespace WpfApp1
             TxtStartGcode.Text = mumContent.Startup_Gcode;
             TxtEndMWrap.Text = mumContent.End_Of_Main_Wrap;
             TxtEndCWrap.Text = mumContent.End_Of_Complete_Wrap;
-            NumTotalEstFeet.Text = mumContent.Total_Estimated_Feet;
+            NumTotalEstFeet.Content = mumContent.Total_Estimated_Feet;
             pumpState.IsChecked = mumContent.Pump_Enable;
             StrPumpOnCode.Text = mumContent.Pump_On_Code;
             StrPumpOffCode.Text = mumContent.Pump_Off_Code;
@@ -839,21 +849,18 @@ namespace WpfApp1
 
         private void MainWindow_SizeChanged(object sender, SizeChangedEventArgs e)
         {
-            if (e.NewSize.Height <= 550)
-                return;
+    //        if (e.NewSize.Height <= 550)
+    //            return;
             // Get the new height of the window
             double newWindowHeight = e.NewSize.Height;
-
-            // Calculate the new height for the TextBox 
-            double textBoxHeight = newWindowHeight - 435;
-            double GcodeBoxHight = newWindowHeight - 520;
-
+           
             // Apply the new height to the TextBox
-            TxtGcodeOutput.Height = textBoxHeight;
-            TxtStartGcode.Height = GcodeBoxHight;
-            TxtEndCWrap.Height = GcodeBoxHight;
-            TxtEndMWrap.Height = GcodeBoxHight;
-  //          TxtReloadCommand.Height = GcodeBoxHight;
+  //          TxtGcodeOutput.Height = textBoxHeight;
+
+            if (e.NewSize.Height >= 670)
+                TxtGcodeOutput.Height = 190;
+            else
+                TxtGcodeOutput.Height = newWindowHeight - 485;
         }
 
         private string ReplaceVariables(string template)
@@ -876,10 +883,13 @@ namespace WpfApp1
                 variables["startup_GCode"] = TxtStartGcode.Text;
                 variables["startup_Gcode"] = TxtStartGcode.Text;
 
+                /*
                 variables["Pattern_Name"] = (Path.GetFileName(openedFilePath).Length == 0) ? StrPatternName.Text : Path.GetFileName(openedFilePath);
                 variables["pattern_name"] = (Path.GetFileName(openedFilePath).Length == 0) ? StrPatternName.Text : Path.GetFileName(openedFilePath);
                 variables["Pattern_name"] = (Path.GetFileName(openedFilePath).Length == 0) ? StrPatternName.Text : Path.GetFileName(openedFilePath);
                 variables["pattern_Name"] = (Path.GetFileName(openedFilePath).Length == 0) ? StrPatternName.Text : Path.GetFileName(openedFilePath);
+                */
+                variables["Pattern_Name"] = StrPatternName.Text;
 
                 variables["End_of_Main_Wrap"] = TxtEndMWrap.Text;
                 variables["end_of_main_wrap"] = TxtEndMWrap.Text;
@@ -899,7 +909,336 @@ namespace WpfApp1
                 return match.Value;
             });
         }
+
+
+
+
+
+
+
+
+
+        private void GCodeSection_Click(object sender, RoutedEventArgs e)
+        {
+            if (CollapseGCodeToggle.IsChecked == true)
+            {
+                CollapseGCodeToggle_Unchecked(sender, e);
+                CollapseGCodeToggle.IsChecked = false;
+            }
+            else
+            {
+                CollapseGCodeToggle_Checked(sender, e);
+                CollapseGCodeToggle.IsChecked = true;
+            }
+        }
+
+        private void CollapseGCodeToggle_Checked(object sender, RoutedEventArgs e)
+        {
+            // Show GCode section
+            GCodeEditorSection.Visibility = Visibility.Visible;
+            CollapseGCodeToggle.Content = "▲";
+        }
+
+        private void CollapseGCodeToggle_Unchecked(object sender, RoutedEventArgs e)
+        {
+            // Hide GCode section
+            GCodeEditorSection.Visibility = Visibility.Collapsed;
+            CollapseGCodeToggle.Content = "▼";
+        }
+
+        private void ExpandGCodeButton_Click(object sender, RoutedEventArgs e)
+        {
+            // Create and show the GCode editor dialog
+            ShowGCodeEditorWindow();
+        }
+
+        private void ShowGCodeEditorWindow()
+        {
+            // Close existing dialog if open
+            if (gCodeEditorWindow != null && gCodeEditorWindow.IsVisible)
+            {
+                gCodeEditorWindow.Close();
+            }
+
+            // Create a new dialog window
+            gCodeEditorWindow = new Window
+            {
+                Title = "Machine G-Code Variables",
+                Width = 900,
+                Height = 300,
+                WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                Owner = this,
+                ResizeMode = ResizeMode.CanResize,
+                Background = new SolidColorBrush(Colors.WhiteSmoke)
+            };
+
+            // Create the content
+            Grid mainGrid = new Grid
+            {
+                Margin = new Thickness(20)
+            };
+
+            mainGrid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) });
+            mainGrid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
+
+            // GCode editors grid
+            Grid editorsGrid = new Grid
+            {
+                Margin = new Thickness(0, 0, 0, 15)
+            };
+
+            editorsGrid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
+            editorsGrid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) });
+
+            editorsGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
+            editorsGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
+            editorsGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
+
+            // Create and add the labels
+            TextBlock startupLabel = new TextBlock
+            {
+                Text = "Startup GCode",
+                FontSize = 12,
+                Foreground = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#666")),
+                Margin = new Thickness(0, 0, 0, 5)
+            };
+            Grid.SetRow(startupLabel, 0);
+            Grid.SetColumn(startupLabel, 0);
+
+            TextBlock mainWrapLabel = new TextBlock
+            {
+                Text = "End of Main Wrap",
+                FontSize = 12,
+                Foreground = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#666")),
+                Margin = new Thickness(5, 0, 5, 5)
+            };
+            Grid.SetRow(mainWrapLabel, 0);
+            Grid.SetColumn(mainWrapLabel, 1);
+
+            TextBlock completeWrapLabel = new TextBlock
+            {
+                Text = "End of Complete Wrap",
+                FontSize = 12,
+                Foreground = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#666")),
+                Margin = new Thickness(0, 0, 0, 5)
+            };
+            Grid.SetRow(completeWrapLabel, 0);
+            Grid.SetColumn(completeWrapLabel, 2);
+
+            // Create and add the text boxes
+            TextBox startupTextBox = new TextBox
+            {
+                AcceptsReturn = true,
+                TextWrapping = TextWrapping.Wrap,
+                VerticalScrollBarVisibility = ScrollBarVisibility.Auto,
+                HorizontalScrollBarVisibility = ScrollBarVisibility.Auto,
+                FontFamily = new FontFamily("Consolas"),
+                FontSize = 12,
+                Margin = new Thickness(0, 0, 5, 0),
+                Padding = new Thickness(8),
+                Text = TxtStartGcode.Text
+            };
+            Grid.SetRow(startupTextBox, 1);
+            Grid.SetColumn(startupTextBox, 0);
+
+            TextBox mainWrapTextBox = new TextBox
+            {
+                AcceptsReturn = true,
+                TextWrapping = TextWrapping.Wrap,
+                VerticalScrollBarVisibility = ScrollBarVisibility.Auto,
+                HorizontalScrollBarVisibility = ScrollBarVisibility.Auto,
+                FontFamily = new FontFamily("Consolas"),
+                FontSize = 12,
+                Margin = new Thickness(5, 0, 5, 0),
+                Padding = new Thickness(8),
+                Text = TxtEndMWrap.Text
+            };
+            Grid.SetRow(mainWrapTextBox, 1);
+            Grid.SetColumn(mainWrapTextBox, 1);
+
+            TextBox completeWrapTextBox = new TextBox
+            {
+                AcceptsReturn = true,
+                TextWrapping = TextWrapping.Wrap,
+                VerticalScrollBarVisibility = ScrollBarVisibility.Auto,
+                HorizontalScrollBarVisibility = ScrollBarVisibility.Auto,
+                FontFamily = new FontFamily("Consolas"),
+                FontSize = 12,
+                Margin = new Thickness(5, 0, 0, 0),
+                Padding = new Thickness(8),
+                Text = TxtEndCWrap.Text
+            };
+            Grid.SetRow(completeWrapTextBox, 1);
+            Grid.SetColumn(completeWrapTextBox, 2);
+
+            // Add all elements to the editors grid
+            editorsGrid.Children.Add(startupLabel);
+            editorsGrid.Children.Add(mainWrapLabel);
+            editorsGrid.Children.Add(completeWrapLabel);
+            editorsGrid.Children.Add(startupTextBox);
+            editorsGrid.Children.Add(mainWrapTextBox);
+            editorsGrid.Children.Add(completeWrapTextBox);
+
+            // Button panel
+            StackPanel buttonPanel = new StackPanel
+            {
+                Orientation = Orientation.Horizontal,
+                HorizontalAlignment = HorizontalAlignment.Right
+            };
+
+            Button closeButton = new Button
+            {
+                Content = "OK",
+                Padding = new Thickness(20, 8, 20, 8),
+                Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#1A56A0")),
+                Foreground = Brushes.White,
+                BorderThickness = new Thickness(0),
+                Margin = new Thickness(0, 0, 0, 0),
+                Style = (Style)FindResource("SidebarButtonStyle")
+            };
+
+            closeButton.Click += SetGCode_Variables_Click;
+
+            void SetGCode_Variables_Click(object sender, RoutedEventArgs e)
+            {
+                TxtStartGcode.Text = startupTextBox.Text;
+                TxtEndMWrap.Text = mainWrapTextBox.Text;
+                TxtEndCWrap.Text = completeWrapTextBox.Text;
+
+                gCodeEditorWindow.Close();
+            }
+
+            buttonPanel.Children.Add(closeButton);
+
+            // Add components to main grid
+            Grid.SetRow(editorsGrid, 0);
+            Grid.SetRow(buttonPanel, 1);
+
+            mainGrid.Children.Add(editorsGrid);
+            mainGrid.Children.Add(buttonPanel);
+
+            // Set the content and show
+            gCodeEditorWindow.Content = mainGrid;
+            gCodeEditorWindow.ShowDialog();
+        }
+
+
+
+
+
+        
+       
+public static void ShowModernMessageBox(string title, string message)
+    {
+        // Create the main window
+        var window = new Window
+        {
+            Title = title,
+            Width = 400,
+            Height = 200,
+            ResizeMode = ResizeMode.NoResize,
+            WindowStartupLocation = WindowStartupLocation.CenterScreen,
+            WindowStyle = WindowStyle.None,
+            AllowsTransparency = false,
+            Background = Brushes.Gray,
+            Content = CreateContent(title, message)
+        };
+
+        // Enable drag-move functionality
+        window.MouseLeftButtonDown += (sender, e) => window.DragMove();
+
+        // Show the dialog
+        window.ShowDialog();
     }
+
+    private static Grid CreateContent(string title, string message)
+    {
+        // Main Grid
+        var grid = new Grid
+        {
+            Background = new SolidColorBrush(Color.FromRgb(222, 222, 222)), // Gray background
+            Margin = new Thickness(1)
+        };
+
+        // Define rows for the layout
+        grid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) }); // Content area
+        grid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });                      // Button area
+
+        // Define columns for the button alignment
+        grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) }); // Left space
+        grid.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });                     // Button column
+
+        // Border for rounded corners
+        var border = new Border
+        {
+            CornerRadius = new CornerRadius(10),
+            Background = new SolidColorBrush(Color.FromRgb(66, 66, 66)), // Slightly lighter gray
+            Padding = new Thickness(20)
+        };
+
+        // StackPanel for the content (title and message)
+        var stackPanel = new StackPanel();
+
+        // Title TextBlock
+        var titleText = new TextBlock
+        {
+            Text = title,
+            FontSize = 18,
+            FontWeight = FontWeights.Bold,
+            Foreground = Brushes.White,
+            Margin = new Thickness(0, 0, 0, 10)
+        };
+        stackPanel.Children.Add(titleText);
+
+        // Message TextBlock
+        var messageText = new TextBlock
+        {
+            Text = message,
+            FontSize = 14,
+            Foreground = Brushes.White,
+            TextWrapping = TextWrapping.Wrap,
+            Margin = new Thickness(0, 0, 0, 20)
+        };
+        stackPanel.Children.Add(messageText);
+
+        // Add the content StackPanel to the first row
+        Grid.SetRow(stackPanel, 0);
+        Grid.SetColumnSpan(stackPanel, 2); // Span across both columns
+        border.Child = stackPanel;
+
+        // OK Button
+        var okButton = new Button
+        {
+            Content = "OK",
+            Width = 80,
+            Height = 30,
+            Background = new SolidColorBrush(Color.FromRgb(0, 120, 215)), // Blue button
+            Foreground = Brushes.White,
+            FontSize = 14,
+            FontWeight = FontWeights.SemiBold,
+            Margin = new Thickness(0, 10, 20, 20) // Add some margin above the button
+        };
+
+        // Close the dialog when the OK button is clicked
+        okButton.Click += (sender, args) =>
+        {
+            var button = sender as Button;
+            var window = Window.GetWindow(button);
+            window?.Close();
+        };
+
+        // Place the button in the bottom-right corner
+ //       Grid.SetRow(okButton, 1);       // Second row
+ //       Grid.SetColumn(okButton, 1);    // Second column
+
+        // Add the border and button to the grid
+        grid.Children.Add(border);
+        grid.Children.Add(okButton);
+
+        return grid;
+    }
+
+}
 }
 
 
