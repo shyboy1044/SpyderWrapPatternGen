@@ -5,66 +5,58 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:WpfApp1"
         mc:Ignorable="d"
-        Icon="Asset/gmark.ico"
-        Title="Spyder Pattern Generator v1.2.1"    
-        Height="570"
-        MinHeight="570"
+        Icon="Asset/logo.ico"
+        Title="Spyder Pattern Generator v1.3.1" 
+        Height="680" 
         Width="800"
-        MinWidth="800"
-        SizeChanged="MainWindow_SizeChanged">
-
+        MinHeight="500"
+        MinWidth="700"
+        UseLayoutRounding="True"
+        TextOptions.TextFormattingMode="Display"
+        SizeChanged="MainWindow_SizeChanged"
+        >
+    
     <Window.Resources>
-
-        <Style TargetType="TextBox" x:Key="NumberInputTextBox">
-            <Setter Property="Height" Value="30"/>
-            <Setter Property="TextAlignment" Value="Right"/>
-            <Setter Property="Padding" Value="5"/>
-            <EventSetter Event="PreviewTextInput" Handler="NumberOnlyTextBox_PreviewTextInput"/>
-        </Style>
 
         <Style TargetType="TextBox" x:Key="IntegerInputTextBox">
             <Setter Property="Height" Value="30"/>
             <Setter Property="TextAlignment" Value="Right"/>
             <Setter Property="Padding" Value="5"/>
-            <EventSetter Event="PreviewTextInput" Handler="IntegerOnlyTextBox_PreviewTextInput" />
+            <!--          <EventSetter Event="PreviewTextInput" Handler="IntegerOnlyTextBox_PreviewTextInput" />   -->
         </Style>
 
-        <Style TargetType="TextBox">
+        <Style TargetType="TextBox" x:Key="NumberInputTextBox">
             <Setter Property="Height" Value="30"/>
-            <Setter Property="MinHeight" Value="30" />
             <Setter Property="TextAlignment" Value="Right"/>
             <Setter Property="Padding" Value="5"/>
+            <!--           <EventSetter Event="PreviewTextInput" Handler="NumberOnlyTextBox_PreviewTextInput"/>  -->
         </Style>
 
-        <Style TargetType="Button">
-            <!--
-            <Setter Property="Height" Value="30"/>
-            <Setter Property="Background" Value="#106EBE"/>
-            <Setter Property="Foreground" Value="white"/>
-            <Style.Triggers>
-                <Trigger Property="IsMouseOver" Value="True">
-                    <Setter Property="Background" Value="White"/>
-                </Trigger>
-            </Style.Triggers>
-            -->
-            <Setter Property="Height" Value="30"/>
-            <Setter Property="Background" Value="#106EBE"/>
+        <Style x:Key="DialogBorderStyle" TargetType="Border">
+            <Setter Property="Background" Value="White"/>
+            <Setter Property="CornerRadius" Value="8"/>
+            <Setter Property="Effect">
+                <Setter.Value>
+                    <DropShadowEffect BlurRadius="20" ShadowDepth="5" Opacity="0.3" />
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="BaseButtonStyle" TargetType="ButtonBase">
+            <Setter Property="Background" Value="#2573C5"/>
             <Setter Property="Foreground" Value="White"/>
-            <Setter Property="BorderThickness" Value="0"/>
-            <!-- Remove default border -->
+            <Setter Property="Margin" Value="0,0,0,8"/>
             <Setter Property="Template">
                 <Setter.Value>
-                    <ControlTemplate TargetType="Button">
-                        <Border x:Name="border" 
-                        Background="{TemplateBinding Background}"
-                        CornerRadius="2">
-                            <ContentPresenter HorizontalAlignment="Center"
-                                      VerticalAlignment="Center"/>
+                    <ControlTemplate TargetType="ButtonBase">
+                        <Border Background="{TemplateBinding Background}" 
+                        CornerRadius="4"
+                        Padding="{TemplateBinding Padding}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
                         </Border>
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsMouseOver" Value="True">
-                                <Setter TargetName="border" Property="Background" Value="#005AA1"/>
-                                <!-- Text color on hover -->
+                                <Setter Property="Background" Value="#1E5FA8"/>
                             </Trigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
@@ -72,221 +64,501 @@
             </Setter>
         </Style>
 
-        <Style TargetType="TextBlock" x:Key="SubTitle">
-            <Setter Property="FontSize" Value="15"/>
+        <Style x:Key="SidebarButtonStyle" TargetType="Button">
+            <Setter Property="Background" Value="#2573C5"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="Padding" Value="12"/>
+            <Setter Property="Margin" Value="0,0,0,8"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}" 
+                                CornerRadius="4"
+                                Padding="{TemplateBinding Padding}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background" Value="#1E5FA8"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="SidebarToggleButtonStyle" TargetType="ToggleButton">
+            <Setter Property="Background" Value="#2573C5"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="Padding" Value="12"/>
+            <Setter Property="Margin" Value="0,0,0,8"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ToggleButton">
+                        <Border Background="{TemplateBinding Background}" 
+                        CornerRadius="4"
+                        Padding="{TemplateBinding Padding}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <!-- Hover Effect -->
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background" Value="#1E5FA8"/>
+                            </Trigger>
+
+                            <!-- Checked State -->
+                            <Trigger Property="IsChecked" Value="True">
+                                <Setter Property="Background" Value="#1A4E95"/>
+                            </Trigger>
+
+                            <!-- Disabled State -->
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter Property="Background" Value="#CCCCCC"/>
+                                <Setter Property="Foreground" Value="#888888"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        
+        
+
+        <Style x:Key="CardStyle" TargetType="Border">
+            <Setter Property="Background" Value="White"/>
+            <Setter Property="CornerRadius" Value="8"/>
+            <Setter Property="Padding" Value="10"/>
+            <Setter Property="Margin" Value="0,0,0,10"/>
+            <Setter Property="Effect">
+                <Setter.Value>
+                    <DropShadowEffect BlurRadius="10" ShadowDepth="1" Opacity="0.2" />
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="SectionTitleStyle" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="16"/>
             <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="FontFamily" Value="Segoe UI"/>
+            <Setter Property="Margin" Value="0,0,0,12"/>
+        </Style>
+
+        <Style x:Key="InputLabelStyle" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="12"/>
+            <Setter Property="Margin" Value="0,0,0,4"/>
+            <Setter Property="FontFamily" Value="Segoe UI"/>
+            <Setter Property="Foreground" Value="#333"/>
         </Style>
     </Window.Resources>
 
-    <Grid Margin="15">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="73*"/>
+            <ColumnDefinition Width="109*"/>
+        </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="1*"/>
-            <ColumnDefinition Width="4*"/>
-        </Grid.ColumnDefinitions>
 
-        <!-- Title -->
-        <TextBlock Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" 
-                   Text="Spyder Wrap Pattern Generator" 
-                   FontSize="18" FontWeight="SemiBold" 
-                   Margin="0,0,0,20"/>
+        <!-- Header -->
+        <Border Grid.Row="0" Background="#1A56A0" Padding="16,12" Grid.ColumnSpan="2">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+<!--
+                <Border Grid.Column="0" 
+                        Width="40" Height="40" 
+                        Background="White" 
+                        CornerRadius="20"
+                        Margin="0,0,12,0">
+                    <TextBlock Text="S" 
+                               FontWeight="Bold" 
+                               FontSize="24" 
+                               Foreground="#1A56A0"
+                               HorizontalAlignment="Center"
+                               VerticalAlignment="Center"/>
+                </Border>
+-->
 
-        <!-- Left Side Buttons and Pattern Name -->
-        <StackPanel Grid.Row="1" Grid.Column="0">
-            <Button Content="Load Pattern" Margin="0,5,0,10" Click="BtnLoad_Click"/>
-            <Button Content="Save Pattern" Margin="0,0,0,10" Click="BtnSave_Click"/>
-            <Button Content="Save As New" Margin="0,0,0,10" Click="BtnSaveNew_Click"/>
-            <Button Content="Generate GCode" Margin="0,0,0,10" Click="BtnGenGCode_Click"/>
-            <Button Content="Export GCode As File" Margin="0,0,0,20" Click="BtnExportGCode_Click"/>
 
-            <TextBlock Text="Pattern Name" Margin="0,0,0,5" Style="{StaticResource SubTitle}"/>
-            <TextBox x:Name="StrPatternName" Margin="0,0,0,13" TextAlignment="Left"/>
+                <Image Grid.Column="0"
+       Width="40" Height="40"
+       Source="Asset/logo.png" 
+       Margin="0,0,12,0"
+       Stretch="UniformToFill"
+       ClipToBounds="True"
+       SnapsToDevicePixels="True"/>
+                
+                
+                <StackPanel Grid.Column="1">
+                    <TextBlock Text="Spyder Wrap Pattern Generator" 
+                               FontSize="20" 
+                               FontWeight="Bold" 
+                               Foreground="White"/>
+                    <TextBlock Text="v1.3.1" 
+                               FontSize="12" 
+                               Foreground="#B3CBE6"/>
+                </StackPanel>
+            </Grid>
+        </Border>
 
-            <TextBlock Text="Gcode Output" Margin="0,0,0,5" Style="{StaticResource SubTitle}"/>
-            <TextBox x:Name="TxtGcodeOutput" Height="60" TextWrapping="Wrap" AcceptsReturn="True" TextAlignment="Left"
-                     VerticalScrollBarVisibility="Auto" MinHeight="147"/>
-        </StackPanel>
+        <Grid Grid.Row="1" Margin="0,5,0,-5" Grid.ColumnSpan="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="200"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
 
-        <!-- Shell Size Variables Section -->
-        <StackPanel Grid.Row="1" Grid.Column="1" Margin="50,0,0,0">
-            <StackPanel Margin="0,0,0,7">
-                <TextBlock Text="Shell Size Variables" Margin="0,0,0,10" Style="{StaticResource SubTitle}"/>
+            <!-- Left Sidebar -->
+            <Border Grid.Column="0" Background="#0A4285" Padding="12">
+                <DockPanel>
+                    <StackPanel DockPanel.Dock="Top">
+                        <Button Content="Load Pattern" Style="{StaticResource SidebarButtonStyle}" Click="BtnLoad_Click"/>
+                        <Button Content="Save Pattern" Style="{StaticResource SidebarButtonStyle}" Click="BtnSave_Click"/>
+                        <Button Content="Save As New" Style="{StaticResource SidebarButtonStyle}" Click="BtnSaveNew_Click"/>
+                        <Button Content="Generate GCode" Style="{StaticResource SidebarButtonStyle}" Click="BtnGenGCode_Click"/>
+                        <Button Content="Export GCode As File" Style="{StaticResource SidebarButtonStyle}" Click="BtnExportGCode_Click"/>
 
-                <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="*"/>
-                    </Grid.ColumnDefinitions>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="Auto"/>
-                    </Grid.RowDefinitions>
+                        <TextBlock Text="Pattern Name" 
+                                   Foreground="White" 
+                                   Margin="0,16,0,4"/>
+                        <TextBox Height="30" Padding="8,6" x:Name="StrPatternName" />
+                    </StackPanel>
 
-                    <TextBlock Grid.Row="0" Grid.Column="0" Text="Shell Size" Margin="0,0,10,5"/>
-                    <Border x:Name="SizedBorder" Grid.Row="1" Grid.Column="0" BorderThickness="1" Margin="0,0,10,0">
-                        <TextBox x:Name="NumShellSize" Style="{StaticResource NumberInputTextBox}"/>
+                    <StackPanel DockPanel.Dock="Bottom" Margin="0,20,0,0">
+                        <TextBlock Text="GCode Output Preview" 
+                                   Foreground="#B3CBE6" 
+                                   Margin="0,0,0,4"/>
+                        <Border Background="#1E293B" 
+                                CornerRadius="4" 
+                                Padding="8">
+                            <TextBox x:Name="TxtGcodeOutput"
+                                     IsReadOnly="True"
+                                     Background="Transparent"
+                                     BorderThickness="0"
+                                     Foreground="#4ADE80"
+                                     FontFamily="Consolas"
+                                     FontSize="11"
+                                     Height="140"
+                                     AcceptsReturn="True"
+                                     TextWrapping="Wrap"
+                                     VerticalScrollBarVisibility="Auto"/>
+                        </Border>
+                    </StackPanel>
+                </DockPanel>
+            </Border>
+
+            <!-- Main Content -->
+            <ScrollViewer Grid.Column="1" Background="#F5F7FA" Padding="10" VerticalScrollBarVisibility="Auto">
+                <StackPanel>
+                    <!-- Shell Size Variables -->
+                    <Border Style="{StaticResource CardStyle}">
+                        <StackPanel>
+                            <TextBlock Text="Shell Size Variables" Style="{StaticResource SectionTitleStyle}"/>
+
+                            <Grid Margin="0,0,0,12">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                </Grid.RowDefinitions>
+
+                                <StackPanel Grid.Column="0" Grid.Row="0" Margin="0,0,8,8">
+                                    <TextBlock Text="Shell Size" Style="{StaticResource InputLabelStyle}"/>
+                                    <TextBox Height="30" Padding="8,6" x:Name="NumShellSize" Style="{StaticResource NumberInputTextBox}"/>
+                                </StackPanel>
+
+                                <StackPanel Grid.Column="1" Grid.Row="0" Margin="0,0,8,8">
+                                    <TextBlock Text="Meas.size" Style="{StaticResource InputLabelStyle}"/>
+                                    <TextBox Height="30" Padding="8,6" x:Name="NumMeasuredSize" Style="{StaticResource NumberInputTextBox}"/>
+                                </StackPanel>
+
+                                <StackPanel Grid.Column="2" Grid.Row="0" Margin="0,0,8,8">
+                                    <TextBlock Text="Diameter%" Style="{StaticResource InputLabelStyle}"/>
+                                    <TextBox Height="30" Padding="8,6" x:Name="NumDiameterPcg" Style="{StaticResource NumberInputTextBox}"/>
+                                </StackPanel>
+
+                                <StackPanel Grid.Column="3" Grid.Row="0" Margin="0,0,0,8">
+                                    <TextBlock Text="Circ +" Style="{StaticResource InputLabelStyle}"/>
+                                    <TextBox Height="30" Padding="8,6" x:Name="NumCircPlus" Style="{StaticResource NumberInputTextBox}"/>
+                                </StackPanel>
+
+                                <StackPanel Grid.Column="0" Grid.Row="1" Margin="0,0,8,0">
+                                    <TextBlock Text="Yaxis %" Style="{StaticResource InputLabelStyle}"/>
+                                    <TextBox Height="30" Padding="8,6" x:Name="NumYAixsPcg" Style="{StaticResource NumberInputTextBox}"/>
+                                </StackPanel>
+
+                                <StackPanel Grid.Column="1" Grid.Row="1" Margin="0,0,8,0">
+                                    <TextBlock Text="Total Kick" Style="{StaticResource InputLabelStyle}"/>
+                                    <TextBox Height="30" Padding="8,6" x:Name="NumTotalKick" Style="{StaticResource NumberInputTextBox}"/>
+                                </StackPanel>
+
+                                <StackPanel Grid.Column="2" Grid.Row="1" Margin="0,0,8,0">
+                                    <TextBlock Text="Kick ratio %" Style="{StaticResource InputLabelStyle}"/>
+                                    <TextBox Height="30" Padding="8,6" x:Name="NumKickRatioPcg" Style="{StaticResource NumberInputTextBox}"/>
+                                </StackPanel>
+
+                                <StackPanel Grid.Column="3" Grid.Row="1" Margin="0,0,8,0">
+                                    <TextBlock Text="Total Estimated Feet" Style="{StaticResource InputLabelStyle}"/>
+                                    <Label Height="30" Padding="8,6" x:Name="NumTotalEstFeet" HorizontalContentAlignment="Right"/>
+                                </StackPanel>
+                                
+                            </Grid> 
+
+                            <TextBlock Text="Shell Description" Style="{StaticResource InputLabelStyle}"/>
+                            <TextBox Height="30" Padding="8,6" x:Name="StrShellDescription" />
+                        </StackPanel>
                     </Border>
 
-                    <TextBlock Grid.Row="0" Grid.Column="1" Text="Meas.size" Margin="0,0,10,5"/>
-                    <TextBox x:Name="NumMeasuredSize" Grid.Row="1" Grid.Column="1" Margin="0,0,10,0" Style="{StaticResource NumberInputTextBox}"/>
+                    <!-- Wrap Speed Variables and Burnish Variables -->
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
 
-                    <TextBlock Grid.Row="0" Grid.Column="2" Text="Diameter%" Margin="0,0,10,5"/>
-                    <TextBox x:Name="NumDiameterPcg" Grid.Row="1" Grid.Column="2" Margin="0,0,10,0" Style="{StaticResource NumberInputTextBox}"/>
+                        <Border Grid.Column="0" Style="{StaticResource CardStyle}" Margin="0,0,8,16">
+                            <StackPanel>
+                                <TextBlock Text="Wrap Speed Variables" Style="{StaticResource SectionTitleStyle}"/>
 
-                    <TextBlock Grid.Row="0" Grid.Column="3" Text="Circ +" Margin="0,0,10,5"/>
-                    <TextBox x:Name="NumCircPlus" Grid.Row="1" Grid.Column="3" Margin="0,0,10,0" Style="{StaticResource NumberInputTextBox}"/>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="Auto"/>
+                                    </Grid.RowDefinitions>
 
-                    <TextBlock Grid.Row="0" Grid.Column="4" Text="YAxis %" Margin="0,0,10,5"/>
-                    <TextBox x:Name="NumYAixsPcg" Grid.Row="1" Grid.Column="4" Margin="0,0,10,0" Style="{StaticResource NumberInputTextBox}"/>
+                                    <StackPanel Grid.Column="0" Grid.Row="0" Margin="0,0,8,8">
+                                        <TextBlock Text="Feedrate" Style="{StaticResource InputLabelStyle}"/>
+                                        <TextBox Height="30" Padding="8,6" x:Name="NumWrapFeedRate" Style="{StaticResource NumberInputTextBox}"/>
+                                    </StackPanel>
 
-                    <TextBlock Grid.Row="0" Grid.Column="5" Text="Total Kick" Margin="0,0,10,5"/>
-                    <TextBox x:Name="NumTotalKick" Grid.Row="1" Grid.Column="5" Margin="0,0,10,0" Style="{StaticResource NumberInputTextBox}"/>
+                                    <StackPanel Grid.Column="1" Grid.Row="0" Margin="0,0,0,8">
+                                        <TextBlock Text="Overwrap%" Style="{StaticResource InputLabelStyle}"/>
+                                        <TextBox Height="30" Padding="8,6" x:Name="NumOverWrapPcg" Style="{StaticResource NumberInputTextBox}"/>
+                                    </StackPanel>
 
-                    <TextBlock Grid.Row="0" Grid.Column="6" Text="Kick ratio %" Margin="0,0,10,5"/>
-                    <TextBox x:Name="NumKickRatioPcg" Grid.Row="1" Grid.Column="6" Margin="0,0,10,0" Style="{StaticResource NumberInputTextBox}"/>
-                </Grid>
+                                    <StackPanel Grid.Column="0" Grid.Row="1" Margin="0,0,8,0">
+                                        <TextBlock Text="Total Layers" Style="{StaticResource InputLabelStyle}"/>
+                                        <TextBox Height="30" Padding="8,6" x:Name="NumTotalLayers" Style="{StaticResource NumberInputTextBox}"/>
+                                    </StackPanel>
+
+                                    <StackPanel Grid.Column="1" Grid.Row="1" Margin="0,0,0,0">
+                                        <TextBlock Text="per layer" Style="{StaticResource InputLabelStyle}"/>
+                                        <TextBox Height="30" Padding="8,6" x:Name="NumWrapsPerLayer" Style="{StaticResource NumberInputTextBox}"/>
+                                    </StackPanel>
+                                </Grid>
+                            </StackPanel>
+                        </Border>
+
+                        <Border Grid.Column="1" Style="{StaticResource CardStyle}" Margin="8,0,0,16">
+                            <StackPanel>
+                                <TextBlock Text="Burnish Variables" Style="{StaticResource SectionTitleStyle}"/>
+
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="Auto"/>
+                                    </Grid.RowDefinitions>
+
+                                    <StackPanel Grid.Column="0" Grid.Row="0" Margin="0,0,8,8">
+                                        <TextBlock Text="Burnish %" Style="{StaticResource InputLabelStyle}"/>
+                                        <TextBox Height="30" Padding="8,6" x:Name="NumBurLayerPcg" Style="{StaticResource NumberInputTextBox}"/>
+                                    </StackPanel>
+
+                                    <StackPanel Grid.Column="1" Grid.Row="0" Margin="0,0,0,8">
+                                        <TextBlock Text="Start Speed" Style="{StaticResource InputLabelStyle}"/>
+                                        <TextBox Height="30" Padding="8,6" x:Name="NumBurStartSpeed" Style="{StaticResource NumberInputTextBox}"/>
+                                    </StackPanel>
+
+                                    <StackPanel Grid.Column="0" Grid.Row="1" Margin="0,0,8,0">
+                                        <TextBlock Text="Ramp Steps" Style="{StaticResource InputLabelStyle}"/>
+                                        <TextBox Height="30" Padding="8,6" x:Name="NumBurRampSteps" Style="{StaticResource IntegerInputTextBox}"/>
+                                    </StackPanel>
+
+                                    <StackPanel Grid.Column="1" Grid.Row="1" Margin="0,0,0,0">
+                                        <TextBlock Text="Final Speed" Style="{StaticResource InputLabelStyle}"/>
+                                        <TextBox Height="30" Padding="8,6" x:Name="NumBurFinalSpeed" Style="{StaticResource NumberInputTextBox}"/>
+                                    </StackPanel>
+                                </Grid>
+                            </StackPanel>
+                        </Border>
+                    </Grid>
+
+                    
+                    <!-- Additional G-Code Variables -->
+                    <Border Style="{StaticResource CardStyle}">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+
+
+                            <StackPanel Grid.Column="0" VerticalAlignment="Bottom" Margin="0,0,8,0">
+                                <CheckBox Content="Enable Pump" Margin="0,0,0,12" x:Name="pumpState" Checked="Pump_Enabled" VerticalAlignment="Center" 
+                              Unchecked="Pump_Disabled" Width="100"/>
+                            </StackPanel>
+
+                            <StackPanel Grid.Column="1" Margin="0,0,8,0">
+                                <TextBlock Text="Pump on code" Style="{StaticResource InputLabelStyle}"/>
+                                <TextBox x:Name="StrPumpOnCode" Height="30" Padding="8,6"/>
+                            </StackPanel>
+
+                            <StackPanel Grid.Column="2" Margin="0,0,8,0">
+                                <TextBlock Text="Pump off code" Style="{StaticResource InputLabelStyle}"/>
+                                <TextBox x:Name="StrPumpOffCode" Height="30" Padding="8,6"/>
+                            </StackPanel>
+
+                            <StackPanel Grid.Column="3" Margin="0,0,8,0">
+                                <TextBlock Text="Cycles per shell" Style="{StaticResource InputLabelStyle}"/>
+                                <TextBox Height="30" Padding="8,6" x:Name="NumCyclesPerShell" Style="{StaticResource IntegerInputTextBox}"/>
+                            </StackPanel>
+
+                            <StackPanel Grid.Column="4" Margin="0,0,0,0">
+                                <TextBlock Text="Duration" Style="{StaticResource InputLabelStyle}"/>
+                                <TextBox Height="30" Padding="8,6" x:Name="NumDuration" Style="{StaticResource IntegerInputTextBox}"/>
+                            </StackPanel>
+                        </Grid>
+                    </Border>
+
+                    <!-- Machine G-Code Variables - Collapsible -->
+
+                    <Border Style="{StaticResource CardStyle}">
+                        <StackPanel MouseLeftButtonDown="GCodeSection_Click">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+
+                                <TextBlock Grid.Column="0" 
+                                           Text="Machine G-Code Variables" 
+                                           Padding="0,10,0,0"
+                                           Style="{StaticResource SectionTitleStyle}"/>
+
+                                <StackPanel Grid.Column="1" Orientation="Horizontal">
+                                    <Button x:Name="ExpandGCodeButton"
+                                            Content="&#11035;" 
+                                            Width="30" Height="30"
+                                            Margin="0,0,8,0"
+                                            ToolTip="Expand G-Code Editor"
+                                            Style="{StaticResource BaseButtonStyle}"
+                                            Click="ExpandGCodeButton_Click"/>
+
+                                    <ToggleButton x:Name="CollapseGCodeToggle"
+                                                  Content="▼"
+                                                  Width="30" Height="30"
+                                                  Margin="0,0,8,0"
+                                                  Checked="CollapseGCodeToggle_Checked"
+                                                  Unchecked="CollapseGCodeToggle_Unchecked"
+                                                   Style="{StaticResource BaseButtonStyle}" ToolTip="Toggle G-Code Editor Section"
+                                                  />
+                                </StackPanel>
+                            </Grid>
+
+                            <Grid x:Name="GCodeEditorSection" Visibility="Collapsed">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+
+                                <StackPanel Grid.Column="0" Margin="0,0,8,0">
+                                    <TextBlock Text="Startup GCode" Style="{StaticResource InputLabelStyle}"/>
+                                    <TextBox Height="120" AcceptsReturn="True" TextWrapping="Wrap"
+                                             FontFamily="Consolas" FontSize="12" 
+                                             VerticalScrollBarVisibility="Auto"
+                                             x:Name="TxtStartGcode"
+                                             Padding="8,6"/>
+                                </StackPanel>
+
+                                <StackPanel Grid.Column="1" Margin="8,0,8,0">
+                                    <TextBlock Text="End of Main Wrap" Style="{StaticResource InputLabelStyle}"/>
+                                    <TextBox Height="120" AcceptsReturn="True" TextWrapping="Wrap"
+                                             FontFamily="Consolas" FontSize="12" 
+                                             VerticalScrollBarVisibility="Auto"
+                                             x:Name="TxtEndMWrap"
+                                             Padding="8,6"/>
+                                </StackPanel>
+
+                                <StackPanel Grid.Column="2" Margin="8,0,0,0">
+                                    <TextBlock Text="End of Complete Wrap" Style="{StaticResource InputLabelStyle}"/>
+                                    <TextBox Height="120" AcceptsReturn="True" TextWrapping="Wrap"
+                                             FontFamily="Consolas" FontSize="12" 
+                                             VerticalScrollBarVisibility="Auto"
+                                             x:Name="TxtEndCWrap"
+                                             Padding="8,6"/>
+                                </StackPanel>
+                            </Grid>
+                        </StackPanel>
+                    </Border>
+                </StackPanel>
+                
+            </ScrollViewer>
+            
+            <!--
+            <StackPanel Grid.Column="2" Grid.Row="1" Background="#F5F7FA" >
+                <Border Style="{StaticResource CardStyle}">
+                    <StackPanel>
+                        
+
+                        <Grid x:Name="GCodeEditorSection">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="*"/>
+                                <RowDefinition Height="*"/>
+                                <RowDefinition Height="*"/>
+                            </Grid.RowDefinitions>
+
+                            <StackPanel Grid.Row="0" Margin="0,0,8,0">
+                                <TextBlock Text="Startup GCode" Style="{StaticResource InputLabelStyle}"/>
+                                <TextBox Height="120" AcceptsReturn="True" TextWrapping="Wrap"
+                                             FontFamily="Consolas" FontSize="12" 
+                                             VerticalScrollBarVisibility="Auto"
+                                             x:Name="TxtStartGcode"
+                                             Padding="8,6"/>
+                            </StackPanel>
+
+                            <StackPanel Grid.Row="1" Margin="8,0,8,0">
+                                <TextBlock Text="End of Main Wrap" Style="{StaticResource InputLabelStyle}"/>
+                                <TextBox Height="120" AcceptsReturn="True" TextWrapping="Wrap"
+                                             FontFamily="Consolas" FontSize="12" 
+                                             VerticalScrollBarVisibility="Auto"
+                                             x:Name="TxtEndMWrap"
+                                             Padding="8,6"/>
+                            </StackPanel>
+
+                            <StackPanel Grid.Row="2" Margin="8,0,0,0">
+                                <TextBlock Text="End of Complete Wrap" Style="{StaticResource InputLabelStyle}"/>
+                                <TextBox Height="120" AcceptsReturn="True" TextWrapping="Wrap"
+                                             FontFamily="Consolas" FontSize="12" 
+                                             VerticalScrollBarVisibility="Auto"
+                                             x:Name="TxtEndCWrap"
+                                             Padding="8,6"/>
+                            </StackPanel>
+                        </Grid>
+                    </StackPanel>
+                </Border>
             </StackPanel>
-
-            <!-- Shell Description -->
-            <StackPanel Grid.Row="2" Grid.Column="1" Margin="0,11,0,7">
-                <TextBlock Text="Shell Description" Margin="0,0,0,5" Style="{StaticResource SubTitle}"/>
-                <TextBox x:Name="StrShellDescription" Margin="0,0,12,0" TextAlignment="Left"/>
-            </StackPanel>
-
-            <!-- Wrap Speed Variables Section -->
-            <StackPanel Margin="0,25,0,7">
-
-                <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="*"/>
-                    </Grid.ColumnDefinitions>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="Auto"/>
-                    </Grid.RowDefinitions>
-
-                    <TextBlock Text="Wrap Speed Variables" Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="5" Margin="0,0,0,10" Style="{StaticResource SubTitle}"/>
-                    <TextBlock Grid.Row="1" Grid.Column="0" Text="Feedrate" Margin="0,0,10,5"/>
-                    <TextBox x:Name="NumWrapFeedRate" Grid.Row="2" Grid.Column="0" Margin="0,0,10,0" Style="{StaticResource NumberInputTextBox}"/>
-
-
-                    <TextBlock Grid.Row="1" Grid.Column="1" Text="Overwrap%" Margin="0,0,10,5"/>
-                    <TextBox x:Name="NumOverWrapPcg" Grid.Row="2" Grid.Column="1" Margin="0,0,10,0" Style="{StaticResource NumberInputTextBox}"/>
-
-                    <TextBlock Grid.Row="1" Grid.Column="2" Text="Total Layers" Margin="0,0,10,5"/>
-                    <TextBox x:Name="NumTotalLayers" Grid.Row="2" Grid.Column="2" Margin="0,0,10,0" Style="{StaticResource NumberInputTextBox}"/>
-
-                    <TextBlock Grid.Row="1" Grid.Column="3" Text="per layer" Margin="0,0,10,5"/>
-                    <TextBox x:Name="NumWrapsPerLayer" Grid.Row="2" Grid.Column="3" Margin="0,0,10,0" Style="{StaticResource NumberInputTextBox}"/>
-
-                    <TextBlock Text="Burnish Variables" Grid.Column="4" Grid.Row="0" Grid.ColumnSpan="5" Margin="0,0,0,10" Style="{StaticResource SubTitle}"/>
-
-                    <TextBlock Grid.Row="1" Grid.Column="4" Text="Burnish %"/>
-                    <TextBox x:Name="NumBurLayerPcg" Grid.Row="2" Grid.Column="4" Margin="0,0,10,0" Style="{StaticResource NumberInputTextBox}"/>
-
-                    <TextBlock Grid.Row="1" Grid.Column="5" Text="Start Speed" Margin="0,0,10,5"/>
-                    <TextBox x:Name="NumBurStartSpeed" Grid.Row="2" Grid.Column="5 " Margin="0,0,10,0" Style="{StaticResource NumberInputTextBox}"/>
-
-                    <TextBlock Grid.Row="1" Grid.Column="6" Text="Ramp Steps" Margin="0,0,10,5"/>
-                    <TextBox x:Name="NumBurRampSteps" Grid.Row="2" Grid.Column="6" Margin="0,0,10,0" Style="{StaticResource IntegerInputTextBox}"/>
-
-                    <TextBlock Grid.Row="1" Grid.Column="7" Text="Final Speed" Margin="0,0,10,5"/>
-                    <TextBox x:Name="NumBurFinalSpeed" Grid.Row="2" Grid.Column="7" Margin="0,0,10,0" Style="{StaticResource NumberInputTextBox}"/>
-                </Grid>
-            </StackPanel>
-
-            <!-- Machine G-Code Variables Section -->
-            <StackPanel Margin="0,7,0,0">
-                <TextBlock Text="Machine G-Code Variables" Margin="0,0,0,3" Style="{StaticResource SubTitle}"/>
-
-                <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="*"/>
-                    </Grid.ColumnDefinitions>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="Auto"/>
-                    </Grid.RowDefinitions>
-
-                    <TextBlock Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" Text="Startup GCode" Margin="0,0,10,5"/>
-                    <TextBox x:Name="TxtStartGcode" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Height="60" Margin="0,0,10,15" TextAlignment="Left"
-                             TextWrapping="Wrap" AcceptsReturn="True" VerticalScrollBarVisibility="Auto" VerticalAlignment="Top" MinHeight="60"/>
-
-                    <TextBlock Grid.Row="0" Grid.Column="2" Grid.ColumnSpan="2" Text="End of Main Wrap" Margin="0,0,10,5"/>
-                    <TextBox x:Name="TxtEndMWrap" Grid.Row="1" Grid.Column="2" Grid.ColumnSpan="2" Height="60" Margin="0,0,10,15" TextAlignment="Left"
-                             TextWrapping="Wrap" AcceptsReturn="True" VerticalScrollBarVisibility="Auto" VerticalAlignment="Top" MinHeight="60"/>
-
-                    <TextBlock Grid.Row="0" Grid.Column="4" Grid.ColumnSpan="2" Text="End of Complete Wrap" Margin="0,0,10,5"/>
-                    <TextBox x:Name="TxtEndCWrap" Grid.Row="1" Grid.Column="4" Grid.ColumnSpan="2" Height="60" Margin="0,0,10,15" TextAlignment="Left"
-                             TextWrapping="Wrap" AcceptsReturn="True" VerticalScrollBarVisibility="Auto" VerticalAlignment="Top" MinHeight="60"/>
-
-       <!--             <TextBlock Grid.Row="0" Grid.Column="6" Grid.ColumnSpan="2" Text="Reload Command" Margin="0,0,10,5"/>
-                    <TextBox x:Name="TxtReloadCommand" Grid.Row="1" Grid.Column="6" Grid.ColumnSpan="2" Height="60" Margin="0,0,10,15" TextAlignment="Left"
-                             TextWrapping="Wrap" AcceptsReturn="True" VerticalScrollBarVisibility="Auto" VerticalAlignment="Top" MinHeight="60"/>
--->
-                </Grid>
-            </StackPanel>
-
-            <!-- Bottom Section -->
-            <StackPanel Grid.Row="5" Grid.Column="1" Margin="0,0,0,0">
-                <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="*"/>
-                    </Grid.ColumnDefinitions>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="Auto"/>
-                    </Grid.RowDefinitions>
-
-                    <TextBlock Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" Text="Total Estimated Feet" Margin="0,0,10,5"/>
-                    <TextBox x:Name="NumTotalEstFeet" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Margin="0,0,10,0" Style="{StaticResource NumberInputTextBox}" IsEnabled="False"/>
-
-                    <TextBlock Grid.Row="0" Grid.Column="3" Grid.ColumnSpan="2" Text="Pump on/off code" Margin="0,0,10,5"/>
-                    <TextBox x:Name="StrPumpOnCode" Grid.Row="1" Grid.Column="3" Margin="0,0,10,0"/>
-                    <TextBox x:Name="StrPumpOffCode" Grid.Row="1" Grid.Column="4" Margin="0,0,10,0"/>
-
-                    <!--                 <TextBlock Grid.Row="0" Grid.Column="3" Text="Enable Pump" Margin="0,0,10,5"/> -->
-                    <TextBlock Grid.Row="0" Grid.Column="5" Grid.ColumnSpan="2" Text="Cycles per shell" Margin="0,0,10,5"/>
-                    <TextBox x:Name="NumCyclesPerShell" Grid.Row="1" Grid.Column="5" Grid.ColumnSpan="2" Margin="0,0,10,0" Style="{StaticResource IntegerInputTextBox}"/>
-
-                    <TextBlock Grid.Row="0" Grid.Column="7" Text="Duration" Margin="0,0,10,5"/>
-                    <TextBox x:Name="NumDuration" Grid.Row="1" Grid.Column="7" Margin="0,0,10,0" Style="{StaticResource IntegerInputTextBox}"/>
-                    <CheckBox Content="Use" Grid.Column="2" Grid.Row="1" Checked="Pump_Enabled" VerticalAlignment="Center" 
-                              Unchecked="Pump_Disabled" x:Name="pumpState" Width="40" />
-                </Grid>
-            </StackPanel>
-        </StackPanel>
+            -->
+        </Grid>
     </Grid>
 
 </Window>

@@ -57,7 +57,7 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup>
-    <ApplicationIcon>gmark.ico</ApplicationIcon>
+    <ApplicationIcon>logo.ico</ApplicationIcon>
   </PropertyGroup>
   <PropertyGroup>
     <ManifestCertificateThumbprint>DDAFCC5C3E90B379C71DD56BD066E648A183D749</ManifestCertificateThumbprint>
@@ -137,9 +137,6 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Asset\gmark.ico" />
-  </ItemGroup>
-  <ItemGroup>
     <Resource Include="gmark.ico" />
   </ItemGroup>
   <ItemGroup>
@@ -165,6 +162,15 @@
       <ProductName>.NET Framework 3.5 SP1</ProductName>
       <Install>false</Install>
     </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="logo.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Asset\logo.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Asset\logo.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
