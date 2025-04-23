@@ -34,7 +34,7 @@ https://dotnet.microsoft.com/en-us/download/dotnet/4.5
 📸 App Screenshot
 -----------------
 
-![Spyder Wrap Pattern Generator Screenshot](docs/interface.png)
+![Spyder Wrap Pattern Generator Screenshot](docs/Interface.png)
 
 📬 Support
 ----------
