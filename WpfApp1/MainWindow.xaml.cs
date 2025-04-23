@@ -56,7 +56,7 @@ namespace WpfApp1
             else
             {
                 this.Width = 1024;
-                this.Height = 690;
+                this.Height = 605;
             }
 
             // Get the screen working area
@@ -857,8 +857,8 @@ namespace WpfApp1
             // Apply the new height to the TextBox
   //          TxtGcodeOutput.Height = textBoxHeight;
 
-            if (e.NewSize.Height >= 670)
-                TxtGcodeOutput.Height = 190;
+            if (e.NewSize.Height >= 600)
+                TxtGcodeOutput.Height = 110;
             else
                 TxtGcodeOutput.Height = newWindowHeight - 485;
         }
@@ -917,21 +917,21 @@ namespace WpfApp1
 
 
 
-
+        /*
         private void GCodeSection_Click(object sender, RoutedEventArgs e)
         {
             if (CollapseGCodeToggle.IsChecked == true)
             {
                 CollapseGCodeToggle_Unchecked(sender, e);
-                CollapseGCodeToggle.IsChecked = false;
+        //        CollapseGCodeToggle.IsChecked = false;
             }
             else
             {
                 CollapseGCodeToggle_Checked(sender, e);
-                CollapseGCodeToggle.IsChecked = true;
+          //      CollapseGCodeToggle.IsChecked = true;
             }
         }
-
+        */
         private void CollapseGCodeToggle_Checked(object sender, RoutedEventArgs e)
         {
             // Show GCode section
@@ -952,6 +952,9 @@ namespace WpfApp1
             ShowGCodeEditorWindow();
         }
 
+
+
+        /*
         private void ShowGCodeEditorWindow()
         {
             // Close existing dialog if open
@@ -1122,13 +1125,374 @@ namespace WpfApp1
             gCodeEditorWindow.ShowDialog();
         }
 
+        */
 
 
 
 
-        
-       
-public static void ShowModernMessageBox(string title, string message)
+
+        private void ShowGCodeEditorWindow()
+        {
+            // Close existing dialog if open
+            if (gCodeEditorWindow != null && gCodeEditorWindow.IsVisible)
+            {
+                gCodeEditorWindow.Close();
+            }
+
+            // Create a new dialog window
+            gCodeEditorWindow = new Window
+            {
+                Title = "Machine G-Code Variables",
+                Width = Math.Floor(this.Width * 0.7),
+                MinWidth = 500,
+                Height = 400,
+                MinHeight = 300,
+                WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                Owner = this,
+                ResizeMode = ResizeMode.CanResize,
+                Background = new SolidColorBrush(Colors.WhiteSmoke)
+            };
+
+            // Create the content
+            Grid mainGrid = new Grid
+            {
+                Margin = new Thickness(20)
+            };
+
+            // Add RowDefinitions to mainGrid
+       //     mainGrid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto }); // For the new section
+            mainGrid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto }); // For the new section
+            mainGrid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) }); // For editorsGrid
+            mainGrid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto }); // For buttonPanel
+
+            // Create the new section grid
+            Grid pumpSectionGrid = new Grid
+            {
+                Margin = new Thickness(0, 0, 0, 30)
+            };
+
+            pumpSectionGrid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
+            pumpSectionGrid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
+
+            pumpSectionGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Auto) }); // For CheckBox
+            pumpSectionGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) }); // For TextBoxes
+            pumpSectionGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) }); // For TextBoxes
+            pumpSectionGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) }); // For TextBoxes
+            pumpSectionGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) }); // For TextBoxes
+
+            // CheckBox for "Enable Pump"
+            CheckBox enablePumpCheckBox = new CheckBox
+            {
+                Content = "Enable Pump",
+                Margin = new Thickness(0, 25, 10, 0),
+                IsChecked = pumpState.IsChecked,
+            };
+            
+            Grid.SetRow(enablePumpCheckBox, 0);
+            Grid.SetRowSpan(enablePumpCheckBox, 2);
+            Grid.SetColumn(enablePumpCheckBox, 0);
+
+
+            // Labels and TextBoxes for "Pump on code," "Pump off code," "Cycles per shell," and "Duration"
+            TextBlock pumpOnLabel = new TextBlock
+            {
+                Text = "Pump on code",
+                FontSize = 12,
+                Foreground = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#666")),
+                Margin = new Thickness(5, 0, 0, 5)
+            };
+            Grid.SetRow(pumpOnLabel, 0);
+            Grid.SetColumn(pumpOnLabel, 1);
+
+            TextBox pumpOnTextBox = new TextBox
+            {
+                AcceptsReturn = true,
+                TextWrapping = TextWrapping.Wrap,
+                VerticalScrollBarVisibility = ScrollBarVisibility.Auto,
+                HorizontalScrollBarVisibility = ScrollBarVisibility.Auto,
+                FontFamily = new FontFamily("Consolas"),
+                FontSize = 12,
+                Margin = new Thickness(5, 0, 0, 0),
+                Padding = new Thickness(8),
+                Text = StrPumpOnCode.Text, // Assuming TxtPumpOn is the source for initial text
+                IsEnabled = enablePumpCheckBox.IsChecked == true
+            };
+            Grid.SetRow(pumpOnTextBox, 1);
+            Grid.SetColumn(pumpOnTextBox, 1);
+            
+            TextBlock pumpOffLabel = new TextBlock
+            {
+                Text = "Pump off code",
+                FontSize = 12,
+                Foreground = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#666")),
+                Margin = new Thickness(5, 0, 0, 5)
+            };
+            Grid.SetRow(pumpOffLabel, 0);
+            Grid.SetColumn(pumpOffLabel, 2);
+
+            TextBox pumpOffTextBox = new TextBox
+            {
+                AcceptsReturn = true,
+                TextWrapping = TextWrapping.Wrap,
+                VerticalScrollBarVisibility = ScrollBarVisibility.Auto,
+                HorizontalScrollBarVisibility = ScrollBarVisibility.Auto,
+                FontFamily = new FontFamily("Consolas"),
+                FontSize = 12,
+                Margin = new Thickness(5, 0, 0, 0),
+                Padding = new Thickness(8),
+                Text = StrPumpOffCode.Text, // Assuming TxtPumpOff is the source for initial text
+                IsEnabled = enablePumpCheckBox.IsChecked == true
+            };
+            Grid.SetRow(pumpOffTextBox, 1);
+            Grid.SetColumn(pumpOffTextBox, 2);
+
+            TextBlock cyclesLabel = new TextBlock
+            {
+                Text = "Cycles per shell",
+                FontSize = 12,
+                Foreground = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#666")),
+                Margin = new Thickness(5, 0, 0, 5)
+            };
+            Grid.SetRow(cyclesLabel, 0);
+            Grid.SetColumn(cyclesLabel, 3);
+
+            TextBox cyclesTextBox = new TextBox
+            {
+                AcceptsReturn = true,
+                TextWrapping = TextWrapping.Wrap,
+                VerticalScrollBarVisibility = ScrollBarVisibility.Auto,
+                HorizontalScrollBarVisibility = ScrollBarVisibility.Auto,
+                FontFamily = new FontFamily("Consolas"),
+                FontSize = 12,
+                Margin = new Thickness(5, 0, 0, 0),
+                Padding = new Thickness(8),
+                Text = NumCyclesPerShell.Text, // Assuming TxtCyclesPerShell is the source for initial text
+                IsEnabled = enablePumpCheckBox.IsChecked == true
+            };
+            Grid.SetRow(cyclesTextBox, 1);
+            Grid.SetColumn(cyclesTextBox, 3);
+
+            TextBlock durationLabel = new TextBlock
+            {
+                Text = "Duration",
+                FontSize = 12,
+                Foreground = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#666")),
+                Margin = new Thickness(5, 0, 0, 5)
+            };
+            Grid.SetRow(durationLabel, 0);
+            Grid.SetColumn(durationLabel, 4);
+
+            TextBox durationTextBox = new TextBox
+            {
+                AcceptsReturn = true,
+                TextWrapping = TextWrapping.Wrap,
+                VerticalScrollBarVisibility = ScrollBarVisibility.Auto,
+                HorizontalScrollBarVisibility = ScrollBarVisibility.Auto,
+                FontFamily = new FontFamily("Consolas"),
+                FontSize = 12,
+                Margin = new Thickness(5, 0, 0, 0),
+                Padding = new Thickness(8),
+                Text = NumDuration.Text, // Assuming TxtDuration is the source for initial text
+                IsEnabled = enablePumpCheckBox.IsChecked == true
+            };
+            Grid.SetRow(durationTextBox, 1);
+            Grid.SetColumn(durationTextBox, 4);
+
+
+            enablePumpCheckBox.Checked += Section_Pump_Enabled;
+            enablePumpCheckBox.Unchecked += Section_Pump_Disabled;
+
+
+            void Section_Pump_Enabled(object sender, RoutedEventArgs e)
+            {
+                pumpOnTextBox.IsEnabled = true;
+                pumpOffTextBox.IsEnabled = true;
+                cyclesTextBox.IsEnabled = true;
+                durationTextBox.IsEnabled = true;
+            }
+
+
+            void Section_Pump_Disabled(object sender, RoutedEventArgs e)
+            {
+                pumpOnTextBox.IsEnabled = false;
+                pumpOffTextBox.IsEnabled = false;
+                cyclesTextBox.IsEnabled = false;
+                durationTextBox.IsEnabled = false;
+            }
+
+
+            // Add all elements to the pumpSectionGrid
+            pumpSectionGrid.Children.Add(enablePumpCheckBox);
+            pumpSectionGrid.Children.Add(pumpOnLabel);
+            pumpSectionGrid.Children.Add(pumpOnTextBox);
+            pumpSectionGrid.Children.Add(pumpOffLabel);
+            pumpSectionGrid.Children.Add(pumpOffTextBox);
+            pumpSectionGrid.Children.Add(cyclesLabel);
+            pumpSectionGrid.Children.Add(cyclesTextBox);
+            pumpSectionGrid.Children.Add(durationLabel);
+            pumpSectionGrid.Children.Add(durationTextBox);
+
+            // Add pumpSectionGrid to mainGrid
+            Grid.SetRow(pumpSectionGrid, 0);
+            mainGrid.Children.Add(pumpSectionGrid);
+
+            // Existing code for editorsGrid
+            Grid editorsGrid = new Grid
+            {
+                Margin = new Thickness(0, 0, 0, 15)
+            };
+
+            editorsGrid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
+            editorsGrid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) });
+
+            editorsGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
+            editorsGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
+            editorsGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
+
+            // Create and add the labels
+            TextBlock startupLabel = new TextBlock
+            {
+                Text = "Startup GCode",
+                FontSize = 12,
+                Foreground = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#666")),
+                Margin = new Thickness(0, 0, 0, 5)
+            };
+            Grid.SetRow(startupLabel, 0);
+            Grid.SetColumn(startupLabel, 0);
+
+            TextBlock mainWrapLabel = new TextBlock
+            {
+                Text = "End of Main Wrap",
+                FontSize = 12,
+                Foreground = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#666")),
+                Margin = new Thickness(5, 0, 5, 5)
+            };
+            Grid.SetRow(mainWrapLabel, 0);
+            Grid.SetColumn(mainWrapLabel, 1);
+
+            TextBlock completeWrapLabel = new TextBlock
+            {
+                Text = "End of Complete Wrap",
+                FontSize = 12,
+                Foreground = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#666")),
+                Margin = new Thickness(0, 0, 0, 5)
+            };
+            Grid.SetRow(completeWrapLabel, 0);
+            Grid.SetColumn(completeWrapLabel, 2);
+
+            // Create and add the text boxes
+            TextBox startupTextBox = new TextBox
+            {
+                AcceptsReturn = true,
+                TextWrapping = TextWrapping.Wrap,
+                VerticalScrollBarVisibility = ScrollBarVisibility.Auto,
+                HorizontalScrollBarVisibility = ScrollBarVisibility.Auto,
+                FontFamily = new FontFamily("Consolas"),
+                FontSize = 12,
+                Margin = new Thickness(0, 0, 5, 0),
+                Padding = new Thickness(8),
+                Text = TxtStartGcode.Text
+            };
+            Grid.SetRow(startupTextBox, 1);
+            Grid.SetColumn(startupTextBox, 0);
+
+            TextBox mainWrapTextBox = new TextBox
+            {
+                AcceptsReturn = true,
+                TextWrapping = TextWrapping.Wrap,
+                VerticalScrollBarVisibility = ScrollBarVisibility.Auto,
+                HorizontalScrollBarVisibility = ScrollBarVisibility.Auto,
+                FontFamily = new FontFamily("Consolas"),
+                FontSize = 12,
+                Margin = new Thickness(5, 0, 5, 0),
+                Padding = new Thickness(8),
+                Text = TxtEndMWrap.Text
+            };
+            Grid.SetRow(mainWrapTextBox, 1);
+            Grid.SetColumn(mainWrapTextBox, 1);
+
+            TextBox completeWrapTextBox = new TextBox
+            {
+                AcceptsReturn = true,
+                TextWrapping = TextWrapping.Wrap,
+                VerticalScrollBarVisibility = ScrollBarVisibility.Auto,
+                HorizontalScrollBarVisibility = ScrollBarVisibility.Auto,
+                FontFamily = new FontFamily("Consolas"),
+                FontSize = 12,
+                Margin = new Thickness(5, 0, 0, 0),
+                Padding = new Thickness(8),
+                Text = TxtEndCWrap.Text
+            };
+            Grid.SetRow(completeWrapTextBox, 1);
+            Grid.SetColumn(completeWrapTextBox, 2);
+
+            // Add all elements to the editors grid
+            editorsGrid.Children.Add(startupLabel);
+            editorsGrid.Children.Add(mainWrapLabel);
+            editorsGrid.Children.Add(completeWrapLabel);
+            editorsGrid.Children.Add(startupTextBox);
+            editorsGrid.Children.Add(mainWrapTextBox);
+            editorsGrid.Children.Add(completeWrapTextBox);
+
+            // Add editorsGrid to mainGrid
+            Grid.SetRow(editorsGrid, 1);
+            mainGrid.Children.Add(editorsGrid);
+
+            // Button panel
+            StackPanel buttonPanel = new StackPanel
+            {
+                Orientation = Orientation.Horizontal,
+                HorizontalAlignment = HorizontalAlignment.Right
+            };
+
+            Button closeButton = new Button
+            {
+                Content = "OK",
+                Padding = new Thickness(20, 8, 20, 8),
+                Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#1A56A0")),
+                Foreground = Brushes.White,
+                BorderThickness = new Thickness(0),
+                Margin = new Thickness(0, 0, 0, 0),
+                Style = (Style)FindResource("SidebarButtonStyle")
+            };
+
+            closeButton.Click += SetGCode_Variables_Click;
+
+            void SetGCode_Variables_Click(object sender, RoutedEventArgs e)
+            {
+                TxtStartGcode.Text = startupTextBox.Text;
+                TxtEndMWrap.Text = mainWrapTextBox.Text;
+                TxtEndCWrap.Text = completeWrapTextBox.Text;
+
+                // Update values from the new section
+                StrPumpOnCode.Text = pumpOnTextBox.Text;
+                StrPumpOffCode.Text = pumpOffTextBox.Text;
+                NumCyclesPerShell.Text = cyclesTextBox.Text;
+                NumDuration.Text = durationTextBox.Text;
+
+                pumpState.IsChecked = enablePumpCheckBox.IsChecked;
+
+                gCodeEditorWindow.Close();
+            }
+
+            buttonPanel.Children.Add(closeButton);
+
+            // Add buttonPanel to mainGrid
+            Grid.SetRow(buttonPanel, 2);
+            mainGrid.Children.Add(buttonPanel);
+
+            // Set the content and show
+            gCodeEditorWindow.Content = mainGrid;
+            gCodeEditorWindow.ShowDialog();
+        }
+
+
+
+
+
+        /*
+
+        public static void ShowModernMessageBox(string title, string message)
     {
         // Create the main window
         var window = new Window
@@ -1237,7 +1601,7 @@ public static void ShowModernMessageBox(string title, string message)
 
         return grid;
     }
-
+    */
 }
 }
 
