@@ -1143,8 +1143,10 @@ namespace WpfApp1
             gCodeEditorWindow = new Window
             {
                 Title = "Machine G-Code Variables",
-                Width = 900,
+                Width = Math.Floor(this.Width * 0.7),
+                MinWidth = 500,
                 Height = 400,
+                MinHeight = 300,
                 WindowStartupLocation = WindowStartupLocation.CenterOwner,
                 Owner = this,
                 ResizeMode = ResizeMode.CanResize,
@@ -1182,7 +1184,7 @@ namespace WpfApp1
             CheckBox enablePumpCheckBox = new CheckBox
             {
                 Content = "Enable Pump",
-                Margin = new Thickness(0, 10, 10, 0),
+                Margin = new Thickness(0, 25, 10, 0),
                 IsChecked = pumpState.IsChecked,
             };
             
