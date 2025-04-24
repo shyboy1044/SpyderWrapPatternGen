@@ -55,14 +55,14 @@
     </dependentAssembly>
   </dependency>
   <dependency>
-    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="WpfApp1.exe" size="3840480">
+    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="WpfApp1.exe" size="2396128">
       <assemblyIdentity name="WpfApp1" version="1.0.0.0" language="neutral" processorArchitecture="msil" />
       <hash>
         <dsig:Transforms>
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-        <dsig:DigestValue>l4GGctwrEpip52BaJq0VFnHZOlEDXkJRW61AKqqfQ8c=</dsig:DigestValue>
+        <dsig:DigestValue>S7mFcae8D19iTHLs/Fh3WzZFFhRptaEnVo8c4Yg3E9I=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>
@@ -90,7 +90,7 @@
         <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
       </dsig:Transforms>
       <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-      <dsig:DigestValue>ek/jjaskPZeBoXqPWz/LPJFpxBttyy9TPSnbuQ8c7wM=</dsig:DigestValue>
+      <dsig:DigestValue>FXT+DTwYUk7F/Pwn2CSV9o+SUWpxARMVRh/0I4J/0l8=</dsig:DigestValue>
     </hash>
   </file>
 </asmv1:assembly>
