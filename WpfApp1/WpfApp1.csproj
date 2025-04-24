@@ -170,28 +170,13 @@
     <Resource Include="logo.ico" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Asset\logo.ico" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Asset\logo.png" />
-  </ItemGroup>
-  <ItemGroup>
     <Resource Include="Asset\bg.png" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Asset\nano.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Asset\qqq.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Asset\qqq.ico" />
-  </ItemGroup>
-  <ItemGroup>
     <Resource Include="qqq.ico" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Asset\rrr.png" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="rrr.ico" />
@@ -204,12 +189,6 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Asset\nano.ico" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Asset\sss.ico" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Asset\rrr.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
