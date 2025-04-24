@@ -857,9 +857,9 @@ namespace WpfApp1
             // Apply the new height to the TextBox
   //          TxtGcodeOutput.Height = textBoxHeight;
 
-            if (e.NewSize.Height >= 600)
-                TxtGcodeOutput.Height = 110;
-            else
+     //       if (e.NewSize.Height >= 600)
+     //           TxtGcodeOutput.Height = 110;
+      //      else
                 TxtGcodeOutput.Height = newWindowHeight - 485;
         }
 
@@ -1384,7 +1384,7 @@ namespace WpfApp1
             TextBox startupTextBox = new TextBox
             {
                 AcceptsReturn = true,
-                TextWrapping = TextWrapping.Wrap,
+ //               TextWrapping = TextWrapping.Wrap,
                 VerticalScrollBarVisibility = ScrollBarVisibility.Auto,
                 HorizontalScrollBarVisibility = ScrollBarVisibility.Auto,
                 FontFamily = new FontFamily("Consolas"),
@@ -1399,7 +1399,7 @@ namespace WpfApp1
             TextBox mainWrapTextBox = new TextBox
             {
                 AcceptsReturn = true,
-                TextWrapping = TextWrapping.Wrap,
+      //          TextWrapping = TextWrapping.Wrap,
                 VerticalScrollBarVisibility = ScrollBarVisibility.Auto,
                 HorizontalScrollBarVisibility = ScrollBarVisibility.Auto,
                 FontFamily = new FontFamily("Consolas"),
@@ -1414,7 +1414,7 @@ namespace WpfApp1
             TextBox completeWrapTextBox = new TextBox
             {
                 AcceptsReturn = true,
-                TextWrapping = TextWrapping.Wrap,
+  //              TextWrapping = TextWrapping.Wrap,
                 VerticalScrollBarVisibility = ScrollBarVisibility.Auto,
                 HorizontalScrollBarVisibility = ScrollBarVisibility.Auto,
                 FontFamily = new FontFamily("Consolas"),

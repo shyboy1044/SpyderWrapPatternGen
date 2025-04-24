@@ -22,14 +22,14 @@
 
         <Style TargetType="TextBox" x:Key="IntegerInputTextBox">
             <Setter Property="Height" Value="30"/>
-            <Setter Property="TextAlignment" Value="Right"/>
+            <Setter Property="TextAlignment" Value="Left"/>
             <Setter Property="Padding" Value="5"/>
             <!--          <EventSetter Event="PreviewTextInput" Handler="IntegerOnlyTextBox_PreviewTextInput" />   -->
         </Style>
 
         <Style TargetType="TextBox" x:Key="NumberInputTextBox">
             <Setter Property="Height" Value="30"/>
-            <Setter Property="TextAlignment" Value="Right"/>
+            <Setter Property="TextAlignment" Value="Left"/>
             <Setter Property="Padding" Value="5"/>
             <!--           <EventSetter Event="PreviewTextInput" Handler="NumberOnlyTextBox_PreviewTextInput"/>  -->
         </Style>
@@ -70,7 +70,30 @@
             <Setter Property="Background" Value="#2573C5"/>
             <Setter Property="Foreground" Value="White"/>
             <Setter Property="Padding" Value="12"/>
-            <Setter Property="Margin" Value="0,0,0,8"/>
+            <Setter Property="Margin" Value="0,0,0,0"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}" 
+                                CornerRadius="4"
+                                Padding="{TemplateBinding Padding}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background" Value="#1E5FA8"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="GenButtonStyle" TargetType="Button">
+            <Setter Property="Background" Value="#0E85EC"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="Padding" Value="12"/>
+            <Setter Property="Margin" Value="0,0,0,0"/>
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="Button">
@@ -211,7 +234,8 @@
 
         <Grid Grid.Row="1" Margin="0,5,0,-5" Grid.ColumnSpan="2">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="200"/>
+                <ColumnDefinition Width="250" MinWidth="200" MaxWidth="480"/>
+                <ColumnDefinition Width="5"/>
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
 
@@ -219,11 +243,13 @@
             <Border Grid.Column="0" Background="#0A4285" Padding="12">
                 <DockPanel>
                     <StackPanel DockPanel.Dock="Top">
-                        <Button Content="Load Pattern" Style="{StaticResource SidebarButtonStyle}" Click="BtnLoad_Click"/>
-                        <Button Content="Save Pattern" Style="{StaticResource SidebarButtonStyle}" Click="BtnSave_Click"/>
-                        <Button Content="Save As New" Style="{StaticResource SidebarButtonStyle}" Click="BtnSaveNew_Click"/>
-                        <Button Content="Generate GCode" Style="{StaticResource SidebarButtonStyle}" Click="BtnGenGCode_Click"/>
-                        <Button Content="Export GCode As File" Style="{StaticResource SidebarButtonStyle}" Click="BtnExportGCode_Click"/>
+                        <Button Content="Load Pattern" Style="{StaticResource SidebarButtonStyle}" Click="BtnLoad_Click" Margin="0,0,0,8"/>
+                        <Button Content="Save Pattern" Style="{StaticResource SidebarButtonStyle}" Click="BtnSave_Click" Margin="0,0,0,8"/>
+                        <Button Content="Save As New" Style="{StaticResource SidebarButtonStyle}" Click="BtnSaveNew_Click" Margin="0,0,0,8"/>
+                        <!--        <Border BorderBrush="#1E5FA8" BorderThickness="3" CornerRadius="3" Padding="0" Margin="0,0,0,8">-->
+                        <Button Content="GENERATE WRAP PATTEEN" Style="{StaticResource GenButtonStyle}" Click="BtnGenGCode_Click" Margin="0,0,0,8" />
+                        <!--        </Border>-->
+                        <Button Content="Export Pattern As File" Style="{StaticResource SidebarButtonStyle}" Click="BtnExportGCode_Click" Margin="0,0,0,8"/>
 
                         <TextBlock Text="Pattern File Name" 
                                    Foreground="White" 
@@ -247,19 +273,25 @@
                                      FontSize="11"
                                      Height="140"
                                      AcceptsReturn="True"
-                                     
-                                     TextWrapping="Wrap"
+                                     HorizontalScrollBarVisibility="Auto"
                                      VerticalScrollBarVisibility="Auto"/>
                         </Border>
                     </StackPanel>
                 </DockPanel>
             </Border>
 
-            <!-- Main Content -->
-            <ScrollViewer Grid.Column="1" Padding="10" VerticalScrollBarVisibility="Auto" Background="#F5F7FA">
-                <Grid>
+            <!-- Grid Splitter-->
+            <GridSplitter Grid.Column="1" Width="7" HorizontalAlignment="Center" VerticalAlignment="Stretch" Background="#2573C5" />
 
-                    <StackPanel>
+            <!-- Main Content -->
+            <ScrollViewer Grid.Column="2" Padding="10" VerticalScrollBarVisibility="Auto" Background="#F5F7FA">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="155*"/>
+                        <RowDefinition Height="414*"/>
+                    </Grid.RowDefinitions>
+
+                    <StackPanel Grid.RowSpan="2">
                         <!-- Shell Size Variables -->
                         <Border Style="{StaticResource CardStyle}">
 
@@ -313,18 +345,18 @@
                                         <TextBox Height="30" Padding="8,6" x:Name="NumKickRatioPcg" Style="{StaticResource NumberInputTextBox}"/>
                                     </StackPanel>
 
-                                    <DockPanel Grid.Column="3" 
+                                    <StackPanel Grid.Column="3" 
                                             Grid.Row="1" 
                                             Margin="0,0,8,0" 
                                             VerticalAlignment="Bottom" 
-                                           LastChildFill="True">
+                                                Orientation="Horizontal">
                                         <TextBlock Text="Tape Feet :" Style="{StaticResource InputLabelStyle}"
                                                HorizontalAlignment="Left" DockPanel.Dock="Left" VerticalAlignment="Bottom"
                                                FontWeight="Bold" Width="70" Padding="0,8" FontSize="13"/>
                                         <Label Height="30" Padding="0,4" FontWeight="Bold" FontSize="13"
                                            HorizontalAlignment="Stretch" x:Name="NumTotalEstFeet" DockPanel.Dock="Right"
                                            HorizontalContentAlignment="Right"/>
-                                    </DockPanel>
+                                    </StackPanel>
 
                                 </Grid>
 
@@ -543,26 +575,29 @@
 
                                         <StackPanel Grid.Column="0" Margin="0,0,8,0">
                                             <TextBlock Text="Startup GCode" Style="{StaticResource InputLabelStyle}"/>
-                                            <TextBox Height="120" AcceptsReturn="True" TextWrapping="Wrap"
+                                            <TextBox Height="120" AcceptsReturn="True" 
                                              FontFamily="Consolas" FontSize="12" 
                                              VerticalScrollBarVisibility="Auto"
+                                             HorizontalScrollBarVisibility="Auto"
                                              x:Name="TxtStartGcode"
                                              Padding="8,6"/>
                                         </StackPanel>
 
                                         <StackPanel Grid.Column="1" Margin="8,0,8,0">
                                             <TextBlock Text="End of Main Wrap" Style="{StaticResource InputLabelStyle}"/>
-                                            <TextBox Height="120" AcceptsReturn="True" TextWrapping="Wrap"
+                                            <TextBox Height="120" AcceptsReturn="True" 
                                              FontFamily="Consolas" FontSize="12" 
                                              VerticalScrollBarVisibility="Auto"
+                                             HorizontalScrollBarVisibility="Auto"
                                              x:Name="TxtEndMWrap"
                                              Padding="8,6"/>
                                         </StackPanel>
 
                                         <StackPanel Grid.Column="2" Margin="8,0,0,0">
                                             <TextBlock Text="End of Complete Wrap" Style="{StaticResource InputLabelStyle}"/>
-                                            <TextBox Height="120" AcceptsReturn="True" TextWrapping="Wrap"
+                                            <TextBox Height="120" AcceptsReturn="True" 
                                              FontFamily="Consolas" FontSize="12" 
+                                             HorizontalScrollBarVisibility="Auto"
                                              VerticalScrollBarVisibility="Auto"
                                              x:Name="TxtEndCWrap"
                                              Padding="8,6"/>
@@ -578,7 +613,7 @@
                      Opacity="0.05" 
                      VerticalAlignment="Top"
                      HorizontalAlignment="Left"
-                     IsHitTestVisible="False" Width="650"/>
+                     IsHitTestVisible="False" Width="650" Margin="0,0,-133,0" Grid.RowSpan="2"/>
 
                 </Grid>
             </ScrollViewer>
