@@ -5,13 +5,15 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:WpfApp1"
         mc:Ignorable="d"
-        Icon="Asset/logo.ico"
-        Title="Spyder Pattern Generator v1.3.2" 
+        Icon="Asset/nano.ico"
+        Title="Spyder Pattern Generator v1.3.3" 
         Height="680" 
         Width="800"
         MinHeight="500"
         MinWidth="700"
         UseLayoutRounding="True"
+        SnapsToDevicePixels="True"
+        RenderOptions.BitmapScalingMode="HighQuality"
         TextOptions.TextFormattingMode="Display"
         SizeChanged="MainWindow_SizeChanged"
         >
@@ -183,21 +185,24 @@
                 </Border>
 -->
                 <Image Grid.Column="0"
-                Width="35" Height="35"
-                Source="Asset/logo.png"
-                Margin="8,5,12,5"
-                Stretch="UniformToFill"
-                ClipToBounds="True"/>
+                    Width="46" Height="45"
+                    Source="Asset/nano.png"
+                    Margin="8,0,15,0"
+                    Stretch="UniformToFill"
+                    SnapsToDevicePixels="True"
+                    UseLayoutRounding="True"
+                    RenderOptions.BitmapScalingMode="HighQuality"
+                    ClipToBounds="True"/>
 
 
                 <StackPanel Grid.Column="1">
                     <TextBlock Text="MUM Pyrotechnics" 
                                FontSize="30" 
-                               FontFamily="Arial Rounded MT Bold" 
+                               FontFamily="Asset/#hobo" 
                                Foreground="Black" FontWeight="Bold" FontStyle="Italic" TextDecorations="{x:Null}"/>
                     <TextBlock Text="SPYDER Wrap Pattern Generator" 
                                FontSize="17" 
-                               FontFamily="Lucida Sans Typewriter"
+                               FontFamily="Asset/#hyper oxide"
                                Margin="15,0,0,0"
                                Foreground="White" FontStyle="Italic" FontWeight="Bold"/>
                 </StackPanel>

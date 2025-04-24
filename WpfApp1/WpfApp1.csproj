@@ -57,7 +57,7 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup>
-    <ApplicationIcon>logo.ico</ApplicationIcon>
+    <ApplicationIcon>nano.ico</ApplicationIcon>
   </PropertyGroup>
   <PropertyGroup>
     <ManifestCertificateThumbprint>DDAFCC5C3E90B379C71DD56BD066E648A183D749</ManifestCertificateThumbprint>
@@ -127,6 +127,9 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <Resource Include="Asset\hobo bold.ttf" />
+    <Resource Include="Asset\Hyper Oxide.ttf" />
+    <Resource Include="Asset\Vortax Italic DEMO.otf" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -174,6 +177,39 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Asset\bg.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Asset\nano.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Asset\qqq.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Asset\qqq.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="qqq.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Asset\rrr.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="rrr.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="sss.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="nano.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Asset\nano.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Asset\sss.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Asset\rrr.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
