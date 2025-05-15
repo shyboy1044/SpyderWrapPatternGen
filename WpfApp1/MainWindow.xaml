@@ -24,14 +24,14 @@
             <Setter Property="Height" Value="30"/>
             <Setter Property="TextAlignment" Value="Left"/>
             <Setter Property="Padding" Value="5"/>
-            <!--          <EventSetter Event="PreviewTextInput" Handler="IntegerOnlyTextBox_PreviewTextInput" />   -->
+<!--                      <EventSetter Event="PreviewTextInput" Handler="IntegerOnlyTextBox_PreviewTextInput" />   -->
         </Style>
 
         <Style TargetType="TextBox" x:Key="NumberInputTextBox">
             <Setter Property="Height" Value="30"/>
             <Setter Property="TextAlignment" Value="Left"/>
             <Setter Property="Padding" Value="5"/>
-            <!--           <EventSetter Event="PreviewTextInput" Handler="NumberOnlyTextBox_PreviewTextInput"/>  -->
+                       <EventSetter Event="PreviewTextInput" Handler="NumberOnlyTextBox_PreviewTextInput"/>  
         </Style>
 
         <Style x:Key="DialogBorderStyle" TargetType="Border">
@@ -311,37 +311,37 @@
                                     </Grid.RowDefinitions>
 
                                     <StackPanel Grid.Column="0" Grid.Row="0" Margin="0,0,8,8">
-                                        <TextBlock Text="Shell Size" Style="{StaticResource InputLabelStyle}"/>
+                                        <TextBlock Text="Shell Size*" Style="{StaticResource InputLabelStyle}"/>
                                         <TextBox Height="30" Padding="8,6" x:Name="NumShellSize" Style="{StaticResource NumberInputTextBox}" Opacity="0.8"/>
                                     </StackPanel>
 
                                     <StackPanel Grid.Column="1" Grid.Row="0" Margin="0,0,8,8">
-                                        <TextBlock Text="Meas.size" Style="{StaticResource InputLabelStyle}"/>
+                                        <TextBlock Text="Meas.size*" Style="{StaticResource InputLabelStyle}"/>
                                         <TextBox Height="30" Padding="8,6" x:Name="NumMeasuredSize" Style="{StaticResource NumberInputTextBox}"/>
                                     </StackPanel>
 
                                     <StackPanel Grid.Column="2" Grid.Row="0" Margin="0,0,8,8">
-                                        <TextBlock Text="Diameter%" Style="{StaticResource InputLabelStyle}"/>
+                                        <TextBlock Text="Diameter%*" Style="{StaticResource InputLabelStyle}"/>
                                         <TextBox Height="30" Padding="8,6" x:Name="NumDiameterPcg" Style="{StaticResource NumberInputTextBox}"/>
                                     </StackPanel>
 
                                     <StackPanel Grid.Column="3" Grid.Row="0" Margin="0,0,0,8">
-                                        <TextBlock Text="Circ +" Style="{StaticResource InputLabelStyle}"/>
+                                        <TextBlock Text="Circ +*" Style="{StaticResource InputLabelStyle}"/>
                                         <TextBox Height="30" Padding="8,6" x:Name="NumCircPlus" Style="{StaticResource NumberInputTextBox}"/>
                                     </StackPanel>
 
                                     <StackPanel Grid.Column="0" Grid.Row="1" Margin="0,0,8,0">
-                                        <TextBlock Text="Yaxis %" Style="{StaticResource InputLabelStyle}"/>
+                                        <TextBlock Text="Yaxis %*" Style="{StaticResource InputLabelStyle}"/>
                                         <TextBox Height="30" Padding="8,6" x:Name="NumYAixsPcg" Style="{StaticResource NumberInputTextBox}"/>
                                     </StackPanel>
 
                                     <StackPanel Grid.Column="1" Grid.Row="1" Margin="0,0,8,0">
-                                        <TextBlock Text="Total Kick" Style="{StaticResource InputLabelStyle}"/>
+                                        <TextBlock Text="Total Kick*" Style="{StaticResource InputLabelStyle}"/>
                                         <TextBox Height="30" Padding="8,6" x:Name="NumTotalKick" Style="{StaticResource NumberInputTextBox}"/>
                                     </StackPanel>
 
                                     <StackPanel Grid.Column="2" Grid.Row="1" Margin="0,0,8,0">
-                                        <TextBlock Text="Kick ratio %" Style="{StaticResource InputLabelStyle}"/>
+                                        <TextBlock Text="Kick ratio %*" Style="{StaticResource InputLabelStyle}"/>
                                         <TextBox Height="30" Padding="8,6" x:Name="NumKickRatioPcg" Style="{StaticResource NumberInputTextBox}"/>
                                     </StackPanel>
 
@@ -389,22 +389,22 @@
                                         </Grid.RowDefinitions>
 
                                         <StackPanel Grid.Column="0" Grid.Row="0" Margin="0,0,8,8">
-                                            <TextBlock Text="Feedrate" Style="{StaticResource InputLabelStyle}"/>
+                                            <TextBlock Text="Feedrate*" Style="{StaticResource InputLabelStyle}"/>
                                             <TextBox Height="30" Padding="8,6" x:Name="NumWrapFeedRate" Style="{StaticResource NumberInputTextBox}"/>
                                         </StackPanel>
 
                                         <StackPanel Grid.Column="1" Grid.Row="0" Margin="0,0,0,8">
-                                            <TextBlock Text="Overwrap%" Style="{StaticResource InputLabelStyle}"/>
+                                            <TextBlock Text="Overwrap%*" Style="{StaticResource InputLabelStyle}"/>
                                             <TextBox Height="30" Padding="8,6" x:Name="NumOverWrapPcg" Style="{StaticResource NumberInputTextBox}"/>
                                         </StackPanel>
 
                                         <StackPanel Grid.Column="0" Grid.Row="1" Margin="0,0,8,0">
-                                            <TextBlock Text="Total Layers" Style="{StaticResource InputLabelStyle}"/>
+                                            <TextBlock Text="Total Layers*" Style="{StaticResource InputLabelStyle}"/>
                                             <TextBox Height="30" Padding="8,6" x:Name="NumTotalLayers" Style="{StaticResource NumberInputTextBox}"/>
                                         </StackPanel>
 
                                         <StackPanel Grid.Column="1" Grid.Row="1" Margin="0,0,0,0">
-                                            <TextBlock Text="per layer" Style="{StaticResource InputLabelStyle}"/>
+                                            <TextBlock Text="per layer*" Style="{StaticResource InputLabelStyle}"/>
                                             <TextBox Height="30" Padding="8,6" x:Name="NumWrapsPerLayer" Style="{StaticResource NumberInputTextBox}"/>
                                         </StackPanel>
                                     </Grid>
@@ -426,7 +426,7 @@
                                         </Grid.RowDefinitions>
 
                                         <StackPanel Grid.Column="0" Grid.Row="0" Margin="0,0,8,8">
-                                            <TextBlock Text="Burnish %" Style="{StaticResource InputLabelStyle}"/>
+                                            <TextBlock Text="Burnish %*" Style="{StaticResource InputLabelStyle}"/>
                                             <TextBox Height="30" Padding="8,6" x:Name="NumBurLayerPcg" Style="{StaticResource NumberInputTextBox}"/>
                                         </StackPanel>
 
@@ -556,12 +556,12 @@
 
                                         <StackPanel Grid.Column="3" Margin="0,0,8,0">
                                             <TextBlock Text="Cycles per shell" Style="{StaticResource InputLabelStyle}"/>
-                                            <TextBox Height="30" Padding="8,6" x:Name="NumCyclesPerShell" Style="{StaticResource IntegerInputTextBox}"/>
+                                            <TextBox Height="30" Padding="8,6" x:Name="NumCyclesPerShell" Style="{StaticResource NumberInputTextBox}"/>
                                         </StackPanel>
 
                                         <StackPanel Grid.Column="4" Margin="0,0,0,0">
                                             <TextBlock Text="Duration" Style="{StaticResource InputLabelStyle}"/>
-                                            <TextBox Height="30" Padding="8,6" x:Name="NumDuration" Style="{StaticResource IntegerInputTextBox}"/>
+                                            <TextBox Height="30" Padding="8,6" x:Name="NumDuration" Style="{StaticResource NumberInputTextBox}"/>
                                         </StackPanel>
                                     </Grid>
 

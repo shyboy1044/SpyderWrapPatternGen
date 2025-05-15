@@ -490,10 +490,37 @@ namespace WpfApp1
         private void NumberOnlyTextBox_PreviewTextInput(object sender, TextCompositionEventArgs e)
             {
             TextBox textBox = sender as TextBox;
+
+            // Get the full text that would result from this input
             string fullText = textBox.Text.Insert(textBox.SelectionStart, e.Text);
 
-            // Regex: Allow numbers and single demical point
-            e.Handled = !Regex.IsMatch(fullText, @"^(\d+\.?\d*)?$");
+            // Regex explanation:
+            // ^                  - Start of string
+            // (\d+\.?\d*|\.\d+)? - Either:
+            //                        - \d+\.?\d* (digits, optional decimal point, optional digits)
+            //                        - OR \.d+ (decimal point followed by digits)
+            // $                  - End of string
+            // This allows both normal numbers like "123" or "0.9" and decimals that start with a point like ".93"
+            e.Handled = !Regex.IsMatch(fullText, @"^\d*\.?\d*$");
+        //    e.Handled = !Regex.IsMatch(fullText, @"^(^(\d+\.?\d)?$|^(\.\d+)?$)?$");
+            /*
+            // Additional check: reject if the input would create ". " (decimal point followed by space)
+            if (fullText.Contains(". "))
+            {
+                e.Handled = true;
+            }
+
+            // Parse the value to check if it's not less than zero
+            if (!string.IsNullOrWhiteSpace(fullText))
+            {
+                if (double.TryParse(fullText, out double value))
+                {
+                    if (value < 0)
+                    {
+                        e.Handled = true;
+                    }
+                }
+            }*/
         }
 
         // Allow integers and not demical and string
@@ -503,7 +530,34 @@ namespace WpfApp1
             string fullText = textBox.Text.Insert(textBox.SelectionStart, e.Text);
             e.Handled = !Regex.IsMatch(fullText, @"^[0-9]+$");
         }
+/*
+        // Allow integers and decimals but not space between decimal and number (eg. 0. 8) and not less than zero
+        private void NumberWithoutSpaceTextBox_PreviewTextInput(object sender, TextCompositionEventArgs e)
+        {
+            TextBox textBox = sender as TextBox;
 
+            // Get the full text that would result from this input
+            string fullText = textBox.Text.Insert(textBox.SelectionStart, e.Text);
+            
+            e.Handled = !Regex.IsMatch(fullText, @"^(\d+\.?\d*|\.\d+)?$");
+
+            // Additional check: reject if the input would create ". " (decimal point followed by space)
+            if (fullText.Contains(". "))
+            {
+                e.Handled = true;
+            }
+            if (!string.IsNullOrWhiteSpace(fullText))
+            {
+                if (double.TryParse(fullText, out double value))
+                {
+                    if (value < 0)
+                    {
+                        e.Handled = true;
+                    }
+                }
+            }
+        }
+*/
         // Prevent pasting invalid value
         private void NumberOnlyTextBox_Pasting(object sender, DataObjectPastingEventArgs e)
         {
@@ -647,9 +701,9 @@ namespace WpfApp1
                                     if (!string.IsNullOrWhiteSpace(NumOverWrapPcg.Text))
                                         if (!string.IsNullOrWhiteSpace(NumTotalLayers.Text))
                                             if (!string.IsNullOrWhiteSpace(NumWrapsPerLayer.Text))
-                                                if (!string.IsNullOrWhiteSpace(TxtStartGcode.Text))
-                                                    if (!string.IsNullOrWhiteSpace(TxtEndMWrap.Text))
-                                                        if (!string.IsNullOrWhiteSpace(TxtEndCWrap.Text))
+                                         //       if (!string.IsNullOrWhiteSpace(TxtStartGcode.Text))
+                                          //          if (!string.IsNullOrWhiteSpace(TxtEndMWrap.Text))
+                                           //             if (!string.IsNullOrWhiteSpace(TxtEndCWrap.Text))
                                                             if (!string.IsNullOrWhiteSpace(NumShellSize.Text))
                                                                 if (!string.IsNullOrWhiteSpace(NumYAixsPcg.Text))
                                                                     if (!string.IsNullOrWhiteSpace(NumBurLayerPcg.Text))
@@ -890,6 +944,9 @@ namespace WpfApp1
                 variables["pattern_Name"] = (Path.GetFileName(openedFilePath).Length == 0) ? StrPatternName.Text : Path.GetFileName(openedFilePath);
                 */
                 variables["Pattern_Name"] = StrPatternName.Text;
+                variables["pattern_name"] = StrPatternName.Text;
+                variables["Pattern_name"] = StrPatternName.Text;
+                variables["pattern_Name"] = StrPatternName.Text;
 
                 variables["End_of_Main_Wrap"] = TxtEndMWrap.Text;
                 variables["end_of_main_wrap"] = TxtEndMWrap.Text;
@@ -1256,6 +1313,28 @@ namespace WpfApp1
             Grid.SetRow(cyclesLabel, 0);
             Grid.SetColumn(cyclesLabel, 3);
 
+
+            void CyclesTextBox_PreviewTextInput(object sender, TextCompositionEventArgs e)
+            {
+                var textBox = sender as TextBox;
+                // Predict the new text after input
+                string fullText = textBox.Text.Insert(textBox.SelectionStart, e.Text);
+
+                // Only allow numbers and a single optional decimal point
+                e.Handled = !System.Text.RegularExpressions.Regex.IsMatch(fullText, @"^\d*\.?\d*$");
+
+                // Optionally, block negative numbers (not needed with this regex, but for completeness)
+                if (!e.Handled && !string.IsNullOrWhiteSpace(fullText))
+                {
+                    if (double.TryParse(fullText, out double value) && value < 0)
+                    {
+                        e.Handled = true;
+                    }
+                }
+            }
+
+
+
             TextBox cyclesTextBox = new TextBox
             {
                 AcceptsReturn = true,
@@ -1268,7 +1347,9 @@ namespace WpfApp1
                 Padding = new Thickness(8),
                 Text = NumCyclesPerShell.Text, // Assuming TxtCyclesPerShell is the source for initial text
                 IsEnabled = enablePumpCheckBox.IsChecked == true
+
             };
+            cyclesTextBox.PreviewTextInput += CyclesTextBox_PreviewTextInput;
             Grid.SetRow(cyclesTextBox, 1);
             Grid.SetColumn(cyclesTextBox, 3);
 
@@ -1295,6 +1376,7 @@ namespace WpfApp1
                 Text = NumDuration.Text, // Assuming TxtDuration is the source for initial text
                 IsEnabled = enablePumpCheckBox.IsChecked == true
             };
+            durationTextBox.PreviewTextInput += CyclesTextBox_PreviewTextInput;
             Grid.SetRow(durationTextBox, 1);
             Grid.SetColumn(durationTextBox, 4);
 
